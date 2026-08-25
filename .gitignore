@@ -1,0 +1,33 @@
+# Xcode
+DerivedData/
+build/
+*.xcuserdata
+*.xcworkspace/xcuserdata
+*.xcodeproj/xcuserdata
+*.xcodeproj/project.xcworkspace/xcuserdata
+*.xcresult
+
+# macOS
+.DS_Store
+
+# SwiftPM (local package checkouts)
+.build/
+Packages/
+
+# Commit Package.resolved under Cycle.xcodeproj for reproducible SPM pins
+Package.resolved
+!Cycle.xcodeproj/**/Package.resolved
+
+# Cursor agent skills (local dev tooling, not part of the app)
+.agents/
+
+# Secrets
+*.p12
+*.mobileprovision
+.env
+*.env.*
+
+# On-device LLM weights (multi‑GB; keep out of git)
+*.litertlm
+*.task
+Models/

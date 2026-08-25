@@ -1,0 +1,108 @@
+name: Cycle
+options:
+  bundleIdPrefix: app.cycle
+  deploymentTarget:
+    iOS: "18.0"
+  xcodeVersion: "16.0"
+  createIntermediateGroups: true
+  groupSortPosition: top
+configs:
+  Debug: debug
+  Release: release
+settings:
+  base:
+    SWIFT_VERSION: "6.0"
+    TARGETED_DEVICE_FAMILY: "1,2"
+    IPHONEOS_DEPLOYMENT_TARGET: "18.0"
+    SWIFT_STRICT_CONCURRENCY: complete
+  configs:
+    Debug:
+      SWIFT_OPTIMIZATION_LEVEL: "-Onone"
+      SWIFT_ACTIVE_COMPILATION_CONDITIONS: DEBUG
+      DEBUG_INFORMATION_FORMAT: dwarf
+    Release:
+      SWIFT_OPTIMIZATION_LEVEL: -O
+      SWIFT_COMPILATION_MODE: wholemodule
+      DEBUG_INFORMATION_FORMAT: dwarf-with-dsym
+      ENABLE_NS_ASSERTIONS: NO
+      VALIDATE_PRODUCT: YES
+packages:
+  LiteRTLM:
+    url: https://github.com/google-ai-edge/LiteRT-LM
+    from: 0.16.0
+schemes:
+  Cycle:
+    build:
+      targets:
+        Cycle: all
+        CycleTests: [test]
+    test:
+      targets:
+        - CycleTests
+    run:
+      config: Debug
+    archive:
+      config: Release
+    profile:
+      config: Release
+targets:
+  Cycle:
+    type: application
+    platform: iOS
+    sources:
+      - Cycle
+    resources:
+      - path: Cycle/Resources
+        optional: true
+    dependencies:
+      - package: LiteRTLM
+        product: LiteRTLM
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: app.lune.tracker
+        PRODUCT_NAME: Lune
+        PRODUCT_MODULE_NAME: Cycle
+        INFOPLIST_KEY_CFBundleDisplayName: Lune
+        INFOPLIST_KEY_UILaunchScreen_Generation: YES
+        INFOPLIST_KEY_UILaunchScreen_BackgroundColor: LaunchBackground
+        INFOPLIST_KEY_UISupportedInterfaceOrientations: UIInterfaceOrientationPortrait
+        INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad: "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight"
+        INFOPLIST_KEY_LSApplicationCategoryType: public.app-category.healthcare-fitness
+        INFOPLIST_KEY_NSFaceIDUsageDescription: Lune uses Face ID to protect your health data when app lock is enabled.
+        INFOPLIST_KEY_NSUserNotificationsUsageDescription: Lune sends optional local reminders about your cycle. No ads or tracking.
+        INFOPLIST_KEY_ITSAppUsesNonExemptEncryption: NO
+        INFOPLIST_KEY_UIFileSharingEnabled: YES
+        INFOPLIST_KEY_LSSupportsOpeningDocumentsInPlace: YES
+        GENERATE_INFOPLIST_FILE: YES
+        CODE_SIGN_STYLE: Automatic
+        DEVELOPMENT_TEAM: 23PXPK4JQ6
+        CURRENT_PROJECT_VERSION: 1
+        MARKETING_VERSION: "1.0.0"
+        ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
+        ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME: AccentColor
+        ENABLE_PREVIEWS: YES
+      configs:
+        Debug:
+          ENABLE_TESTABILITY: YES
+        Release:
+          ENABLE_TESTABILITY: NO
+    entitlements:
+      path: Cycle/Cycle.entitlements
+  CycleTests:
+    type: bundle.unit-test
+    platform: iOS
+    sources:
+      - CycleTests
+    dependencies:
+      - target: Cycle
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: app.lune.tracker.tests
+        GENERATE_INFOPLIST_FILE: YES
+        TEST_HOST: "$(BUILT_PRODUCTS_DIR)/Lune.app/Lune"
+        BUNDLE_LOADER: "$(TEST_HOST)"
+      configs:
+        Debug:
+          ENABLE_TESTABILITY: YES
+        Release:
+          ENABLE_TESTABILITY: NO

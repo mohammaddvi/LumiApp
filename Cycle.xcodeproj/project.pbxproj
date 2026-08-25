@@ -1,0 +1,879 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 77;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		002D579B69DB3FAC6C5B397B /* DomainTypes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1BCBDA430784D2D33170D432 /* DomainTypes.swift */; };
+		012CBD617DEE0848505E14A3 /* GemmaModelDownloader.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF66991B2D2A91212F1E3DB3 /* GemmaModelDownloader.swift */; };
+		092A54E5D1AB832E6D715BC6 /* PrivacyPolicyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3EC3AF0238C45A457F52FA28 /* PrivacyPolicyView.swift */; };
+		0DCD3A50A39C3091B3BC2F7C /* StoreBackupService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 581C3F8951603E4BE5910ACD /* StoreBackupService.swift */; };
+		0E7B9DA2F0E8F42B568AD4BE /* LuneSplashView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD79B99E3B780CDBA40F2513 /* LuneSplashView.swift */; };
+		1A41696806C85A3A663F3C57 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4BF8A061F3C9125B74110F81 /* SettingsView.swift */; };
+		21B3449E46F9F41C68D6D6BA /* MessageComposeService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89EF8696A33969356A207C52 /* MessageComposeService.swift */; };
+		25A6AA1FE3854FF0199EAEBA /* AppEnvironment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 986339F0EC1A362FF37CDF72 /* AppEnvironment.swift */; };
+		2F972E6F24F91416DC5DAF5A /* LuneLegal.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96E41B85C90F82BD519F5A31 /* LuneLegal.swift */; };
+		2FC1CEB5F6D65D6DB9536A94 /* OnboardingFlowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC141F60F2CB66DE93256232 /* OnboardingFlowView.swift */; };
+		31C5E8C246612022A984ACB1 /* PredictionEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 78554C9C07AB317D3D4B7C73 /* PredictionEngine.swift */; };
+		31DF9F7EC45A66B2B453B92A /* LuneSymbol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40C4DFEF878D776ECBA3DDBA /* LuneSymbol.swift */; };
+		328627DE37025A0E938683B1 /* CalendarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD34594337EEEFEC8F3B7BE8 /* CalendarView.swift */; };
+		35C80E0709508A604F08A0A1 /* InsightEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7092ADB473BBCC5190DEC164 /* InsightEngine.swift */; };
+		37C143433A12CFF02886A36B /* LocalHealthContextTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3292370C79748870C9AFADB /* LocalHealthContextTests.swift */; };
+		3B1F5D0D1BCBEFF13F95C782 /* CycleApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8D80A6165646EFFC1BA44524 /* CycleApp.swift */; };
+		3DA82679CA7F7C0588FC3833 /* LuneMoonSymbol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7754EEED31CFAC1282FDA8B7 /* LuneMoonSymbol.swift */; };
+		419E79BC79D3EC6485FB2BF4 /* PersistenceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A7E5C32EFEA3FE3F985B48A /* PersistenceTests.swift */; };
+		45CD2CC40C8A56B997F69349 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 461730167F6E6E52F863898E /* Assets.xcassets */; };
+		4867840D5A0B871D70B98C42 /* IMessageContactsViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F4C97C70FD65F9B18B1868D /* IMessageContactsViews.swift */; };
+		4C0F670760D64FED5AD78140 /* PeriodLogView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D90F70AE29648DE317B0371 /* PeriodLogView.swift */; };
+		4FED3A99A539DF01796F877D /* LuneCheckIn.swift in Sources */ = {isa = PBXBuildFile; fileRef = A38F450EF1E0328F0A441FD5 /* LuneCheckIn.swift */; };
+		54D00EF60509245DAD6A613A /* LuneVoice.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5E32C232C1F82E0EB28D65C /* LuneVoice.swift */; };
+		595B6583469FB16D3082ABF1 /* AppLockService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CFBBBDF000C046E4F3E36AB /* AppLockService.swift */; };
+		5A76A32CAD1CB9E5BBDD5A7C /* LuneSchema.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1C12FDE15E344566F7899EF /* LuneSchema.swift */; };
+		5D8E71B2E5C9D0D4D956E947 /* CycleCalculator.swift in Sources */ = {isa = PBXBuildFile; fileRef = ED06AB51E3AF44C576995C8E /* CycleCalculator.swift */; };
+		6860C7CA50F25541A10A0C12 /* LunePremium.swift in Sources */ = {isa = PBXBuildFile; fileRef = A58834BC531B2ECE5712ACCE /* LunePremium.swift */; };
+		7C68DAB5BC871716D0421D65 /* LoggingViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51BCC6B85268D6ADFEF2B289 /* LoggingViews.swift */; };
+		7C69CF0DA68BFA98AF61CC50 /* TodaysLuneCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88C31862A02877BF82D9DF8F /* TodaysLuneCard.swift */; };
+		80F10B2C5D499B588574C1F7 /* AppInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2CF923D10870B8F0C6C825B0 /* AppInfo.swift */; };
+		8E35E496D9EF33A9F0220D95 /* PremiumService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49C7B368BEB69E1DC5F4BA59 /* PremiumService.swift */; };
+		8FD289F02F14A3725A93C9BB /* InsightsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F828933BEAE5330A0695585B /* InsightsView.swift */; };
+		92C989B9B96690B0AE29B063 /* ExportService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DDD6FE11123E70E4ABE26F4 /* ExportService.swift */; };
+		95B0737182ABE241118A8E32 /* DataStoreRecoveryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB619AB64B853D743443E7E2 /* DataStoreRecoveryView.swift */; };
+		A0520374E25C978FA980964A /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 69AA8035D69BDF8B137E9D84 /* PrivacyInfo.xcprivacy */; };
+		A317294AC7EAA726D6E0528A /* TodayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0504A450F1CB7A69BF69429 /* TodayView.swift */; };
+		A401A17B7B91E083F51D4341 /* CycleDataStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37AF56D84BE191C1E0B1BC5F /* CycleDataStore.swift */; };
+		AC68E906193DC8411115CFF8 /* AskLuneView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7DC9497C0129E3475DC2B08 /* AskLuneView.swift */; };
+		B3646366A5FB9EA97A0E2124 /* LiteRTLM in Frameworks */ = {isa = PBXBuildFile; productRef = 70748EDC01DB3B904EA50F08 /* LiteRTLM */; };
+		B8B1D154C4C4283EFFB31DC7 /* RepositoryProtocols.swift in Sources */ = {isa = PBXBuildFile; fileRef = D2DDD0BCB56A1A3DE23E2DA4 /* RepositoryProtocols.swift */; };
+		BB93BDD57384FEDD341C471E /* PersistenceController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0368D42BAECF52ADFCB3E5D8 /* PersistenceController.swift */; };
+		BE739856D1A8DF76115CAA27 /* DomainEngineTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D066DF21C51404F10D8CB0DC /* DomainEngineTests.swift */; };
+		C4CC06F9C693FF14E0697412 /* LunePhase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2967ED9502C44700E686B7E7 /* LunePhase.swift */; };
+		C50A630AFE118F5ABC3440A4 /* LunePhaseEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5A329A004ECC0577558A4F77 /* LunePhaseEngine.swift */; };
+		D5AE6B0D5F5C72568A3B57FD /* PremiumEntitlementStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DDB6C766D18220119949A19 /* PremiumEntitlementStore.swift */; };
+		DA1A8C667AF44AC3FE070F8E /* LuneEmoji.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB4AA2303F7FB535EB0088B8 /* LuneEmoji.swift */; };
+		DAC95A4AF35B2FDB5101BB44 /* LocalAIController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F04D26CE65D0C761085338D0 /* LocalAIController.swift */; };
+		DAF41C1B65C0D843FD4E6C48 /* TodayEmojiStrip.swift in Sources */ = {isa = PBXBuildFile; fileRef = D401F6274B1F9F01A865D1CB /* TodayEmojiStrip.swift */; };
+		DDBF79958A6B9232A085F3DA /* PremiumPaywallView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AED84B909885CC1311AFE57 /* PremiumPaywallView.swift */; };
+		DEDBED9B0778769715C33FCB /* LocalAITypes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96C2DD45B36A959EDC29D480 /* LocalAITypes.swift */; };
+		E780E7A9B624EAF63C55C69F /* LocalHealthContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = E501F93A163A8E5B32292595 /* LocalHealthContext.swift */; };
+		EE5BD73888D98C9F51873BE5 /* CycleTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFF231DF004AEC3C5B492AA7 /* CycleTheme.swift */; };
+		F0CF5AF67D2CEECB32B03A09 /* NotificationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = E641A4EDE8E53A0931DA829E /* NotificationService.swift */; };
+		F2C8984CCE8753DA4FC7500F /* SwiftDataModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17B4B22017BAC7E457C99BE7 /* SwiftDataModels.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		A4DB72CAEDED343EB0C22E1C /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = FD4C3F587BF73F5A58435543 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = FFEA45BFD56057E540242F1B;
+			remoteInfo = Cycle;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		0368D42BAECF52ADFCB3E5D8 /* PersistenceController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersistenceController.swift; sourceTree = "<group>"; };
+		04767AF168CBEB5956252164 /* CycleTests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = CycleTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		0AED84B909885CC1311AFE57 /* PremiumPaywallView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PremiumPaywallView.swift; sourceTree = "<group>"; };
+		1512059432DF8F9336BC5158 /* Cycle.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = Cycle.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		17B4B22017BAC7E457C99BE7 /* SwiftDataModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwiftDataModels.swift; sourceTree = "<group>"; };
+		1BCBDA430784D2D33170D432 /* DomainTypes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DomainTypes.swift; sourceTree = "<group>"; };
+		1CFBBBDF000C046E4F3E36AB /* AppLockService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppLockService.swift; sourceTree = "<group>"; };
+		2967ED9502C44700E686B7E7 /* LunePhase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LunePhase.swift; sourceTree = "<group>"; };
+		2CF923D10870B8F0C6C825B0 /* AppInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppInfo.swift; sourceTree = "<group>"; };
+		37AF56D84BE191C1E0B1BC5F /* CycleDataStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CycleDataStore.swift; sourceTree = "<group>"; };
+		3A7E5C32EFEA3FE3F985B48A /* PersistenceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersistenceTests.swift; sourceTree = "<group>"; };
+		3D90F70AE29648DE317B0371 /* PeriodLogView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PeriodLogView.swift; sourceTree = "<group>"; };
+		3EC3AF0238C45A457F52FA28 /* PrivacyPolicyView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrivacyPolicyView.swift; sourceTree = "<group>"; };
+		40C4DFEF878D776ECBA3DDBA /* LuneSymbol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LuneSymbol.swift; sourceTree = "<group>"; };
+		420B25C57BF05E7CD83760DD /* Cycle.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Cycle.entitlements; sourceTree = "<group>"; };
+		461730167F6E6E52F863898E /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		49C7B368BEB69E1DC5F4BA59 /* PremiumService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PremiumService.swift; sourceTree = "<group>"; };
+		4BF8A061F3C9125B74110F81 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
+		51BCC6B85268D6ADFEF2B289 /* LoggingViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoggingViews.swift; sourceTree = "<group>"; };
+		581C3F8951603E4BE5910ACD /* StoreBackupService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreBackupService.swift; sourceTree = "<group>"; };
+		5A329A004ECC0577558A4F77 /* LunePhaseEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LunePhaseEngine.swift; sourceTree = "<group>"; };
+		5DDB6C766D18220119949A19 /* PremiumEntitlementStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PremiumEntitlementStore.swift; sourceTree = "<group>"; };
+		5DDD6FE11123E70E4ABE26F4 /* ExportService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExportService.swift; sourceTree = "<group>"; };
+		5F4C97C70FD65F9B18B1868D /* IMessageContactsViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IMessageContactsViews.swift; sourceTree = "<group>"; };
+		69AA8035D69BDF8B137E9D84 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
+		7092ADB473BBCC5190DEC164 /* InsightEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InsightEngine.swift; sourceTree = "<group>"; };
+		7754EEED31CFAC1282FDA8B7 /* LuneMoonSymbol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LuneMoonSymbol.swift; sourceTree = "<group>"; };
+		78554C9C07AB317D3D4B7C73 /* PredictionEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PredictionEngine.swift; sourceTree = "<group>"; };
+		88C31862A02877BF82D9DF8F /* TodaysLuneCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodaysLuneCard.swift; sourceTree = "<group>"; };
+		89EF8696A33969356A207C52 /* MessageComposeService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageComposeService.swift; sourceTree = "<group>"; };
+		8D80A6165646EFFC1BA44524 /* CycleApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CycleApp.swift; sourceTree = "<group>"; };
+		96C2DD45B36A959EDC29D480 /* LocalAITypes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalAITypes.swift; sourceTree = "<group>"; };
+		96E41B85C90F82BD519F5A31 /* LuneLegal.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LuneLegal.swift; sourceTree = "<group>"; };
+		986339F0EC1A362FF37CDF72 /* AppEnvironment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppEnvironment.swift; sourceTree = "<group>"; };
+		A1C12FDE15E344566F7899EF /* LuneSchema.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LuneSchema.swift; sourceTree = "<group>"; };
+		A38F450EF1E0328F0A441FD5 /* LuneCheckIn.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LuneCheckIn.swift; sourceTree = "<group>"; };
+		A58834BC531B2ECE5712ACCE /* LunePremium.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LunePremium.swift; sourceTree = "<group>"; };
+		AB4AA2303F7FB535EB0088B8 /* LuneEmoji.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LuneEmoji.swift; sourceTree = "<group>"; };
+		AC141F60F2CB66DE93256232 /* OnboardingFlowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingFlowView.swift; sourceTree = "<group>"; };
+		AFF231DF004AEC3C5B492AA7 /* CycleTheme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CycleTheme.swift; sourceTree = "<group>"; };
+		B0504A450F1CB7A69BF69429 /* TodayView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodayView.swift; sourceTree = "<group>"; };
+		B7DC9497C0129E3475DC2B08 /* AskLuneView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AskLuneView.swift; sourceTree = "<group>"; };
+		BB619AB64B853D743443E7E2 /* DataStoreRecoveryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataStoreRecoveryView.swift; sourceTree = "<group>"; };
+		D066DF21C51404F10D8CB0DC /* DomainEngineTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DomainEngineTests.swift; sourceTree = "<group>"; };
+		D2DDD0BCB56A1A3DE23E2DA4 /* RepositoryProtocols.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RepositoryProtocols.swift; sourceTree = "<group>"; };
+		D401F6274B1F9F01A865D1CB /* TodayEmojiStrip.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodayEmojiStrip.swift; sourceTree = "<group>"; };
+		DD79B99E3B780CDBA40F2513 /* LuneSplashView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LuneSplashView.swift; sourceTree = "<group>"; };
+		DF66991B2D2A91212F1E3DB3 /* GemmaModelDownloader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GemmaModelDownloader.swift; sourceTree = "<group>"; };
+		E501F93A163A8E5B32292595 /* LocalHealthContext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalHealthContext.swift; sourceTree = "<group>"; };
+		E5E32C232C1F82E0EB28D65C /* LuneVoice.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LuneVoice.swift; sourceTree = "<group>"; };
+		E641A4EDE8E53A0931DA829E /* NotificationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationService.swift; sourceTree = "<group>"; };
+		ED06AB51E3AF44C576995C8E /* CycleCalculator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CycleCalculator.swift; sourceTree = "<group>"; };
+		F04D26CE65D0C761085338D0 /* LocalAIController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalAIController.swift; sourceTree = "<group>"; };
+		F3292370C79748870C9AFADB /* LocalHealthContextTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalHealthContextTests.swift; sourceTree = "<group>"; };
+		F828933BEAE5330A0695585B /* InsightsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InsightsView.swift; sourceTree = "<group>"; };
+		FD34594337EEEFEC8F3B7BE8 /* CalendarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarView.swift; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		38694CF4E21C27F77F951566 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				B3646366A5FB9EA97A0E2124 /* LiteRTLM in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		01A7BA1B22F6EFE4009B6F68 /* Engines */ = {
+			isa = PBXGroup;
+			children = (
+				ED06AB51E3AF44C576995C8E /* CycleCalculator.swift */,
+				7092ADB473BBCC5190DEC164 /* InsightEngine.swift */,
+				5A329A004ECC0577558A4F77 /* LunePhaseEngine.swift */,
+				78554C9C07AB317D3D4B7C73 /* PredictionEngine.swift */,
+			);
+			path = Engines;
+			sourceTree = "<group>";
+		};
+		08EA9269E70EB33BDDD10E7F /* Cycle */ = {
+			isa = PBXGroup;
+			children = (
+				1C45D6D3C553768350529F93 /* App */,
+				9742275A10C354ED13CD5A32 /* Data */,
+				E35BEB922EB54D25A83D4601 /* DesignSystem */,
+				CAE70CA5750E8C8339A4886D /* Domain */,
+				D2F088C0DCDF2E36F4F8D4AA /* Features */,
+				E47C443469D60C779D632E37 /* Resources */,
+				9390F7D0A7BA0DAF392EB2F7 /* Services */,
+				420B25C57BF05E7CD83760DD /* Cycle.entitlements */,
+			);
+			path = Cycle;
+			sourceTree = "<group>";
+		};
+		0DD0311B087106697BB4036E /* Settings */ = {
+			isa = PBXGroup;
+			children = (
+				BB619AB64B853D743443E7E2 /* DataStoreRecoveryView.swift */,
+				5F4C97C70FD65F9B18B1868D /* IMessageContactsViews.swift */,
+				0AED84B909885CC1311AFE57 /* PremiumPaywallView.swift */,
+				3EC3AF0238C45A457F52FA28 /* PrivacyPolicyView.swift */,
+				4BF8A061F3C9125B74110F81 /* SettingsView.swift */,
+			);
+			path = Settings;
+			sourceTree = "<group>";
+		};
+		1AD8072516B661E0FC143C93 /* Today */ = {
+			isa = PBXGroup;
+			children = (
+				B0504A450F1CB7A69BF69429 /* TodayView.swift */,
+			);
+			path = Today;
+			sourceTree = "<group>";
+		};
+		1C45D6D3C553768350529F93 /* App */ = {
+			isa = PBXGroup;
+			children = (
+				986339F0EC1A362FF37CDF72 /* AppEnvironment.swift */,
+				2CF923D10870B8F0C6C825B0 /* AppInfo.swift */,
+				8D80A6165646EFFC1BA44524 /* CycleApp.swift */,
+				96E41B85C90F82BD519F5A31 /* LuneLegal.swift */,
+			);
+			path = App;
+			sourceTree = "<group>";
+		};
+		2DD5E4B1DB61F40A1CDCD0E0 /* Persistence */ = {
+			isa = PBXGroup;
+			children = (
+				3A7E5C32EFEA3FE3F985B48A /* PersistenceTests.swift */,
+			);
+			path = Persistence;
+			sourceTree = "<group>";
+		};
+		453BBB3B7632E4FBF16E6B73 /* AI */ = {
+			isa = PBXGroup;
+			children = (
+				E501F93A163A8E5B32292595 /* LocalHealthContext.swift */,
+			);
+			path = AI;
+			sourceTree = "<group>";
+		};
+		4B70659B6B7890A48EABD132 /* Repositories */ = {
+			isa = PBXGroup;
+			children = (
+				D2DDD0BCB56A1A3DE23E2DA4 /* RepositoryProtocols.swift */,
+			);
+			path = Repositories;
+			sourceTree = "<group>";
+		};
+		4C4AA2621A57E64AC8B85927 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				17B4B22017BAC7E457C99BE7 /* SwiftDataModels.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		670F3BC3C8C656FA8401C8A2 /* Logging */ = {
+			isa = PBXGroup;
+			children = (
+				51BCC6B85268D6ADFEF2B289 /* LoggingViews.swift */,
+				3D90F70AE29648DE317B0371 /* PeriodLogView.swift */,
+			);
+			path = Logging;
+			sourceTree = "<group>";
+		};
+		7021122505230F0E6C08A5AE /* Calendar */ = {
+			isa = PBXGroup;
+			children = (
+				FD34594337EEEFEC8F3B7BE8 /* CalendarView.swift */,
+			);
+			path = Calendar;
+			sourceTree = "<group>";
+		};
+		8321982988DB83D285B84E60 /* CycleTests */ = {
+			isa = PBXGroup;
+			children = (
+				D99F980B3ADC0862F01AB762 /* Domain */,
+				2DD5E4B1DB61F40A1CDCD0E0 /* Persistence */,
+			);
+			path = CycleTests;
+			sourceTree = "<group>";
+		};
+		8C6BB6F4BEE3E82B796CA9BB /* Persistence */ = {
+			isa = PBXGroup;
+			children = (
+				A1C12FDE15E344566F7899EF /* LuneSchema.swift */,
+				0368D42BAECF52ADFCB3E5D8 /* PersistenceController.swift */,
+				581C3F8951603E4BE5910ACD /* StoreBackupService.swift */,
+			);
+			path = Persistence;
+			sourceTree = "<group>";
+		};
+		9390F7D0A7BA0DAF392EB2F7 /* Services */ = {
+			isa = PBXGroup;
+			children = (
+				A3AF483C363DA10ED51B7A3E /* LocalAI */,
+				1CFBBBDF000C046E4F3E36AB /* AppLockService.swift */,
+				5DDD6FE11123E70E4ABE26F4 /* ExportService.swift */,
+				89EF8696A33969356A207C52 /* MessageComposeService.swift */,
+				E641A4EDE8E53A0931DA829E /* NotificationService.swift */,
+				5DDB6C766D18220119949A19 /* PremiumEntitlementStore.swift */,
+				49C7B368BEB69E1DC5F4BA59 /* PremiumService.swift */,
+			);
+			path = Services;
+			sourceTree = "<group>";
+		};
+		9742275A10C354ED13CD5A32 /* Data */ = {
+			isa = PBXGroup;
+			children = (
+				4C4AA2621A57E64AC8B85927 /* Models */,
+				8C6BB6F4BEE3E82B796CA9BB /* Persistence */,
+				B44FBC8F0A3D8D8E65A2D1D5 /* Repositories */,
+			);
+			path = Data;
+			sourceTree = "<group>";
+		};
+		A3AF483C363DA10ED51B7A3E /* LocalAI */ = {
+			isa = PBXGroup;
+			children = (
+				DF66991B2D2A91212F1E3DB3 /* GemmaModelDownloader.swift */,
+				F04D26CE65D0C761085338D0 /* LocalAIController.swift */,
+				96C2DD45B36A959EDC29D480 /* LocalAITypes.swift */,
+			);
+			path = LocalAI;
+			sourceTree = "<group>";
+		};
+		B44FBC8F0A3D8D8E65A2D1D5 /* Repositories */ = {
+			isa = PBXGroup;
+			children = (
+				37AF56D84BE191C1E0B1BC5F /* CycleDataStore.swift */,
+			);
+			path = Repositories;
+			sourceTree = "<group>";
+		};
+		BEB8B234F5B094D1D98E5D59 /* AskLune */ = {
+			isa = PBXGroup;
+			children = (
+				B7DC9497C0129E3475DC2B08 /* AskLuneView.swift */,
+			);
+			path = AskLune;
+			sourceTree = "<group>";
+		};
+		C410ED51D018E74A1BD8BF73 /* Insights */ = {
+			isa = PBXGroup;
+			children = (
+				F828933BEAE5330A0695585B /* InsightsView.swift */,
+			);
+			path = Insights;
+			sourceTree = "<group>";
+		};
+		CAE70CA5750E8C8339A4886D /* Domain */ = {
+			isa = PBXGroup;
+			children = (
+				453BBB3B7632E4FBF16E6B73 /* AI */,
+				01A7BA1B22F6EFE4009B6F68 /* Engines */,
+				DB72EB43B32CCE4DC89B89A1 /* Models */,
+				4B70659B6B7890A48EABD132 /* Repositories */,
+			);
+			path = Domain;
+			sourceTree = "<group>";
+		};
+		D2F088C0DCDF2E36F4F8D4AA /* Features */ = {
+			isa = PBXGroup;
+			children = (
+				BEB8B234F5B094D1D98E5D59 /* AskLune */,
+				7021122505230F0E6C08A5AE /* Calendar */,
+				C410ED51D018E74A1BD8BF73 /* Insights */,
+				670F3BC3C8C656FA8401C8A2 /* Logging */,
+				EC39AAA230D7616EBE4DCE98 /* Onboarding */,
+				0DD0311B087106697BB4036E /* Settings */,
+				1AD8072516B661E0FC143C93 /* Today */,
+			);
+			path = Features;
+			sourceTree = "<group>";
+		};
+		D99F980B3ADC0862F01AB762 /* Domain */ = {
+			isa = PBXGroup;
+			children = (
+				D066DF21C51404F10D8CB0DC /* DomainEngineTests.swift */,
+				F3292370C79748870C9AFADB /* LocalHealthContextTests.swift */,
+			);
+			path = Domain;
+			sourceTree = "<group>";
+		};
+		DB72EB43B32CCE4DC89B89A1 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				1BCBDA430784D2D33170D432 /* DomainTypes.swift */,
+				A38F450EF1E0328F0A441FD5 /* LuneCheckIn.swift */,
+				AB4AA2303F7FB535EB0088B8 /* LuneEmoji.swift */,
+				2967ED9502C44700E686B7E7 /* LunePhase.swift */,
+				A58834BC531B2ECE5712ACCE /* LunePremium.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		DB9F995097B92A0DB926E6CC /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				1512059432DF8F9336BC5158 /* Cycle.app */,
+				04767AF168CBEB5956252164 /* CycleTests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		E35BEB922EB54D25A83D4601 /* DesignSystem */ = {
+			isa = PBXGroup;
+			children = (
+				AFF231DF004AEC3C5B492AA7 /* CycleTheme.swift */,
+				7754EEED31CFAC1282FDA8B7 /* LuneMoonSymbol.swift */,
+				DD79B99E3B780CDBA40F2513 /* LuneSplashView.swift */,
+				40C4DFEF878D776ECBA3DDBA /* LuneSymbol.swift */,
+				E5E32C232C1F82E0EB28D65C /* LuneVoice.swift */,
+				D401F6274B1F9F01A865D1CB /* TodayEmojiStrip.swift */,
+				88C31862A02877BF82D9DF8F /* TodaysLuneCard.swift */,
+			);
+			path = DesignSystem;
+			sourceTree = "<group>";
+		};
+		E47C443469D60C779D632E37 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				461730167F6E6E52F863898E /* Assets.xcassets */,
+				69AA8035D69BDF8B137E9D84 /* PrivacyInfo.xcprivacy */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
+		EC39AAA230D7616EBE4DCE98 /* Onboarding */ = {
+			isa = PBXGroup;
+			children = (
+				AC141F60F2CB66DE93256232 /* OnboardingFlowView.swift */,
+			);
+			path = Onboarding;
+			sourceTree = "<group>";
+		};
+		F44FF2339D6F94A31A95AA38 = {
+			isa = PBXGroup;
+			children = (
+				08EA9269E70EB33BDDD10E7F /* Cycle */,
+				8321982988DB83D285B84E60 /* CycleTests */,
+				DB9F995097B92A0DB926E6CC /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		163031E7E42B7520BE955444 /* CycleTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = C9E9ED45403371227465F7AD /* Build configuration list for PBXNativeTarget "CycleTests" */;
+			buildPhases = (
+				DAA2EC2FE2F0525910BC7BC5 /* Sources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				FD9C2B4DBB902BC55CEA0E4A /* PBXTargetDependency */,
+			);
+			name = CycleTests;
+			packageProductDependencies = (
+			);
+			productName = CycleTests;
+			productReference = 04767AF168CBEB5956252164 /* CycleTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		FFEA45BFD56057E540242F1B /* Cycle */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 9DA97B547085006C14DA72B1 /* Build configuration list for PBXNativeTarget "Cycle" */;
+			buildPhases = (
+				9F150501DFA84E6436E0534E /* Sources */,
+				2E5E631163B574CE1A2F54AC /* Resources */,
+				38694CF4E21C27F77F951566 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = Cycle;
+			packageProductDependencies = (
+				70748EDC01DB3B904EA50F08 /* LiteRTLM */,
+			);
+			productName = Cycle;
+			productReference = 1512059432DF8F9336BC5158 /* Cycle.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		FD4C3F587BF73F5A58435543 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = YES;
+				LastUpgradeCheck = 1600;
+				TargetAttributes = {
+					FFEA45BFD56057E540242F1B = {
+						DevelopmentTeam = 23PXPK4JQ6;
+						ProvisioningStyle = Automatic;
+					};
+				};
+			};
+			buildConfigurationList = 33FBAE408FA0B9F6073050EF /* Build configuration list for PBXProject "Cycle" */;
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				Base,
+				en,
+			);
+			mainGroup = F44FF2339D6F94A31A95AA38;
+			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				6C27F727947BF7F043D2CA4F /* XCRemoteSwiftPackageReference "LiteRT-LM" */,
+			);
+			preferredProjectObjectVersion = 77;
+			productRefGroup = DB9F995097B92A0DB926E6CC /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				FFEA45BFD56057E540242F1B /* Cycle */,
+				163031E7E42B7520BE955444 /* CycleTests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		2E5E631163B574CE1A2F54AC /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				45CD2CC40C8A56B997F69349 /* Assets.xcassets in Resources */,
+				A0520374E25C978FA980964A /* PrivacyInfo.xcprivacy in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		9F150501DFA84E6436E0534E /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				25A6AA1FE3854FF0199EAEBA /* AppEnvironment.swift in Sources */,
+				80F10B2C5D499B588574C1F7 /* AppInfo.swift in Sources */,
+				595B6583469FB16D3082ABF1 /* AppLockService.swift in Sources */,
+				AC68E906193DC8411115CFF8 /* AskLuneView.swift in Sources */,
+				328627DE37025A0E938683B1 /* CalendarView.swift in Sources */,
+				3B1F5D0D1BCBEFF13F95C782 /* CycleApp.swift in Sources */,
+				5D8E71B2E5C9D0D4D956E947 /* CycleCalculator.swift in Sources */,
+				A401A17B7B91E083F51D4341 /* CycleDataStore.swift in Sources */,
+				EE5BD73888D98C9F51873BE5 /* CycleTheme.swift in Sources */,
+				95B0737182ABE241118A8E32 /* DataStoreRecoveryView.swift in Sources */,
+				002D579B69DB3FAC6C5B397B /* DomainTypes.swift in Sources */,
+				92C989B9B96690B0AE29B063 /* ExportService.swift in Sources */,
+				012CBD617DEE0848505E14A3 /* GemmaModelDownloader.swift in Sources */,
+				4867840D5A0B871D70B98C42 /* IMessageContactsViews.swift in Sources */,
+				35C80E0709508A604F08A0A1 /* InsightEngine.swift in Sources */,
+				8FD289F02F14A3725A93C9BB /* InsightsView.swift in Sources */,
+				DAC95A4AF35B2FDB5101BB44 /* LocalAIController.swift in Sources */,
+				DEDBED9B0778769715C33FCB /* LocalAITypes.swift in Sources */,
+				E780E7A9B624EAF63C55C69F /* LocalHealthContext.swift in Sources */,
+				7C68DAB5BC871716D0421D65 /* LoggingViews.swift in Sources */,
+				4FED3A99A539DF01796F877D /* LuneCheckIn.swift in Sources */,
+				DA1A8C667AF44AC3FE070F8E /* LuneEmoji.swift in Sources */,
+				2F972E6F24F91416DC5DAF5A /* LuneLegal.swift in Sources */,
+				3DA82679CA7F7C0588FC3833 /* LuneMoonSymbol.swift in Sources */,
+				C4CC06F9C693FF14E0697412 /* LunePhase.swift in Sources */,
+				C50A630AFE118F5ABC3440A4 /* LunePhaseEngine.swift in Sources */,
+				6860C7CA50F25541A10A0C12 /* LunePremium.swift in Sources */,
+				5A76A32CAD1CB9E5BBDD5A7C /* LuneSchema.swift in Sources */,
+				0E7B9DA2F0E8F42B568AD4BE /* LuneSplashView.swift in Sources */,
+				31DF9F7EC45A66B2B453B92A /* LuneSymbol.swift in Sources */,
+				54D00EF60509245DAD6A613A /* LuneVoice.swift in Sources */,
+				21B3449E46F9F41C68D6D6BA /* MessageComposeService.swift in Sources */,
+				F0CF5AF67D2CEECB32B03A09 /* NotificationService.swift in Sources */,
+				2FC1CEB5F6D65D6DB9536A94 /* OnboardingFlowView.swift in Sources */,
+				4C0F670760D64FED5AD78140 /* PeriodLogView.swift in Sources */,
+				BB93BDD57384FEDD341C471E /* PersistenceController.swift in Sources */,
+				31C5E8C246612022A984ACB1 /* PredictionEngine.swift in Sources */,
+				D5AE6B0D5F5C72568A3B57FD /* PremiumEntitlementStore.swift in Sources */,
+				DDBF79958A6B9232A085F3DA /* PremiumPaywallView.swift in Sources */,
+				8E35E496D9EF33A9F0220D95 /* PremiumService.swift in Sources */,
+				092A54E5D1AB832E6D715BC6 /* PrivacyPolicyView.swift in Sources */,
+				B8B1D154C4C4283EFFB31DC7 /* RepositoryProtocols.swift in Sources */,
+				1A41696806C85A3A663F3C57 /* SettingsView.swift in Sources */,
+				0DCD3A50A39C3091B3BC2F7C /* StoreBackupService.swift in Sources */,
+				F2C8984CCE8753DA4FC7500F /* SwiftDataModels.swift in Sources */,
+				DAF41C1B65C0D843FD4E6C48 /* TodayEmojiStrip.swift in Sources */,
+				A317294AC7EAA726D6E0528A /* TodayView.swift in Sources */,
+				7C69CF0DA68BFA98AF61CC50 /* TodaysLuneCard.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		DAA2EC2FE2F0525910BC7BC5 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				BE739856D1A8DF76115CAA27 /* DomainEngineTests.swift in Sources */,
+				37C143433A12CFF02886A36B /* LocalHealthContextTests.swift in Sources */,
+				419E79BC79D3EC6485FB2BF4 /* PersistenceTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		FD9C2B4DBB902BC55CEA0E4A /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = FFEA45BFD56057E540242F1B /* Cycle */;
+			targetProxy = A4DB72CAEDED343EB0C22E1C /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		29E1BD67F2C3B4D69ED63F3E /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					"DEBUG=1",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_STRICT_CONCURRENCY = complete;
+				SWIFT_VERSION = 6.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		38BDC9241F9D4D78F6A74A14 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				ENABLE_TESTABILITY = NO;
+				GENERATE_INFOPLIST_FILE = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = app.lune.tracker.tests;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Lune.app/Lune";
+			};
+			name = Release;
+		};
+		62640ACCF682572E85417266 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_STRICT_CONCURRENCY = complete;
+				SWIFT_VERSION = 6.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		CFB6D7C9F29C332E2D66D4EE /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				ENABLE_TESTABILITY = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = app.lune.tracker.tests;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Lune.app/Lune";
+			};
+			name = Debug;
+		};
+		E8F907F3DB3C9194BB44958C /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = Cycle/Cycle.entitlements;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 23PXPK4JQ6;
+				ENABLE_PREVIEWS = YES;
+				ENABLE_TESTABILITY = NO;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = Lune;
+				INFOPLIST_KEY_ITSAppUsesNonExemptEncryption = NO;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.healthcare-fitness";
+				INFOPLIST_KEY_LSSupportsOpeningDocumentsInPlace = YES;
+				INFOPLIST_KEY_NSFaceIDUsageDescription = "Lune uses Face ID to protect your health data when app lock is enabled.";
+				INFOPLIST_KEY_NSUserNotificationsUsageDescription = "Lune sends optional local reminders about your cycle. No ads or tracking.";
+				INFOPLIST_KEY_UIFileSharingEnabled = YES;
+				INFOPLIST_KEY_UILaunchScreen_BackgroundColor = LaunchBackground;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0.0;
+				PRODUCT_BUNDLE_IDENTIFIER = app.lune.tracker;
+				PRODUCT_MODULE_NAME = Cycle;
+				PRODUCT_NAME = Lune;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		EF3E539E0DC9BB9D7A12A6BB /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = Cycle/Cycle.entitlements;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 23PXPK4JQ6;
+				ENABLE_PREVIEWS = YES;
+				ENABLE_TESTABILITY = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = Lune;
+				INFOPLIST_KEY_ITSAppUsesNonExemptEncryption = NO;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.healthcare-fitness";
+				INFOPLIST_KEY_LSSupportsOpeningDocumentsInPlace = YES;
+				INFOPLIST_KEY_NSFaceIDUsageDescription = "Lune uses Face ID to protect your health data when app lock is enabled.";
+				INFOPLIST_KEY_NSUserNotificationsUsageDescription = "Lune sends optional local reminders about your cycle. No ads or tracking.";
+				INFOPLIST_KEY_UIFileSharingEnabled = YES;
+				INFOPLIST_KEY_UILaunchScreen_BackgroundColor = LaunchBackground;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0.0;
+				PRODUCT_BUNDLE_IDENTIFIER = app.lune.tracker;
+				PRODUCT_MODULE_NAME = Cycle;
+				PRODUCT_NAME = Lune;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		33FBAE408FA0B9F6073050EF /* Build configuration list for PBXProject "Cycle" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				29E1BD67F2C3B4D69ED63F3E /* Debug */,
+				62640ACCF682572E85417266 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		9DA97B547085006C14DA72B1 /* Build configuration list for PBXNativeTarget "Cycle" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				EF3E539E0DC9BB9D7A12A6BB /* Debug */,
+				E8F907F3DB3C9194BB44958C /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		C9E9ED45403371227465F7AD /* Build configuration list for PBXNativeTarget "CycleTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				CFB6D7C9F29C332E2D66D4EE /* Debug */,
+				38BDC9241F9D4D78F6A74A14 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+/* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		6C27F727947BF7F043D2CA4F /* XCRemoteSwiftPackageReference "LiteRT-LM" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/google-ai-edge/LiteRT-LM";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 0.16.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		70748EDC01DB3B904EA50F08 /* LiteRTLM */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 6C27F727947BF7F043D2CA4F /* XCRemoteSwiftPackageReference "LiteRT-LM" */;
+			productName = LiteRTLM;
+		};
+/* End XCSwiftPackageProductDependency section */
+	};
+	rootObject = FD4C3F587BF73F5A58435543 /* Project object */;
+}
