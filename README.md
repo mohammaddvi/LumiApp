@@ -13,7 +13,7 @@ Cycle logs, check-ins, preferences, chat history, and Gemma inference all stay o
 ## Clone & open
 
 ```bash
-git clone https://github.com/YOUR_USERNAME/PeriodApp.git
+git clone https://github.com/mohammaddvi/PeriodApp.git
 cd PeriodApp
 xcodegen generate   # sync project.yml → Cycle.xcodeproj after pulling changes
 open Cycle.xcodeproj
