@@ -13,8 +13,8 @@ Cycle logs, check-ins, preferences, chat history, and Gemma inference all stay o
 ## Clone & open
 
 ```bash
-git clone https://github.com/mohammaddvi/PeriodApp.git
-cd PeriodApp
+git clone https://github.com/mohammaddvi/LuneApp.git
+cd LuneApp
 xcodegen generate   # sync project.yml → Cycle.xcodeproj after pulling changes
 open Cycle.xcodeproj
 ```
@@ -31,7 +31,7 @@ If you created this repo locally and need a remote:
 
 ```bash
 gh auth login
-gh repo create PeriodApp --private --source=. --remote=origin --push
+gh repo create LuneApp --private --source=. --remote=origin --push
 ```
 
 Use `--public` instead of `--private` if you want a public repository. The first push includes the app source, tests, privacy policy, and Xcode project — not on-device model weights (`.litertlm` files are gitignored).
