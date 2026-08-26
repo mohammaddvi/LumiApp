@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Support — MyLune</title>
+  <meta name="description" content="Get help with MyLune: export data, premium features, on-device AI, and app lock." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,560;1,9..40,400&family=Fraunces:ital,opsz,wght,SOFT,WONK@0,9..144,400;0,9..144,560;1,9..144,400;1,9..144,560&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="site-header">
+    <div class="wrap">
+      <a class="brand" href="index.html">MyLune</a>
+      <nav class="nav" aria-label="Primary">
+        <a href="support.html" aria-current="page">Support</a>
+        <a href="privacy.html">Privacy</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="wrap page">
+    <h1>Support</h1>
+    <p class="lede">We’re here to help with MyLune on iPhone.</p>
+
+    <section>
+      <h2>How to get help</h2>
+      <p>
+        Email us at
+        <a href="mailto:support@mylune.app">support@mylune.app</a>
+        with a short description of what you’re seeing. Include your iOS version and MyLune version (Settings → About) when you can.
+      </p>
+      <p>
+        We don’t have access to your cycle data — it’s local-first on your device — so screenshots of Settings (with personal details hidden) are often the most useful.
+      </p>
+    </section>
+
+    <section class="faq">
+      <h2>FAQ</h2>
+
+      <details>
+        <summary>How do I export or delete my data?</summary>
+        <p>
+          Open <strong>Settings</strong>. Use <strong>Export</strong> for JSON or CSV. Use <strong>Delete all data</strong> to wipe cycle logs on this iPhone. Deleting the app also removes local data unless you have a device backup.
+        </p>
+      </details>
+
+      <details>
+        <summary>What is MyLune Premium (Ask + Insights)?</summary>
+        <p>
+          Core period tracking stays free. Optional Premium unlocks <strong>Ask MyLune</strong> (on-device AI chat) and <strong>Insights</strong>. Manage or cancel the subscription in your Apple ID subscriptions.
+        </p>
+      </details>
+
+      <details>
+        <summary>Why does MyLune download a Gemma model?</summary>
+        <p>
+          Ask MyLune runs on your iPhone. When you choose <strong>Settings → Local AI → Download</strong>, the Gemma model is fetched from Hugging Face (litert-community). MyLune does not proxy that download or send your health logs to a MyLune server. You can remove the model later without deleting cycle data.
+        </p>
+      </details>
+
+      <details>
+        <summary>How does Face ID / Touch ID lock work?</summary>
+        <p>
+          Optional app lock uses Apple’s LocalAuthentication on device only. Biometrics never leave your iPhone. Unlock fails safely if Face ID or Touch ID isn’t available — you can turn the lock off in Settings after authenticating.
+        </p>
+      </details>
+
+      <details>
+        <summary>Is MyLune medical advice?</summary>
+        <p>
+          No. MyLune helps you notice patterns in your own cycle. It is not a medical device and does not diagnose, treat, or prevent any condition. Talk to a clinician for medical decisions.
+        </p>
+      </details>
+    </section>
+
+    <section>
+      <h2>Privacy</h2>
+      <p>
+        Read how MyLune handles data in our
+        <a href="privacy.html">Privacy Policy</a>.
+      </p>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="wrap">
+      <span>© 2026 MyLune</span>
+      <nav aria-label="Footer">
+        <a href="index.html">Home</a>
+        <a href="privacy.html">Privacy</a>
+      </nav>
+    </div>
+  </footer>
+</body>
+</html>

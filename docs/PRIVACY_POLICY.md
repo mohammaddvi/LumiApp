@@ -1,11 +1,11 @@
-# Lune Privacy Policy
+# MyLune Privacy Policy
 
-**Last updated:** August 25, 2026  
-**Contact:** support@lune.app
+**Last updated:** August 26, 2026  
+**Contact:** support@mylune.app
 
 ## Overview
 
-Lune is a local-first period and cycle tracker for iOS. This policy describes what the app stores, what may leave your device, and your choices.
+MyLune is a local-first period and cycle tracker for iOS. This policy describes what the app stores, what may leave your device, and your choices.
 
 ## What stays on your device
 
@@ -16,7 +16,7 @@ Lune is a local-first period and cycle tracker for iOS. This policy describes wh
 - Optional iMessage contact names and numbers you enter  
 - Optional on-device AI chat and downloaded Gemma model files  
 
-We do **not** operate a Lune cloud that receives your health logs.
+We do **not** operate a MyLune cloud that receives your health logs.
 
 ## What we do not do
 
@@ -27,9 +27,9 @@ We do **not** operate a Lune cloud that receives your health logs.
 
 ## Network use
 
-Tracking works offline. The only optional network feature is downloading the Gemma AI model from **Hugging Face** when you choose **Settings → Local AI → Download**. That connection goes directly to Hugging Face; Lune does not proxy it. Hugging Face may log standard connection metadata under their policy.
+Tracking works offline. The only optional network feature is downloading the Gemma AI model from **Hugging Face** when you choose **Settings → Local AI → Download**. That connection goes directly to Hugging Face; MyLune does not proxy it. Hugging Face may log standard connection metadata under their policy.
 
-iMessage reminders open Apple Messages with pre-filled text; you must tap Send. Lune cannot send messages silently.
+iMessage reminders open Apple Messages with pre-filled text; you must tap Send. MyLune cannot send messages silently.
 
 ## Security
 
@@ -44,7 +44,7 @@ Data is stored in the app sandbox using SwiftData. iOS Data Protection applies a
 
 ## Medical disclaimer
 
-Lune is not a medical device and does not diagnose or treat conditions. It helps you notice personal patterns only.
+MyLune is not a medical device and does not diagnose or treat conditions. It helps you notice personal patterns only.
 
 ## Children
 
@@ -56,4 +56,5 @@ We may update this policy when the app changes. Continued use after an update me
 
 ---
 
-Host this file at a public URL (e.g. `https://lune.app/privacy`) and enter that URL in **App Store Connect → App Information → Privacy Policy URL**.
+Public HTML: `https://mohammaddvi.github.io/LuneApp/privacy.html`  
+Enter that URL in **App Store Connect → App Information → Privacy Policy URL**.

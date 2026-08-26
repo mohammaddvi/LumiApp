@@ -1,8 +1,8 @@
-# Lune
+# MyLune
 
 Local-first, privacy-first period & cycle tracker for iOS. Named for the moon.
 
-Cycle logs, check-ins, preferences, chat history, and Gemma inference all stay on device. There is no Lune health cloud in this release.
+Cycle logs, check-ins, preferences, chat history, and Gemma inference all stay on device. There is no MyLune health cloud in this release.
 
 ## Requirements
 
@@ -19,7 +19,7 @@ xcodegen generate   # sync project.yml → Cycle.xcodeproj after pulling changes
 open Cycle.xcodeproj
 ```
 
-Run the **Cycle** scheme — the home-screen name and icon show as **Lune**.
+Run the **Cycle** scheme — the home-screen name and icon show as **MyLune**.
 
 ### Signing
 
@@ -42,7 +42,7 @@ Use `--public` instead of `--private` if you want a public repository. The first
 2. Tap **Download Gemma 4** (~2.6 GB; Wi‑Fi recommended)
 3. Use the **Ask** tab after the model loads
 
-You can also place a `.litertlm` file in **Files → On My iPhone → Lune → Models**.
+You can also place a `.litertlm` file in **Files → On My iPhone → MyLune → Models**.
 
 ## Production / App Store checklist
 
@@ -62,16 +62,16 @@ You can also place a `.litertlm` file in **Files → On My iPhone → Lune → M
 
 1. **Privacy Policy URL (required)**  
    Apple requires a **public HTTPS URL** in App Store Connect, even for local-only apps.  
-   - Host `docs/PRIVACY_POLICY.md` (GitHub Pages, your site, Notion public page, etc.)  
-   - Update `LuneLegal.privacyPolicyURL` in `Cycle/App/LuneLegal.swift` to match  
+   - Enable GitHub Pages from `docs/` (see `docs/README.md`)  
+   - URL: `https://mohammaddvi.github.io/LuneApp/privacy.html`  
    - Enter the same URL in **App Store Connect → App Information → Privacy Policy URL**
 
 2. **Support URL (required)**  
-   - Set up `https://…/support` or a mailto/support page  
-   - Update `LuneLegal.supportURL` and **App Store Connect → Support URL**
+   - URL: `https://mohammaddvi.github.io/LuneApp/support.html`  
+   - Matches `LuneLegal.supportURL` — paste into **App Store Connect → Support URL**
 
 3. **App Privacy questionnaire (App Store Connect)**  
-   For this build (no Lune server, no analytics):
+   For this build (no MyLune server, no analytics):
    - **Data Not Collected** — if you do not receive health data on your servers  
    - Disclose in the policy that optional Hugging Face downloads use their servers  
    - No tracking, no advertising
@@ -91,7 +91,7 @@ xcodegen generate
 xcodebuild -scheme Cycle -configuration Release \
   -destination 'generic/platform=iOS' \
   -allowProvisioningUpdates DEVELOPMENT_TEAM=23PXPK4JQ6 archive \
-  -archivePath build/Lune.xcarchive
+  -archivePath build/MyLune.xcarchive
 ```
 
 Then **Xcode → Organizer → Distribute App → App Store Connect**.
@@ -100,7 +100,7 @@ Then **Xcode → Organizer → Distribute App → App Store Connect**.
 
 ### Privacy policy — do you need one?
 
-**Yes.** App Store Connect requires a privacy policy URL for apps that handle health-related or personal data. Lune also includes an in-app copy under **Settings → Privacy policy** so users can read it without leaving the app.
+**Yes.** App Store Connect requires a privacy policy URL for apps that handle health-related or personal data. MyLune also includes an in-app copy under **Settings → Privacy policy** so users can read it without leaving the app.
 
 ## Architecture
 
@@ -108,7 +108,7 @@ Then **Xcode → Organizer → Distribute App → App Store Connect**.
 - **Schema versioning** — `LuneSchemaV1` + `LuneMigrationPlan` for lightweight migrations on future updates
 - **Automatic backups** — timestamped copy of the store before each launch (`Application Support/Cycle/Backups/`)
 - **Stable store path** — `Application Support/Cycle/cycle.store` (never rename after 1.0)
-- **Ask Lune** — on-device Gemma via LiteRT-LM
+- **Ask MyLune** — on-device Gemma via LiteRT-LM
 - **Notifications** — local only (UNUserNotificationCenter)
 
 ### Adding a schema change in a future update
