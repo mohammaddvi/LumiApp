@@ -20,9 +20,13 @@ Paste these exactly:
 |--------|-----|
 | **Privacy Policy URL** | `https://mohammaddvi.github.io/LuneApp/privacy.html` |
 | **Support URL** | `https://mohammaddvi.github.io/LuneApp/support.html` |
-| Marketing / website (optional) | `https://mohammaddvi.github.io/LuneApp/` |
+| **Marketing URL** | `https://github.com/mohammaddvi/LuneApp` |
+
+Do **not** use the bare repo URL for Privacy or Support — Apple needs readable HTML pages.
 
 In-app constants live in `Cycle/App/LuneLegal.swift` and should match the table above.
+
+**Source repo:** [github.com/mohammaddvi/LuneApp](https://github.com/mohammaddvi/LuneApp)
 
 ## Files
 

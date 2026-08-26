@@ -1,6 +1,6 @@
 import Foundation
 
-/// Legal copy and App Store URLs. Hosted on GitHub Pages (`docs/` → `main`).
+/// Legal copy and App Store URLs. Privacy/Support pages on GitHub Pages (`docs/` → `main`); marketing URL is the public repo.
 enum LuneLegal {
     static let appName = "MyLune"
     static let supportEmail = "support@mylune.app"
@@ -8,8 +8,8 @@ enum LuneLegal {
     static let privacyPolicyURL = URL(string: "https://mohammaddvi.github.io/LuneApp/privacy.html")!
     /// Public URL for App Store Connect “Support URL”.
     static let supportURL = URL(string: "https://mohammaddvi.github.io/LuneApp/support.html")!
-    /// Marketing landing (GitHub Pages site root).
-    static let marketingURL = URL(string: "https://mohammaddvi.github.io/LuneApp/")!
+    /// Marketing URL (App Store Connect) — public GitHub repository.
+    static let marketingURL = URL(string: "https://github.com/mohammaddvi/LuneApp")!
     static let lastUpdated = "August 26, 2026"
 
     static let medicalDisclaimer = """

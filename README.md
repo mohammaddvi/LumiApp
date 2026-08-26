@@ -64,27 +64,32 @@ You can also place a `.litertlm` file in **Files → On My iPhone → MyLune →
    Apple requires a **public HTTPS URL** in App Store Connect, even for local-only apps.  
    - Enable GitHub Pages from `docs/` (see `docs/README.md`)  
    - URL: `https://mohammaddvi.github.io/LuneApp/privacy.html`  
-   - Enter the same URL in **App Store Connect → App Information → Privacy Policy URL**
+   - Enter the same URL in **App Store Connect → App Information → Privacy Policy URL**  
+   - Do **not** use the bare GitHub repo URL here
 
 2. **Support URL (required)**  
    - URL: `https://mohammaddvi.github.io/LuneApp/support.html`  
    - Matches `LuneLegal.supportURL` — paste into **App Store Connect → Support URL**
 
-3. **App Privacy questionnaire (App Store Connect)**  
+3. **Marketing URL**  
+   - URL: `https://github.com/mohammaddvi/LuneApp`  
+   - Matches `LuneLegal.marketingURL`
+
+4. **App Privacy questionnaire (App Store Connect)**  
    For this build (no MyLune server, no analytics):
    - **Data Not Collected** — if you do not receive health data on your servers  
    - Disclose in the policy that optional Hugging Face downloads use their servers  
    - No tracking, no advertising
 
-4. **Age rating**  
+5. **Age rating**  
    Complete the questionnaire honestly (health / cycle tracking content).
 
-5. **Screenshots & metadata**  
+6. **Screenshots & metadata**  
    - 6.7" and 6.5" iPhone screenshots minimum  
    - Subtitle, description, keywords  
    - Mention: local-only, not medical advice, optional AI download
 
-6. **Archive & upload**
+7. **Archive & upload**
 
 ```bash
 xcodegen generate
@@ -96,7 +101,7 @@ xcodebuild -scheme Cycle -configuration Release \
 
 Then **Xcode → Organizer → Distribute App → App Store Connect**.
 
-7. **TestFlight** — internal test on device, then submit for review.
+8. **TestFlight** — internal test on device, then submit for review.
 
 ### Privacy policy — do you need one?
 
