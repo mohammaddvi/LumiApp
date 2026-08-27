@@ -59,10 +59,10 @@ struct OnboardingFlowView: View {
     private var welcomeStep: some View {
         VStack(alignment: .leading, spacing: 16) {
             Spacer()
-            Text("Lune")
+            Text("MyLune")
                 .font(.system(.largeTitle, design: .serif).weight(.medium))
                 .foregroundStyle(Color.cycleText)
-            Text("a few qs to personalize your lune — everything stays on this phone.")
+            Text("a few qs to personalize your mylune — everything stays on this phone.")
                 .font(.title3)
                 .foregroundStyle(Color.cycleSecondary)
             Text("no account. no ads. no data sold.")
@@ -79,7 +79,7 @@ struct OnboardingFlowView: View {
             Spacer()
             SectionHeader(
                 title: "Private by design",
-                subtitle: "Before any health data is saved, here’s how Lune works."
+                subtitle: "Before any health data is saved, here’s how MyLune works."
             )
             privacyRow(icon: "iphone", title: "On-device storage", body: "Periods, symptoms, and notes never leave this phone in the MVP.")
             privacyRow(icon: "lock.shield", title: "Optional app lock", body: "Protect the app with Face ID, Touch ID, or your passcode.")
@@ -110,7 +110,7 @@ struct OnboardingFlowView: View {
                     VStack(alignment: .leading, spacing: 4) {
                         Text("I know my typical cycle length")
                             .foregroundStyle(Color.cycleText)
-                        Text("Optional — used until Lune learns from your history.")
+                        Text("Optional — used until MyLune learns from your history.")
                             .font(.footnote)
                             .foregroundStyle(Color.cycleSecondary)
                     }

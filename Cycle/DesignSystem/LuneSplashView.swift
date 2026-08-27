@@ -22,9 +22,9 @@ struct LuneSplashView: View {
                     .opacity(revealed ? 1 : 0)
                     .offset(y: revealed ? 0 : -8)
 
-                Text("LUNE")
+                Text("MyLune")
                     .font(.system(.largeTitle, design: .serif).weight(.light))
-                    .tracking(14)
+                    .tracking(6)
                     .foregroundStyle(Color.cycleText)
                     .opacity(revealed ? 1 : 0)
                     .offset(y: revealed ? 0 : 10)
@@ -51,7 +51,7 @@ struct LuneSplashView: View {
             .padding(.horizontal, 36)
         }
         .accessibilityElement(children: .combine)
-        .accessibilityLabel("Lune. The moon has phases. So do you.")
+        .accessibilityLabel("MyLune. The moon has phases. So do you.")
         .onAppear { animateIn() }
     }
 

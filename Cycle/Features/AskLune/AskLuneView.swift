@@ -23,7 +23,7 @@ struct AskLuneView: View {
                 composer
             }
             .background(Color.cycleBackground.ignoresSafeArea(edges: .bottom))
-            .navigationTitle("Ask Lune")
+            .navigationTitle("Ask MyLune")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItemGroup(placement: .keyboard) {
@@ -73,7 +73,7 @@ struct AskLuneView: View {
                 .font(.footnote)
                 .foregroundStyle(Color.cycleSecondary)
             if case .modelMissing(let name) = ai.status {
-                Text("Download \(name) in Settings → Local AI, or add it under Files → On My iPhone → Lune → Models.")
+                Text("Download \(name) in Settings → Local AI, or add it under Files → On My iPhone → MyLune → Models.")
                     .font(.footnote)
                     .foregroundStyle(Color.cycleSecondary)
             }
@@ -132,11 +132,11 @@ struct AskLuneView: View {
 
     private var emptyState: some View {
         VStack(alignment: .leading, spacing: 12) {
-            Text("ask lune anything")
+            Text("ask mylune anything")
                 .font(.title3.weight(.semibold))
                 .foregroundStyle(Color.cycleText)
                 .accessibilityAddTraits(.isHeader)
-            Text("past questions stay on your phone as private context. chat clears when you leave the app — lune still remembers.")
+            Text("past questions stay on your phone as private context. chat clears when you leave the app — mylune still remembers.")
                 .font(.body)
                 .foregroundStyle(Color.cycleSecondary)
             FlowSuggestionRow(suggestions: [
@@ -184,7 +184,7 @@ struct AskLuneView: View {
     private func accessibilityLabel(for message: LocalChatMessage) -> String {
         switch message.role {
         case .user: "You: \(message.text)"
-        case .assistant: "Lune: \(message.text)"
+        case .assistant: "MyLune: \(message.text)"
         case .systemNotice: message.text
         }
     }
@@ -211,7 +211,7 @@ struct AskLuneView: View {
                 .cycleAccessibleTapTarget()
                 .disabled(!canSend)
                 .accessibilityLabel("Send")
-                .accessibilityHint(canSend ? "Sends your question to Lune" : "Enter a question to send")
+                .accessibilityHint(canSend ? "Sends your question to MyLune" : "Enter a question to send")
             }
             Text("Not medical advice. Grounded only in data stored on this device.")
                 .font(.caption2)

@@ -66,6 +66,11 @@ final class AppEnvironment {
             modelDownloader.refreshInstalledState()
             await premium.start()
             await syncPremiumEntitlement()
+            #if DEBUG
+            if AppStoreScreenshotMode.isEnabled {
+                await seedAppStoreScreenshotData()
+            }
+            #endif
         } catch {
             lastErrorMessage = "Couldn’t load local data."
         }
@@ -547,4 +552,90 @@ final class AppEnvironment {
     func isEstimatedOvulationDay(_ date: Date) -> Bool {
         estimatedOvulationDates.contains(date.startOfDay)
     }
+
+    #if DEBUG
+    /// Demo cycle history + premium for App Store screenshots / preview recording.
+    func seedAppStoreScreenshotData() async {
+        await deleteAllData()
+        PremiumEntitlementStore.debugOverride = true
+
+        var prefs = UserPreferences.default
+        prefs.hasCompletedOnboarding = true
+        prefs.typicalCycleLength = 28
+        prefs.experiencesPMS = true
+        prefs.typicalPeriodSymptoms = [.cramps, .fatigue]
+        prefs.typicalPMSSymptoms = [.cramps, .bloating, .mood]
+        prefs.appearanceMode = .light
+        prefs.biometricLockEnabled = false
+        do {
+            try await store.save(prefs)
+            preferences = prefs
+        } catch {
+            lastErrorMessage = "Couldn’t seed screenshot preferences."
+            return
+        }
+
+        // Log completed periods via the real logging path (28-day spacing).
+        let now = Date().startOfDay
+        let startsDaysAgo = [168, 140, 112, 84, 56, 28, 5]
+        for (index, daysAgo) in startsDaysAgo.enumerated() {
+            let start = now.addingDays(-daysAgo)
+            let isCurrent = index == startsDaysAgo.count - 1
+            let end = isCurrent ? start.addingDays(2) : start.addingDays(4)
+            if let message = await logPeriodRange(from: start, to: end, intensity: .medium) {
+                lastErrorMessage = message
+                return
+            }
+
+            if !isCurrent, index + 1 < startsDaysAgo.count {
+                let nextStart = now.addingDays(-startsDaysAgo[index + 1])
+                for before in 1...3 {
+                    let day = nextStart.addingDays(-before)
+                    do {
+                        try await store.upsertCheckIn(
+                            DailyCheckInRecord(
+                                id: UUID(),
+                                date: day,
+                                mood: before == 1 ? .low : .okay,
+                                energy: before == 1 ? .drained : .low,
+                                sleepQuality: .fair,
+                                symptoms: [
+                                    SymptomOccurrence(symptomType: .cramps, intensity: .moderate),
+                                    SymptomOccurrence(
+                                        symptomType: .bloating,
+                                        intensity: before == 1 ? .strong : .mild
+                                    ),
+                                ],
+                                note: before == 1 ? "soft day — need a rest" : nil
+                            )
+                        )
+                    } catch {
+                        lastErrorMessage = "Couldn’t seed screenshot check-ins."
+                        return
+                    }
+                }
+            }
+        }
+
+        do {
+            try await store.upsertCheckIn(
+                DailyCheckInRecord(
+                    id: UUID(),
+                    date: now,
+                    mood: .good,
+                    energy: .steady,
+                    sleepQuality: .good,
+                    symptoms: [],
+                    note: "feeling like me again"
+                )
+            )
+        } catch {
+            lastErrorMessage = "Couldn’t seed today’s check-in."
+            return
+        }
+
+        localAI.seedDemoConversationForScreenshots()
+        await refresh()
+    }
+    #endif
 }

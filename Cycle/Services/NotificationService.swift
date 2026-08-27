@@ -126,7 +126,7 @@ final class NotificationService {
                 minute: preferences.reminderMinute,
                 title: "Period window approaching",
                 body: wantsIMessage
-                    ? "Lune will open Messages so you can notify your people."
+                    ? "MyLune will open Messages so you can notify your people."
                     : "Your next period is likely soon. No pressure — log when you’re ready.",
                 category: wantsIMessage ? LuneNotificationID.autoMessageCategory : nil
             )
@@ -140,7 +140,7 @@ final class NotificationService {
                 minute: preferences.reminderMinute,
                 title: "PMS window may be near",
                 body: wantsIMessage
-                    ? "Lune will open Messages so you can notify your people."
+                    ? "MyLune will open Messages so you can notify your people."
                     : pmsBody(preferences: preferences),
                 category: wantsIMessage ? LuneNotificationID.autoMessageCategory : nil
             )

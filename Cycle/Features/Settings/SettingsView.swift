@@ -64,7 +64,7 @@ struct SettingsView: View {
         Section {
             if env.isPremium {
                 LabeledContent("Plan") {
-                    Text("Lune Premium")
+                    Text("MyLune Premium")
                         .foregroundStyle(Color.cycleSage)
                 }
                 Button("Manage subscription") {
@@ -77,13 +77,13 @@ struct SettingsView: View {
                     Text("Free plan")
                         .font(.headline)
                         .foregroundStyle(Color.cycleText)
-                    Text("Today, calendar, and settings. Upgrade for Ask Lune + Insights.")
+                    Text("Today, calendar, and settings. Upgrade for Ask MyLune + Insights.")
                         .font(.footnote)
                         .foregroundStyle(Color.cycleSecondary)
                 }
                 .padding(.vertical, 4)
 
-                Button("Upgrade to Lune Premium") {
+                Button("Upgrade to MyLune Premium") {
                     showPremiumPaywall = true
                 }
 
@@ -96,18 +96,20 @@ struct SettingsView: View {
             }
 
             #if DEBUG
-            Toggle("Premium (debug)", isOn: Binding(
-                get: { PremiumEntitlementStore.debugOverride },
-                set: { enabled in
-                    Task { await env.setPremiumForTesting(enabled) }
-                }
-            ))
+            if !AppStoreScreenshotMode.isEnabled {
+                Toggle("Premium (debug)", isOn: Binding(
+                    get: { PremiumEntitlementStore.debugOverride },
+                    set: { enabled in
+                        Task { await env.setPremiumForTesting(enabled) }
+                    }
+                ))
+            }
             #endif
         } header: {
-            Text("Lune Premium")
+            Text("MyLune Premium")
         } footer: {
             if !env.isPremium {
-                Text("Premium unlocks Ask Lune (on-device AI) and Insights. Core tracking stays free.")
+                Text("Premium unlocks Ask MyLune (on-device AI) and Insights. Core tracking stays free.")
             }
         }
     }
@@ -277,7 +279,7 @@ struct SettingsView: View {
                         var prefs = env.preferences
                         prefs.biometricLockEnabled = enabled
                         if enabled {
-                            let ok = await env.appLock.unlock(reason: "Enable app lock for Lune")
+                            let ok = await env.appLock.unlock(reason: "Enable app lock for MyLune")
                             guard ok else { return }
                         }
                         await env.updatePreferences(prefs)
@@ -416,7 +418,7 @@ struct SettingsView: View {
         } header: {
             Text("iMessage")
         } footer: {
-            Text("With automatic reminders on, Lune opens Messages at reminder time with your saved numbers filled in. iOS still requires one tap on Send — apps can’t send iMessage silently.")
+            Text("With automatic reminders on, MyLune opens Messages at reminder time with your saved numbers filled in. iOS still requires one tap on Send — apps can’t send iMessage silently.")
         }
     }
 

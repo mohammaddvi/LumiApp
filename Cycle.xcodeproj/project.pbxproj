@@ -37,6 +37,7 @@
 		7C68DAB5BC871716D0421D65 /* LoggingViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51BCC6B85268D6ADFEF2B289 /* LoggingViews.swift */; };
 		7C69CF0DA68BFA98AF61CC50 /* TodaysLuneCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88C31862A02877BF82D9DF8F /* TodaysLuneCard.swift */; };
 		80F10B2C5D499B588574C1F7 /* AppInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2CF923D10870B8F0C6C825B0 /* AppInfo.swift */; };
+		84C5A19949D23237CEF05B8F /* AppStoreScreenshotMode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 209EFD2843C06538E10375A2 /* AppStoreScreenshotMode.swift */; };
 		8E35E496D9EF33A9F0220D95 /* PremiumService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49C7B368BEB69E1DC5F4BA59 /* PremiumService.swift */; };
 		8FD289F02F14A3725A93C9BB /* InsightsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F828933BEAE5330A0695585B /* InsightsView.swift */; };
 		92C989B9B96690B0AE29B063 /* ExportService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DDD6FE11123E70E4ABE26F4 /* ExportService.swift */; };
@@ -81,6 +82,7 @@
 		17B4B22017BAC7E457C99BE7 /* SwiftDataModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwiftDataModels.swift; sourceTree = "<group>"; };
 		1BCBDA430784D2D33170D432 /* DomainTypes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DomainTypes.swift; sourceTree = "<group>"; };
 		1CFBBBDF000C046E4F3E36AB /* AppLockService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppLockService.swift; sourceTree = "<group>"; };
+		209EFD2843C06538E10375A2 /* AppStoreScreenshotMode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppStoreScreenshotMode.swift; sourceTree = "<group>"; };
 		2967ED9502C44700E686B7E7 /* LunePhase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LunePhase.swift; sourceTree = "<group>"; };
 		2CF923D10870B8F0C6C825B0 /* AppInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppInfo.swift; sourceTree = "<group>"; };
 		37AF56D84BE191C1E0B1BC5F /* CycleDataStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CycleDataStore.swift; sourceTree = "<group>"; };
@@ -195,6 +197,7 @@
 			children = (
 				986339F0EC1A362FF37CDF72 /* AppEnvironment.swift */,
 				2CF923D10870B8F0C6C825B0 /* AppInfo.swift */,
+				209EFD2843C06538E10375A2 /* AppStoreScreenshotMode.swift */,
 				8D80A6165646EFFC1BA44524 /* CycleApp.swift */,
 				96E41B85C90F82BD519F5A31 /* LuneLegal.swift */,
 			);
@@ -521,6 +524,7 @@
 				25A6AA1FE3854FF0199EAEBA /* AppEnvironment.swift in Sources */,
 				80F10B2C5D499B588574C1F7 /* AppInfo.swift in Sources */,
 				595B6583469FB16D3082ABF1 /* AppLockService.swift in Sources */,
+				84C5A19949D23237CEF05B8F /* AppStoreScreenshotMode.swift in Sources */,
 				AC68E906193DC8411115CFF8 /* AskLuneView.swift in Sources */,
 				328627DE37025A0E938683B1 /* CalendarView.swift in Sources */,
 				3B1F5D0D1BCBEFF13F95C782 /* CycleApp.swift in Sources */,
@@ -669,7 +673,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = app.lune.tracker.tests;
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Lune.app/Lune";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/MyLune.app/MyLune";
 			};
 			name = Release;
 		};
@@ -746,7 +750,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = app.lune.tracker.tests;
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Lune.app/Lune";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/MyLune.app/MyLune";
 			};
 			name = Debug;
 		};
@@ -758,17 +762,17 @@
 				CODE_SIGN_ENTITLEMENTS = Cycle/Cycle.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 2;
 				DEVELOPMENT_TEAM = 23PXPK4JQ6;
 				ENABLE_PREVIEWS = YES;
 				ENABLE_TESTABILITY = NO;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_KEY_CFBundleDisplayName = Lune;
+				INFOPLIST_KEY_CFBundleDisplayName = MyLune;
 				INFOPLIST_KEY_ITSAppUsesNonExemptEncryption = NO;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.healthcare-fitness";
 				INFOPLIST_KEY_LSSupportsOpeningDocumentsInPlace = YES;
-				INFOPLIST_KEY_NSFaceIDUsageDescription = "Lune uses Face ID to protect your health data when app lock is enabled.";
-				INFOPLIST_KEY_NSUserNotificationsUsageDescription = "Lune sends optional local reminders about your cycle. No ads or tracking.";
+				INFOPLIST_KEY_NSFaceIDUsageDescription = "MyLune uses Face ID to protect your health data when app lock is enabled.";
+				INFOPLIST_KEY_NSUserNotificationsUsageDescription = "MyLune sends optional local reminders about your cycle. No ads or tracking.";
 				INFOPLIST_KEY_UIFileSharingEnabled = YES;
 				INFOPLIST_KEY_UILaunchScreen_BackgroundColor = LaunchBackground;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -781,7 +785,7 @@
 				MARKETING_VERSION = 1.0.0;
 				PRODUCT_BUNDLE_IDENTIFIER = app.lune.tracker;
 				PRODUCT_MODULE_NAME = Cycle;
-				PRODUCT_NAME = Lune;
+				PRODUCT_NAME = MyLune;
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -795,17 +799,17 @@
 				CODE_SIGN_ENTITLEMENTS = Cycle/Cycle.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 2;
 				DEVELOPMENT_TEAM = 23PXPK4JQ6;
 				ENABLE_PREVIEWS = YES;
 				ENABLE_TESTABILITY = YES;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_KEY_CFBundleDisplayName = Lune;
+				INFOPLIST_KEY_CFBundleDisplayName = MyLune;
 				INFOPLIST_KEY_ITSAppUsesNonExemptEncryption = NO;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.healthcare-fitness";
 				INFOPLIST_KEY_LSSupportsOpeningDocumentsInPlace = YES;
-				INFOPLIST_KEY_NSFaceIDUsageDescription = "Lune uses Face ID to protect your health data when app lock is enabled.";
-				INFOPLIST_KEY_NSUserNotificationsUsageDescription = "Lune sends optional local reminders about your cycle. No ads or tracking.";
+				INFOPLIST_KEY_NSFaceIDUsageDescription = "MyLune uses Face ID to protect your health data when app lock is enabled.";
+				INFOPLIST_KEY_NSUserNotificationsUsageDescription = "MyLune sends optional local reminders about your cycle. No ads or tracking.";
 				INFOPLIST_KEY_UIFileSharingEnabled = YES;
 				INFOPLIST_KEY_UILaunchScreen_BackgroundColor = LaunchBackground;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -818,7 +822,7 @@
 				MARKETING_VERSION = 1.0.0;
 				PRODUCT_BUNDLE_IDENTIFIER = app.lune.tracker;
 				PRODUCT_MODULE_NAME = Cycle;
-				PRODUCT_NAME = Lune;
+				PRODUCT_NAME = MyLune;
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};

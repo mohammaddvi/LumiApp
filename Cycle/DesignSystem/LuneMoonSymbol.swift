@@ -34,7 +34,7 @@ struct LuneMoonIcon: View {
     }
 }
 
-/// Hero moon for Today's Lune.
+/// Hero moon for Today's MyLune.
 struct LuneMoonCompanion: View {
     var phase: LunePhase
     var isSoftDays = false

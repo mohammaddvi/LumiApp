@@ -4,7 +4,7 @@ import OSLog
 
 enum LocalAIPrompting {
     static let systemInstructions = """
-    You are Lune’s on-device companion for menstrual cycle tracking.
+    You are MyLune’s on-device companion for menstrual cycle tracking.
     You run fully offline using Gemma. The user’s health data never leaves this iPhone.
 
     Rules:
@@ -125,6 +125,9 @@ final class LocalAIController {
     }
 
     func refreshModelAvailability() {
+        #if DEBUG
+        if AppStoreScreenshotMode.isEnabled, case .ready = status { return }
+        #endif
         if case .ready = status { return }
         if case .loading = status { return }
         if GemmaModelLocator.resolveModelURL() == nil {
@@ -135,6 +138,9 @@ final class LocalAIController {
     }
 
     func prepare() async {
+        #if DEBUG
+        if AppStoreScreenshotMode.isEnabled, case .ready = status { return }
+        #endif
         if case .ready = status, await runtime.isReady { return }
         if case .loading = status { return }
 
@@ -176,9 +182,29 @@ final class LocalAIController {
 
     /// Dismisses the on-screen turn without erasing memory.
     func dismissVisibleSession() {
+        #if DEBUG
+        if AppStoreScreenshotMode.isEnabled { return }
+        #endif
         guard !isGenerating else { return }
         sessionMessages.removeAll()
     }
+
+    #if DEBUG
+    /// Sample Ask MyLune thread for App Store screenshots (no on-device model required).
+    func seedDemoConversationForScreenshots() {
+        status = .ready(modelName: "Gemma 4 (on-device)")
+        sessionMessages = [
+            LocalChatMessage(
+                role: .user,
+                text: "I’m in my Glow phase — any gentle tips for energy?"
+            ),
+            LocalChatMessage(
+                role: .assistant,
+                text: "Glow days can feel brighter. Your recent logs show steadier energy after Reset — keep meals regular, hydrate, and save the hard workouts for when energy is already up. This isn’t medical advice; just pattern notes from what’s on this device."
+            ),
+        ]
+    }
+    #endif
 
     func send(userText: String, context: LocalHealthContext) async {
         let trimmed = userText.trimmingCharacters(in: .whitespacesAndNewlines)
@@ -264,7 +290,7 @@ final class LocalAIController {
         memory
             .filter { $0.role == .user || $0.role == .assistant }
             .map { message in
-                let label = message.role == .user ? "User" : "Lune"
+                let label = message.role == .user ? "User" : "MyLune"
                 let text = clipped(message.text)
                 return "\(label): \(text)"
             }

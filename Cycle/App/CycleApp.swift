@@ -55,7 +55,7 @@ struct CycleApp: App {
             return (
                 nil,
                 PersistenceFailure.openFailed(
-                    message: "Lune couldn’t open your local cycle database.",
+                    message: "MyLune couldn’t open your local cycle database.",
                     backupAvailable: StoreBackupService.hasAnyBackup()
                 )
             )
@@ -113,6 +113,13 @@ struct RootView: View {
     /// Keeps the splash up long enough to read — at least `LuneSplashTiming.minimumDuration`
     /// even when bootstrap finishes instantly.
     private func dismissSplashWhenReady() async {
+        #if DEBUG
+        if AppStoreScreenshotMode.isEnabled, AppStoreScreenshotMode.screen == .splash {
+            // Hold splash indefinitely for the splash screenshot.
+            return
+        }
+        #endif
+
         let started = ContinuousClock.now
 
         while env.isLoading {
@@ -120,7 +127,12 @@ struct RootView: View {
         }
 
         let elapsed = started.duration(to: .now)
-        let remaining = LuneSplashTiming.minimumDuration - elapsed
+        #if DEBUG
+        let minimum: Duration = AppStoreScreenshotMode.isEnabled ? .milliseconds(400) : LuneSplashTiming.minimumDuration
+        #else
+        let minimum = LuneSplashTiming.minimumDuration
+        #endif
+        let remaining = minimum - elapsed
         if remaining > .zero {
             try? await Task.sleep(for: remaining)
         }
@@ -140,7 +152,7 @@ struct AppLockView: View {
                     .font(.largeTitle)
                     .foregroundStyle(Color.cycleSage)
                     .accessibilityHidden(true)
-                Text("Lune is locked")
+                Text("MyLune is locked")
                     .font(.title2.weight(.semibold))
                     .foregroundStyle(Color.cycleText)
                 Text("Use \(env.appLock.biometryLabel) or your device passcode to open your health data.")
@@ -164,8 +176,25 @@ struct AppLockView: View {
 
 struct MainTabView: View {
     @Environment(AppEnvironment.self) private var env
+    #if DEBUG
+    @State private var selectedTab: AppStoreScreenshotMode.Screen = AppStoreScreenshotMode.isEnabled
+        ? AppStoreScreenshotMode.screen
+        : .today
+    #endif
 
     var body: some View {
+        #if DEBUG
+        if AppStoreScreenshotMode.isEnabled {
+            screenshotTabView
+        } else {
+            standardTabView
+        }
+        #else
+        standardTabView
+        #endif
+    }
+
+    private var standardTabView: some View {
         TabView {
             Tab("Today", systemImage: LuneSymbolName.moon) {
                 NavigationStack { TodayView() }
@@ -188,4 +217,32 @@ struct MainTabView: View {
         .tint(Color.cycleSage)
         .id(env.isPremium)
     }
+
+    #if DEBUG
+    private var screenshotTabView: some View {
+        TabView(selection: $selectedTab) {
+            Tab("Today", systemImage: LuneSymbolName.moon, value: .today) {
+                NavigationStack { TodayView() }
+            }
+            Tab("Calendar", systemImage: "calendar", value: .calendar) {
+                NavigationStack { CalendarView() }
+            }
+            Tab("Ask", systemImage: "sparkles", value: .ask) {
+                NavigationStack { AskLuneView(ai: env.localAI) }
+            }
+            Tab("Insights", systemImage: "chart.line.uptrend.xyaxis", value: .insights) {
+                NavigationStack { InsightsView() }
+            }
+            Tab("Settings", systemImage: "gearshape", value: .settings) {
+                NavigationStack { SettingsView() }
+            }
+        }
+        .tint(Color.cycleSage)
+        .onAppear {
+            if selectedTab == .splash {
+                selectedTab = .today
+            }
+        }
+    }
+    #endif
 }

@@ -9,7 +9,7 @@ struct TodaysLuneCard: View {
             VStack(alignment: .leading, spacing: 16) {
                 HStack(alignment: .top, spacing: 16) {
                     VStack(alignment: .leading, spacing: 6) {
-                        LuneSymbolCaption(symbol: LuneSymbolName.sparkles, title: "today's lune")
+                        LuneSymbolCaption(symbol: LuneSymbolName.sparkles, title: "today's mylune")
                             .accessibilityAddTraits(.isHeader)
 
                         Label {

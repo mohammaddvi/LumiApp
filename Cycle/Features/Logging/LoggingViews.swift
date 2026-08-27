@@ -76,7 +76,7 @@ struct QuickCheckInView: View {
                 }
 
                 VStack(alignment: .leading, spacing: 10) {
-                    Text("lune notes ☁️")
+                    Text("mylune notes ☁️")
                         .font(.headline)
                         .foregroundStyle(Color.cycleText)
                         .accessibilityAddTraits(.isHeader)
@@ -104,7 +104,7 @@ struct QuickCheckInView: View {
                         }
                     }
 
-                    TextField("hey lune, today i feel…", text: $note, axis: .vertical)
+                    TextField("hey mylune, today i feel…", text: $note, axis: .vertical)
                         .lineLimit(3...6)
                         .padding(12)
                         .background(Color.cycleSurface)

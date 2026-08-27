@@ -1,7 +1,7 @@
 import Foundation
 import StoreKit
 
-/// StoreKit 2 entitlement checks for Lune Premium.
+/// StoreKit 2 entitlement checks for MyLune Premium.
 @MainActor
 @Observable
 final class PremiumService {

@@ -162,7 +162,7 @@ struct TodayView: View {
                     }
                 } else {
                     Label {
-                        Text("log a few cycles — lune learns your rhythm.")
+                        Text("log a few cycles — mylune learns your rhythm.")
                             .foregroundStyle(Color.cycleSecondary)
                     } icon: {
                         LuneSymbolIcon(
@@ -190,7 +190,7 @@ struct TodayView: View {
                 .accessibilityAddTraits(.isHeader)
 
                 Label {
-                    Text("quick vibe check — mood, signals, lune note.")
+                    Text("quick vibe check — mood, signals, mylune note.")
                         .foregroundStyle(Color.cycleSecondary)
                 } icon: {
                     LuneSymbolIcon(
@@ -278,7 +278,7 @@ struct TodayView: View {
         CycleCard {
             VStack(alignment: .leading, spacing: 12) {
                 LuneSymbolCaption(symbol: LuneSymbolName.pattern, title: "pattern insights")
-                Text("spot trends in your cycle with Lune Premium.")
+                Text("spot trends in your cycle with MyLune Premium.")
                     .font(.subheadline)
                     .foregroundStyle(Color.cycleSecondary)
                 Button("Unlock Insights") {

@@ -4,7 +4,7 @@ import Foundation
 enum LuneVoice {
     static func resetPrediction(daysUntil: Int?) -> (headline: String, subline: String) {
         guard let daysUntil else {
-            return ("new cycle incoming", "log a few resets and lune learns your rhythm.")
+            return ("new cycle incoming", "log a few resets and mylune learns your rhythm.")
         }
         switch daysUntil {
         case ..<0:

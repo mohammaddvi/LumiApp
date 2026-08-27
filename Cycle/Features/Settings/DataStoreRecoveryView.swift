@@ -24,7 +24,7 @@ struct DataStoreRecoveryView: View {
                 .fixedSize(horizontal: false, vertical: true)
 
             if case .openFailed(_, let backupAvailable) = failure, backupAvailable {
-                Text("Lune saved an automatic backup before this launch. Contact support if retry doesn’t work — your history may still be on this iPhone.")
+                Text("MyLune saved an automatic backup before this launch. Contact support if retry doesn’t work — your history may still be on this iPhone.")
                     .font(.footnote)
                     .foregroundStyle(Color.cycleSecondary)
             }
@@ -32,7 +32,7 @@ struct DataStoreRecoveryView: View {
             Button("Try again", action: onRetry)
                 .buttonStyle(PrimaryButtonStyle())
 
-            Link(destination: URL(string: "mailto:\(LuneLegal.supportEmail)?subject=Lune%20data%20recovery")!) {
+            Link(destination: URL(string: "mailto:\(LuneLegal.supportEmail)?subject=MyLune%20data%20recovery")!) {
                 Label("Contact support", systemImage: "envelope")
             }
             .font(.subheadline.weight(.semibold))

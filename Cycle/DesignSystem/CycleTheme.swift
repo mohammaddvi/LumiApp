@@ -10,7 +10,7 @@ extension AppearanceMode {
     }
 }
 
-/// Lune palette — cream · white · light sage green.
+/// MyLune palette — cream · white · light sage green.
 /// Semantic tokens (`cycleCoral`, etc.) stay for call-site stability but map into this family.
 enum CyclePalette {
     // MARK: Light
