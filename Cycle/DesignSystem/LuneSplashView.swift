@@ -1,84 +1,81 @@
 import SwiftUI
 
 enum LuneSplashTiming {
-    /// Minimum time from launch before transitioning to the app (~1s fade-in + ~2s to read).
+    /// Minimum time from launch before transitioning to the app (~1s reveal + ~2s to enjoy it).
     static let minimumDuration: Duration = .seconds(3)
-    static let reveal: TimeInterval = 0.9
 }
 
+/// Launch splash: Lumi pops in on the fantasy sky with a little sparkle burst and introduces herself.
 struct LuneSplashView: View {
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
-    @State private var revealed = false
+    @State private var lumiVisible = false
+    @State private var textVisible = false
+    @State private var burst = 0
 
     var body: some View {
         ZStack {
-            Color.cycleBackground.ignoresSafeArea()
+            FantasySkyBackground()
 
             VStack(spacing: 0) {
                 Spacer()
 
-                MoonPhaseStrip()
-                    .padding(.bottom, 28)
-                    .opacity(revealed ? 1 : 0)
-                    .offset(y: revealed ? 0 : -8)
+                ZStack {
+                    Circle()
+                        .fill(Color.white.opacity(0.45))
+                        .frame(width: 230, height: 230)
+                        .blur(radius: 40)
+                    LumiView(feeling: nil, phase: nil, size: 190)
+                        .scaleEffect(lumiVisible ? 1 : 0.6, anchor: .bottom)
+                        .opacity(lumiVisible ? 1 : 0)
+                }
+                .overlay {
+                    MagicBurst(trigger: burst)
+                        .frame(width: 300, height: 300)
+                        .allowsHitTesting(false)
+                }
 
-                Text("MyLune")
-                    .font(.system(.largeTitle, design: .serif).weight(.light))
-                    .tracking(6)
+                Text("Lumi")
+                    .font(.system(size: 46, weight: .bold, design: .rounded))
                     .foregroundStyle(Color.cycleText)
-                    .opacity(revealed ? 1 : 0)
-                    .offset(y: revealed ? 0 : 10)
-
-                Rectangle()
-                    .fill(Color.cycleSage.opacity(0.55))
-                    .frame(width: 28, height: 1)
-                    .padding(.top, 22)
-                    .opacity(revealed ? 1 : 0)
+                    .padding(.top, 10)
+                    .opacity(textVisible ? 1 : 0)
+                    .offset(y: textVisible ? 0 : 10)
 
                 VStack(spacing: 4) {
-                    Text("the moon has phases.")
-                    Text("so do you.")
+                    Text("Hi, I'm Lumi!")
+                    Text("I'll be with you through every phase.")
                 }
-                .font(.system(.subheadline, design: .serif))
+                .font(.system(.body, design: .rounded))
                 .foregroundStyle(Color.cycleSecondary)
                 .multilineTextAlignment(.center)
-                .padding(.top, 18)
-                .opacity(revealed ? 1 : 0)
-                .offset(y: revealed ? 0 : 8)
+                .padding(.top, 10)
+                .opacity(textVisible ? 1 : 0)
+                .offset(y: textVisible ? 0 : 8)
 
+                Spacer()
                 Spacer()
             }
             .padding(.horizontal, 36)
         }
         .accessibilityElement(children: .combine)
-        .accessibilityLabel("MyLune. The moon has phases. So do you.")
-        .onAppear { animateIn() }
+        .accessibilityLabel("Lumi. Hi, I'm Lumi! I'll be with you through every phase.")
+        .task { await reveal() }
     }
 
-    private func animateIn() {
+    private func reveal() async {
         guard !reduceMotion else {
-            revealed = true
+            lumiVisible = true
+            textVisible = true
             return
         }
-        withAnimation(.easeOut(duration: LuneSplashTiming.reveal)) {
-            revealed = true
+        withAnimation(.spring(response: 0.55, dampingFraction: 0.7)) {
+            lumiVisible = true
         }
-    }
-}
-
-/// Splash moon arc using SF Symbols.
-private struct MoonPhaseStrip: View {
-    var body: some View {
-        HStack(spacing: 14) {
-            ForEach(Array(LuneMoonSymbol.splashSequence.enumerated()), id: \.offset) { index, symbol in
-                LuneMoonIcon(
-                    symbolName: symbol,
-                    pointSize: index == 2 ? 22 : 16
-                )
-                .opacity(index == 2 ? 1 : 0.5)
-            }
+        try? await Task.sleep(for: .milliseconds(350))
+        burst += 1
+        withAnimation(.easeOut(duration: 0.6)) {
+            textVisible = true
         }
-        .accessibilityHidden(true)
     }
 }
 

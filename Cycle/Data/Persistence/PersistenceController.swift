@@ -83,6 +83,6 @@ enum PersistenceController {
         if let failure = error as? PersistenceFailure {
             return failure.userMessage
         }
-        return "MyLune couldn’t open your local cycle database. Your last automatic backup is kept on this device."
+        return "Lumi couldn’t open your local cycle database. Your last automatic backup is kept on this device."
     }
 }

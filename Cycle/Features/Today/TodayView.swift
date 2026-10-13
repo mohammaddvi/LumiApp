@@ -1,291 +1,106 @@
 import SwiftUI
 
+/// Home: Lumi holds this month's calendar and shows today's feeling, logged or guessed.
+/// Tapping Lumi opens the feeling check-in.
 struct TodayView: View {
     @Environment(AppEnvironment.self) private var env
-    @State private var showPeriodLog = false
-    @State private var showCheckIn = false
-    @State private var showPremiumPaywall = false
+    @Environment(\.isSplashFinished) private var isSplashFinished
+    @State private var showFeelingSheet = false
+    /// Bumped after each successful log to fire Lumi's sparkle burst and the success haptic.
+    @State private var logCount = 0
+    @State private var speech = LumiSpeech()
+    /// Day Lumi last asked how you feel (yyyy-MM-dd), so she asks at most once a day.
+    @AppStorage("lumi.lastQuestionDay") private var lastQuestionDay = ""
 
-    private var dateText: String {
-        Date.now.formatted(.dateTime.weekday(.wide).month(.wide).day())
-    }
-
-    private var todayCheckIn: DailyCheckInRecord? {
-        env.checkIn(on: .now)
-    }
+    /// Keeps the header text clear of Lumi, who peeks over the calendar's top-right corner.
+    private static let lumiRoom: CGFloat = 164
 
     var body: some View {
-        ScrollView {
-            VStack(alignment: .leading, spacing: 16) {
-                if let lune = env.todaysLune {
-                    TodaysLuneCard(
-                        snapshot: lune,
-                        dateText: dateText
-                    )
-                } else {
-                    welcomeCard
-                }
-                resetPredictionCard
-                quickCheckInCard
-                if env.isPremium {
-                    insightCard
-                } else {
-                    premiumInsightTeaser
-                }
+        CalendarView(
+            title: LuneVoice.greeting(hour: Calendar.current.component(.hour, from: .now)),
+            lumiCelebration: logCount,
+            lumiSpeech: speech,
+            onLumiTap: {
+                speech.dismiss()
+                showFeelingSheet = true
             }
-            .padding(20)
-            .padding(.bottom, 72)
+        ) {
+            header
+                .opacity(speech.text == nil ? 1 : 0)
+                .animation(.easeOut(duration: 0.2), value: speech.text == nil)
         }
-        .background(Color.cycleBackground.ignoresSafeArea())
-        .navigationTitle("Today")
-        .toolbar {
-            ToolbarItem(placement: .topBarTrailing) {
-                Button {
-                    showPeriodLog = true
-                } label: {
-                    Label("Log reset", systemImage: "plus.circle.fill")
+        .sensoryFeedback(.success, trigger: logCount)
+        .task(id: isSplashFinished) {
+            await askAboutFeelingIfNeeded()
+        }
+        .sheet(isPresented: $showFeelingSheet) {
+            NavigationStack {
+                FeelingCheckInSheet(guess: env.feelingForecast?.feeling) {
+                    logCount += 1
+                    replyToLoggedFeeling()
                 }
-                .accessibilityLabel("Log reset")
-            }
-        }
-        .safeAreaInset(edge: .bottom) {
-            Button {
-                showPeriodLog = true
-            } label: {
-                LuneMoonButtonLabel(title: "Log reset")
-            }
-            .buttonStyle(PrimaryButtonStyle())
-            .padding(.horizontal, 20)
-            .padding(.bottom, 8)
-            .background(Color.cycleSurface)
-        }
-        .sheet(isPresented: $showPeriodLog) {
-            NavigationStack { PeriodLogView() }
-        }
-        .sheet(isPresented: $showCheckIn) {
-            NavigationStack { QuickCheckInView() }
-        }
-        .sheet(isPresented: $showPremiumPaywall) {
-            PremiumPaywallView()
-        }
-    }
-
-    private var welcomeCard: some View {
-        CycleCard {
-            VStack(alignment: .leading, spacing: 10) {
-                Label {
-                    Text("hey. your cycle diary.")
-                        .font(.system(.title2, design: .serif).weight(.medium))
-                        .foregroundStyle(Color.cycleText)
-                } icon: {
-                    LuneSymbolIcon(
-                        name: LuneSymbolName.moon,
-                        style: .hierarchical(.cycleText),
-                        font: .title2
-                    )
-                }
-                .labelStyle(.titleAndIcon)
-                Text(LuneLexicon.tagline)
-                    .font(.body)
-                    .foregroundStyle(Color.cycleSecondary)
-                Text(LuneLexicon.subtitle)
-                    .font(.subheadline)
-                    .foregroundStyle(Color.cycleSecondary)
             }
         }
     }
 
-    private var resetPredictionCard: some View {
-        CycleCard {
-            VStack(alignment: .leading, spacing: 12) {
-                LuneSymbolCaption(
-                    symbol: LunePhase.reset.sfSymbolName,
-                    title: "next reset",
-                    multicolor: true
-                )
+    /// Once a day, after the splash, Lumi asks how you feel if nothing is logged yet.
+    private func askAboutFeelingIfNeeded() async {
+        let today = Date.now.formatted(.iso8601.year().month().day())
+        var force = false
+        #if DEBUG
+        force = ProcessInfo.processInfo.arguments.contains("-LumiAsks")
+        #endif
+        guard isSplashFinished, force || (env.todayFeeling == nil && lastQuestionDay != today) else { return }
+        try? await Task.sleep(for: .milliseconds(700))
+        guard !Task.isCancelled, force || env.todayFeeling == nil else { return }
+        lastQuestionDay = today
+        withAnimation(.spring(response: 0.4, dampingFraction: 0.75)) {
+            speech.say(LuneVoice.lumiAsksFeeling.randomElement() ?? LuneVoice.feelingPrompt, mood: env.feelingForecast?.feeling)
+        }
+    }
 
-                if let prediction = env.prediction {
-                    let copy = LuneVoice.resetPrediction(daysUntil: env.daysUntilPredictedReset)
-
-                    Text(copy.headline)
-                        .font(.system(.title3, design: .serif).weight(.medium))
-                        .foregroundStyle(Color.cycleText)
-                        .fixedSize(horizontal: false, vertical: true)
-
-                    Text(copy.subline)
-                        .font(.body)
-                        .foregroundStyle(Color.cycleSecondary)
-
-                    if let date = prediction.predictedDate {
-                        Label {
-                            Text(date.formatted(.dateTime.month(.abbreviated).day()))
-                                .foregroundStyle(Color.cycleSecondary)
-                        } icon: {
-                            LuneSymbolIcon(
-                                name: LuneSymbolName.calendar,
-                                style: .hierarchical(.cycleSecondary),
-                                font: .footnote.weight(.medium)
-                            )
-                        }
-                        .font(.footnote.weight(.medium))
-                        .labelStyle(.titleAndIcon)
-                    }
-
-                    if let ovulation = prediction.predictedOvulationDate {
-                        Label {
-                            Text(LuneVoice.glowPrediction(date: ovulation))
-                                .foregroundStyle(Color.cycleOvulation)
-                        } icon: {
-                            LuneSymbolIcon(
-                                name: LuneSymbolName.sparkles,
-                                style: .hierarchical(.cycleOvulation),
-                                font: .body.weight(.medium)
-                            )
-                        }
-                        .font(.body.weight(.medium))
-                        .labelStyle(.titleAndIcon)
-                    }
-
-                    if let lower = prediction.lowerBound, let upper = prediction.upperBound {
-                        Label {
-                            Text("\(lower.formatted(.dateTime.month(.abbreviated).day())) – \(upper.formatted(.dateTime.month(.abbreviated).day()))")
-                                .foregroundStyle(Color.cycleSecondary)
-                        } icon: {
-                            LuneSymbolIcon(
-                                name: LuneSymbolName.calendarRange,
-                                style: .hierarchical(.cycleSecondary),
-                                font: .footnote
-                            )
-                        }
-                        .font(.footnote)
-                        .labelStyle(.titleAndIcon)
-                    }
-                } else {
-                    Label {
-                        Text("log a few cycles — mylune learns your rhythm.")
-                            .foregroundStyle(Color.cycleSecondary)
-                    } icon: {
-                        LuneSymbolIcon(
-                            name: LuneSymbolName.book,
-                            style: .hierarchical(.cycleSecondary),
-                            font: .body
-                        )
-                    }
-                    .labelStyle(.titleAndIcon)
-                }
+    /// After a log, Lumi answers with a short line for that feeling.
+    private func replyToLoggedFeeling() {
+        Task {
+            // Let the sheet close first so the reply is seen.
+            try? await Task.sleep(for: .milliseconds(650))
+            guard let feeling = env.todayFeeling else { return }
+            withAnimation(.spring(response: 0.4, dampingFraction: 0.75)) {
+                speech.say(LuneVoice.lumiMessage(for: feeling), mood: feeling)
             }
         }
+    }
+
+    private var header: some View {
+        let logged = env.todayFeeling
+        let forecast = env.feelingForecast
+
+        return VStack(alignment: .leading, spacing: 6) {
+            if let logged {
+                feelingName(logged)
+            } else if let forecast {
+                feelingName(forecast.feeling)
+            } else {
+                Text(LuneVoice.lumiIntroTitle)
+                    .font(.system(.title2, design: .rounded).weight(.bold))
+                    .foregroundStyle(Color.cycleText)
+            }
+        }
+        .fixedSize(horizontal: false, vertical: true)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .padding(.trailing, Self.lumiRoom)
+        .animation(.smooth(duration: 0.25), value: logged)
         .accessibilityElement(children: .combine)
     }
 
-    private var quickCheckInCard: some View {
-        CycleCard {
-            VStack(alignment: .leading, spacing: 12) {
-                LuneSymbolCaption(
-                    symbol: LuneSymbolName.vibe,
-                    title: "how are we feeling?",
-                    font: .headline,
-                    color: .cycleText
-                )
-                .accessibilityAddTraits(.isHeader)
-
-                Label {
-                    Text("quick vibe check — mood, signals, mylune note.")
-                        .foregroundStyle(Color.cycleSecondary)
-                } icon: {
-                    LuneSymbolIcon(
-                        name: LuneSymbolName.sparkles,
-                        style: .hierarchical(.cycleSecondary),
-                        font: .subheadline
-                    )
-                }
-                .font(.subheadline)
-                .labelStyle(.titleAndIcon)
-
-                TodayVibePreview()
-
-                Button {
-                    showCheckIn = true
-                } label: {
-                    Label(LuneLexicon.checkIn, systemImage: LuneSymbolName.vibe)
-                }
-                    .buttonStyle(PrimaryButtonStyle(filled: false))
-
-                if let checkIn = todayCheckIn {
-                    let summary = checkIn.todaySummary
-                    if !summary.isEmpty {
-                        Label {
-                            Text(summary)
-                                .foregroundStyle(Color.cycleSage)
-                        } icon: {
-                            LuneSymbolIcon(
-                                name: LuneSymbolName.checkmark,
-                                style: .accent,
-                                font: .footnote.weight(.medium)
-                            )
-                        }
-                        .font(.footnote.weight(.medium))
-                        .labelStyle(.titleAndIcon)
-                    }
-                }
-
-                if env.preferences.iMessageRemindersEnabled,
-                   !env.preferences.iMessageContacts.isEmpty {
-                    Button {
-                        env.queueAutomaticIMessage(kind: .periodClose)
-                    } label: {
-                        Label("Message someone", systemImage: LuneSymbolName.message)
-                    }
-                    .buttonStyle(PrimaryButtonStyle(filled: false))
-                }
-            }
-        }
+    private func feelingName(_ feeling: Feeling) -> some View {
+        Text(feeling.displayName)
+            .font(.system(.title2, design: .rounded).weight(.bold))
+            .foregroundStyle(Color.cycleText)
     }
+}
 
-    @ViewBuilder
-    private var insightCard: some View {
-        if let insight = env.insights.first {
-            CycleCard {
-                VStack(alignment: .leading, spacing: 8) {
-                    Text(LuneVoice.insightHeader(for: insight))
-                        .font(.subheadline.weight(.semibold))
-                        .foregroundStyle(Color.cycleSecondary)
-                    LuneSymbolCaption(
-                        symbol: LuneSymbolName.lightbulb,
-                        title: LuneVoice.insightTitle(insight.title),
-                        font: .headline,
-                        color: .cycleText
-                    )
-                    Text(insight.body)
-                        .font(.subheadline)
-                        .foregroundStyle(Color.cycleSecondary)
-                    Text(insight.evidence)
-                        .font(.footnote)
-                        .foregroundStyle(Color.cycleSecondary)
-                    LuneSymbolCaption(
-                        symbol: LuneSymbolName.medical,
-                        title: "your patterns — not a diagnosis.",
-                        font: .caption,
-                        color: .cycleSecondary
-                    )
-                }
-            }
-            .accessibilityElement(children: .combine)
-        }
-    }
-
-    private var premiumInsightTeaser: some View {
-        CycleCard {
-            VStack(alignment: .leading, spacing: 12) {
-                LuneSymbolCaption(symbol: LuneSymbolName.pattern, title: "pattern insights")
-                Text("spot trends in your cycle with MyLune Premium.")
-                    .font(.subheadline)
-                    .foregroundStyle(Color.cycleSecondary)
-                Button("Unlock Insights") {
-                    showPremiumPaywall = true
-                }
-                .buttonStyle(PrimaryButtonStyle(filled: false))
-            }
-        }
-    }
+#Preview {
+    NavigationStack { TodayView() }
+        .environment(AppEnvironment.preview())
 }

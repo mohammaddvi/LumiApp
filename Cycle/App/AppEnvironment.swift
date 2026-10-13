@@ -27,8 +27,16 @@ final class AppEnvironment {
     /// When set, UI presents Messages with recipients/body already filled.
     var pendingIMessageDraft: PendingIMessageDraft?
 
+    #if DEBUG
+    /// Observable mirror of `PremiumEntitlementStore.debugOverride` so toggling it refreshes the UI.
+    private(set) var debugPremiumOverride = PremiumEntitlementStore.debugOverride
+    #endif
+
     var isPremium: Bool {
-        PremiumEntitlementStore.resolvedEntitlement(storeKitEntitled: premium.hasEntitlement)
+        #if DEBUG
+        if debugPremiumOverride { return true }
+        #endif
+        return PremiumEntitlementStore.resolvedEntitlement(storeKitEntitled: premium.hasEntitlement)
     }
 
     init(container: ModelContainer) {
@@ -62,7 +70,6 @@ final class AppEnvironment {
             LuneNotificationDelegate.shared.configure(environment: self)
             GemmaModelLocator.ensureDirectories()
             localAI.refreshModelAvailability()
-            localAI.dismissVisibleSession()
             modelDownloader.refreshInstalledState()
             await premium.start()
             await syncPremiumEntitlement()
@@ -85,6 +92,7 @@ final class AppEnvironment {
     #if DEBUG
     func setPremiumForTesting(_ enabled: Bool) async {
         PremiumEntitlementStore.debugOverride = enabled
+        debugPremiumOverride = enabled
     }
     #endif
 
@@ -130,10 +138,7 @@ final class AppEnvironment {
             recentCheckIns = try await store.fetchCheckIns(from: horizonStart, to: horizonEnd)
             recentFlows = try await store.fetchFlowEntries(from: horizonStart, to: horizonEnd)
             recomputeDerivedState()
-            await notifications.reschedule(
-                preferences: preferences,
-                predictedDate: prediction?.predictedDate
-            )
+            await notifications.reschedule(preferences: preferences, periodStarts: upcomingPeriodStarts)
             lastErrorMessage = nil
         } catch {
             lastErrorMessage = "Couldn’t refresh local data."
@@ -146,6 +151,45 @@ final class AppEnvironment {
 
     var currentCycleDay: Int? {
         CycleCalculator.currentCycleDay(latestStart: latestCycle?.startDate)
+    }
+
+    /// The feeling logged for today, if any.
+    var todayFeeling: Feeling? {
+        checkIn(on: .now)?.feeling
+    }
+
+    /// Cycle day, phase and PMS-days flag for any logged-history day; `nil` before the first period.
+    func cycleDayState(on date: Date) -> CycleDayState? {
+        let day = date.startOfDay
+        let containing = cycles.last { $0.startDate.startOfDay <= day }
+        let periodLength = containing.map { cycle in
+            let flows = recentFlows.filter { $0.cycleId == cycle.id }.map(\.date)
+            return flows.max().map { $0.daysSince(cycle.startDate) + 1 }
+                ?? cycle.periodDayCount
+                ?? LunePhaseEngine.defaultPeriodLength
+        } ?? LunePhaseEngine.defaultPeriodLength
+        return CycleDayEngine.state(
+            on: day,
+            cycleStarts: cycles.map(\.startDate),
+            periodLength: periodLength,
+            predictedNextStart: prediction?.predictedDate
+        )
+    }
+
+    /// Where today sits in the cycle (period, ovulation, PMS days, …); `nil` without cycle data.
+    var cycleMoment: CycleMoment? {
+        todaysLune.map(CycleMoment.init(snapshot:))
+    }
+
+    /// Lumi's guess for today; `nil` without cycle data.
+    var feelingForecast: FeelingForecast? {
+        guard let day = currentCycleDay, let phase = todaysLune?.phase else { return nil }
+        return FeelingForecastEngine.forecast(
+            phase: phase,
+            cycleDay: day,
+            cycleStarts: cycles.map(\.startDate),
+            checkIns: recentCheckIns
+        )
     }
 
     var currentPeriodLengthDays: Int {
@@ -189,6 +233,27 @@ final class AppEnvironment {
             }
         }
         return CycleCalculator.completedCycles(fromStarts: starts, periodLengthsByStart: periodLengths)
+    }
+
+    /// Upcoming cycles about a year ahead, for the calendar and trip planning; `nil` without a prediction.
+    var cycleOutlook: CycleOutlook? {
+        guard let prediction, let next = prediction.predictedDate else { return nil }
+        return CycleOutlookEngine.outlook(
+            nextPeriodStart: next,
+            cycleLength: prediction.medianCycleLength ?? preferences.typicalCycleLength ?? 28,
+            periodLength: cycleStats?.typicalPeriodLength ?? currentPeriodLengthDays,
+            baseUncertainty: prediction.upperBound.map { $0.daysSince(next) } ?? 3
+        )
+    }
+
+    /// Next predicted period starts, for scheduling reminders a few cycles ahead.
+    var upcomingPeriodStarts: [Date] {
+        cycleOutlook?.cycles.prefix(ReminderPlanner.cyclesAhead).map(\.periodStart) ?? []
+    }
+
+    /// Learned cycle length, variation and period length from recent cycles.
+    var cycleStats: CycleStats? {
+        CycleStats.from(completedCycles)
     }
 
     var cycleSummaries: [CycleSummary] {
@@ -325,15 +390,17 @@ final class AppEnvironment {
             return "That range overlaps an existing period. Edit those days from the calendar instead."
         }
 
-        // Close previous open cycle if this starts a new one after it
+        // Close the previous open period at its last logged bleeding day. `endDate` is the period's end,
+        // not the cycle's, so stretching it to the day before this start would block later edits.
         if var previous = cycles.last, previous.endDate == nil, previous.startDate.startOfDay < startDay {
-            let dayBefore = startDay.addingDays(-1)
-            if dayBefore >= previous.startDate {
-                previous.endDate = dayBefore
-                previous.updatedAt = .now
-                do { try await store.upsertCycle(previous) } catch {
-                    return "Couldn’t update previous cycle."
-                }
+            let lastFlow = recentFlows
+                .filter { $0.cycleId == previous.id }
+                .map(\.date)
+                .max()
+            previous.endDate = min(lastFlow ?? previous.startDate, startDay.addingDays(-1))
+            previous.updatedAt = .now
+            do { try await store.upsertCycle(previous) } catch {
+                return "Couldn’t update previous cycle."
             }
         }
 
@@ -378,6 +445,47 @@ final class AppEnvironment {
         }
     }
 
+    /// Marks one day as a period day: joins a period within a couple of days, otherwise starts a new one.
+    func markPeriodDay(on date: Date, intensity: FlowIntensity = .medium) async -> String? {
+        let day = date.startOfDay
+        guard day <= Date().startOfDay else { return "Period days can’t be in the future." }
+
+        let periods = cycles.map { cycle in
+            (id: cycle.id, days: recentFlows.filter { $0.cycleId == cycle.id }.map(\.date) + [cycle.startDate])
+        }
+        guard let cycleId = CycleCalculator.periodToExtend(day: day, periods: periods),
+              var cycle = cycles.first(where: { $0.id == cycleId })
+        else {
+            return await logPeriodRange(from: day, to: day, intensity: intensity)
+        }
+
+        do {
+            try await store.upsertFlowEntry(
+                FlowEntryRecord(id: UUID(), date: day, intensity: intensity, spotting: false, cycleId: cycleId)
+            )
+            if day < cycle.startDate.startOfDay { cycle.startDate = day }
+            if let end = cycle.endDate, day > end.startOfDay { cycle.endDate = day }
+            cycle.updatedAt = .now
+            try await store.upsertCycle(cycle)
+            await refresh()
+            return nil
+        } catch {
+            return "Couldn’t save period day."
+        }
+    }
+
+    /// Changes the flow of an already logged period day.
+    func setFlowIntensity(_ intensity: FlowIntensity, on date: Date) async {
+        guard var flow = flow(on: date), flow.intensity != intensity else { return }
+        flow.intensity = intensity
+        do {
+            try await store.upsertFlowEntry(flow)
+            await refresh()
+        } catch {
+            lastErrorMessage = "Couldn’t update flow."
+        }
+    }
+
     func startPeriod(on date: Date, intensity: FlowIntensity, spotting: Bool) async -> String? {
         await logPeriodRange(from: date, to: date, intensity: intensity, spotting: spotting)
     }
@@ -404,9 +512,26 @@ final class AppEnvironment {
         }
     }
 
+    /// Removes a period day. Removing a period's last remaining day deletes that period, and removing
+    /// its first or last day moves the start or end, so mistaken entries stop affecting predictions.
     func clearFlow(on date: Date) async {
+        let day = date.startOfDay
+        let cycleId = flow(on: day)?.cycleId
         do {
-            try await store.deleteFlowEntries(on: date)
+            try await store.deleteFlowEntries(on: day)
+            if let cycleId, var cycle = cycles.first(where: { $0.id == cycleId }) {
+                let remaining = recentFlows
+                    .filter { $0.cycleId == cycleId && $0.date.startOfDay != day }
+                    .map { $0.date.startOfDay }
+                if let first = remaining.min(), let last = remaining.max() {
+                    if cycle.startDate.startOfDay == day { cycle.startDate = first }
+                    if let end = cycle.endDate, end.startOfDay == day { cycle.endDate = last }
+                    cycle.updatedAt = .now
+                    try await store.upsertCycle(cycle)
+                } else {
+                    try await store.deleteCycle(id: cycleId)
+                }
+            }
             await refresh()
         } catch {
             lastErrorMessage = "Couldn’t remove flow entry."
@@ -434,6 +559,27 @@ final class AppEnvironment {
         } catch {
             lastErrorMessage = "Couldn’t save check-in."
         }
+    }
+
+    /// Logs today's feeling, keeping symptoms, sleep and note already logged for the day.
+    func logFeeling(_ feeling: Feeling, on date: Date = .now) async {
+        let base = checkIn(on: date) ?? DailyCheckInRecord(
+            id: UUID(),
+            date: date.startOfDay,
+            mood: nil,
+            energy: nil,
+            sleepQuality: nil,
+            symptoms: [],
+            note: nil
+        )
+        await saveCheckIn(base.applying(feeling))
+    }
+
+    /// Removes the feeling logged for a day, keeping symptoms, sleep and note.
+    func clearFeeling(on date: Date) async {
+        guard var checkIn = checkIn(on: date), checkIn.feeling != nil else { return }
+        checkIn.feeling = nil
+        await saveCheckIn(checkIn)
     }
 
     func checkIn(on date: Date) -> DailyCheckInRecord? {
@@ -470,8 +616,11 @@ final class AppEnvironment {
                 || previous.iMessageRemindersEnabled != prefs.iMessageRemindersEnabled
                 || previous.iMessageContacts != prefs.iMessageContacts
 
-            if notificationsChanged {
-                await notifications.reschedule(preferences: prefs, predictedDate: prediction?.predictedDate)
+            if previous.typicalCycleLength != prefs.typicalCycleLength {
+                // Predictions fall back to the typical length; refresh also reschedules reminders.
+                await refresh()
+            } else if notificationsChanged {
+                await notifications.reschedule(preferences: prefs, periodStarts: upcomingPeriodStarts)
             }
         } catch {
             preferences = previous
@@ -506,6 +655,7 @@ final class AppEnvironment {
     func deleteAllData() async {
         do {
             try await store.deleteAllHealthData()
+            try StoreBackupService.deleteAllBackups()
             preferences = .default
             cycles = []
             recentCheckIns = []
@@ -513,7 +663,7 @@ final class AppEnvironment {
             prediction = nil
             insights = []
             localAI.clearChat()
-            await notifications.reschedule(preferences: preferences, predictedDate: nil)
+            await notifications.reschedule(preferences: preferences, periodStarts: [])
         } catch {
             lastErrorMessage = "Couldn’t delete local data."
         }
@@ -557,7 +707,7 @@ final class AppEnvironment {
     /// Demo cycle history + premium for App Store screenshots / preview recording.
     func seedAppStoreScreenshotData() async {
         await deleteAllData()
-        PremiumEntitlementStore.debugOverride = true
+        await setPremiumForTesting(true)
 
         var prefs = UserPreferences.default
         prefs.hasCompletedOnboarding = true
@@ -565,7 +715,7 @@ final class AppEnvironment {
         prefs.experiencesPMS = true
         prefs.typicalPeriodSymptoms = [.cramps, .fatigue]
         prefs.typicalPMSSymptoms = [.cramps, .bloating, .mood]
-        prefs.appearanceMode = .light
+        prefs.appearanceMode = AppStoreScreenshotMode.prefersDark ? .dark : .light
         prefs.biometricLockEnabled = false
         do {
             try await store.save(prefs)
@@ -622,11 +772,12 @@ final class AppEnvironment {
                 DailyCheckInRecord(
                     id: UUID(),
                     date: now,
-                    mood: .good,
+                    mood: Feeling.happy.moodLevel,
                     energy: .steady,
                     sleepQuality: .good,
                     symptoms: [],
-                    note: "feeling like me again"
+                    note: "feeling like me again",
+                    feeling: .happy
                 )
             )
         } catch {

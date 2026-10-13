@@ -1,5 +1,6 @@
 import SwiftUI
 import UIKit
+import UserNotifications
 
 struct SettingsView: View {
     @Environment(AppEnvironment.self) private var env
@@ -7,30 +8,36 @@ struct SettingsView: View {
     @State private var showExporter = false
     @State private var showDeleteConfirm = false
     @State private var exportError: String?
-    @State private var contactsDraft: [MessageContact] = []
-    @State private var iMessageEnabledDraft = false
     @State private var showDeleteModelConfirm = false
     @State private var showPremiumPaywall = false
+    /// Which sections are open, remembered on this device (comma-separated `SettingsGroup` raw values).
+    @AppStorage("settings.expandedSections") private var expandedSections = ""
+    @AppStorage(LumiBabble.enabledKey) private var lumiVoiceEnabled = true
+    /// iOS permission for notifications; refreshed on appear and when returning from iOS Settings.
+    @State private var notificationStatus: UNAuthorizationStatus = .notDetermined
 
     var body: some View {
         List {
             premiumSection
+            aiSection
+            periodSection
+            communicationSection
             appearanceSection
-            if env.isPremium {
-                localAISection
-            }
             privacySection
-            notificationsSection
-            iMessageSection
             dataSection
             aboutSection
         }
+        .listSectionSpacing(.compact)
         .scrollContentBackground(.hidden)
-        .background(Color.cycleBackground.ignoresSafeArea())
+        .fantasySkyBackground()
         .navigationTitle("Settings")
+        .task(id: env.preferences.notificationsEnabled) {
+            notificationStatus = await env.notifications.authorizationStatus()
+        }
+        .onReceive(NotificationCenter.default.publisher(for: UIApplication.didBecomeActiveNotification)) { _ in
+            Task { notificationStatus = await env.notifications.authorizationStatus() }
+        }
         .onAppear {
-            contactsDraft = env.preferences.iMessageContacts
-            iMessageEnabledDraft = env.preferences.iMessageRemindersEnabled
             env.modelDownloader.refreshInstalledState()
             env.localAI.refreshModelAvailability()
         }
@@ -45,7 +52,7 @@ struct SettingsView: View {
             }
             Button("Cancel", role: .cancel) {}
         } message: {
-            Text("This permanently removes cycles, symptoms, notes, and preferences from this device. It cannot be undone.")
+            Text("This permanently removes your periods, feelings, symptoms, notes, chats with Lumi, automatic backups and preferences from this device. It cannot be undone.")
         }
         .alert("Export failed", isPresented: Binding(
             get: { exportError != nil },
@@ -60,12 +67,23 @@ struct SettingsView: View {
         }
     }
 
+    private func expansion(_ group: SettingsGroup) -> Binding<Bool> {
+        Binding(
+            get: { expandedSections.split(separator: ",").contains(Substring(group.rawValue)) },
+            set: { isOpen in
+                var open = Set(expandedSections.split(separator: ",").map(String.init))
+                if isOpen { open.insert(group.rawValue) } else { open.remove(group.rawValue) }
+                expandedSections = open.sorted().joined(separator: ",")
+            }
+        )
+    }
+
     private var premiumSection: some View {
-        Section {
+        CollapsibleSection(title: "Lumi Premium", systemImage: "crown.fill", isExpanded: expansion(.premium)) {
             if env.isPremium {
                 LabeledContent("Plan") {
-                    Text("MyLune Premium")
-                        .foregroundStyle(Color.cycleSage)
+                    Text("Lumi Premium")
+                        .foregroundStyle(Color.cycleAccentText)
                 }
                 Button("Manage subscription") {
                     if let url = URL(string: "https://apps.apple.com/account/subscriptions") {
@@ -77,13 +95,13 @@ struct SettingsView: View {
                     Text("Free plan")
                         .font(.headline)
                         .foregroundStyle(Color.cycleText)
-                    Text("Today, calendar, and settings. Upgrade for Ask MyLune + Insights.")
+                    Text("Today, calendar, and settings. Upgrade for Ask Lumi + Insights.")
                         .font(.footnote)
                         .foregroundStyle(Color.cycleSecondary)
                 }
                 .padding(.vertical, 4)
 
-                Button("Upgrade to MyLune Premium") {
+                Button("Upgrade to Lumi Premium") {
                     showPremiumPaywall = true
                 }
 
@@ -98,24 +116,22 @@ struct SettingsView: View {
             #if DEBUG
             if !AppStoreScreenshotMode.isEnabled {
                 Toggle("Premium (debug)", isOn: Binding(
-                    get: { PremiumEntitlementStore.debugOverride },
+                    get: { env.debugPremiumOverride },
                     set: { enabled in
                         Task { await env.setPremiumForTesting(enabled) }
                     }
                 ))
             }
             #endif
-        } header: {
-            Text("MyLune Premium")
         } footer: {
             if !env.isPremium {
-                Text("Premium unlocks Ask MyLune (on-device AI) and Insights. Core tracking stays free.")
+                Text("Premium unlocks Ask Lumi (on-device AI) and Insights. Core tracking stays free.")
             }
         }
     }
 
     private var appearanceSection: some View {
-        Section {
+        CollapsibleSection(title: "Appearance", systemImage: "paintpalette.fill", isExpanded: expansion(.appearance)) {
             Picker("Appearance", selection: Binding(
                 get: { env.preferences.appearanceMode },
                 set: { mode in
@@ -127,23 +143,55 @@ struct SettingsView: View {
                 }
             }
             .pickerStyle(.segmented)
-        } header: {
-            Text("Appearance")
+
+            Toggle(isOn: $lumiVoiceEnabled) {
+                VStack(alignment: .leading, spacing: 2) {
+                    Text("Lumi's voice")
+                    Text("Cute babble when Lumi talks. Follows your silent switch.")
+                        .font(.footnote)
+                        .foregroundStyle(Color.cycleSecondary)
+                }
+            }
+            .tint(Color.cycleAccentText)
         } footer: {
-            Text("Light keeps the cream palette. System follows your iPhone setting.")
+            Text("Light is lavender mist, Dark is a starry night sky. System follows your iPhone setting.")
+        }
+    }
+
+    // MARK: - AI
+
+    @ViewBuilder
+    private var aiSection: some View {
+        if env.isPremium {
+            localAISection
+        } else {
+            CollapsibleSection(title: "AI", systemImage: "sparkles", isExpanded: expansion(.ai)) {
+                Label {
+                    Text("Ask Lumi anything about your cycle. Answers come from an AI that runs only on this iPhone.")
+                        .foregroundStyle(Color.cycleText)
+                } icon: {
+                    Image(systemName: "sparkles")
+                        .foregroundStyle(Color.cycleAccentText)
+                }
+                Button("Unlock Ask Lumi") {
+                    showPremiumPaywall = true
+                }
+            } footer: {
+                Text("Your cycle data never leaves this device. AI answers are not medical advice.")
+            }
         }
     }
 
     private var localAISection: some View {
-        Section {
+        CollapsibleSection(title: "AI", systemImage: "sparkles", isExpanded: expansion(.ai)) {
             LabeledContent("Engine") {
                 Text(env.localAI.status.statusLabel)
-                    .foregroundStyle(Color.cycleSage)
+                    .foregroundStyle(Color.cycleAccentText)
                     .multilineTextAlignment(.trailing)
             }
             LabeledContent("Data used") {
                 Text("On-device only")
-                    .foregroundStyle(Color.cycleSage)
+                    .foregroundStyle(Color.cycleAccentText)
             }
 
             modelDownloadBlock
@@ -160,8 +208,6 @@ struct SettingsView: View {
                     Task { await env.localAI.prepare() }
                 }
             }
-        } header: {
-            Text("Local AI (Gemma 4)")
         } footer: {
             Text("Downloads ~2.6 GB from Hugging Face (litert-community). After that, chat runs fully offline. Accept the Gemma terms on Hugging Face if the download is blocked. Not medical advice.")
         }
@@ -201,10 +247,10 @@ struct SettingsView: View {
                     Spacer()
                     Text("\(Int((fraction * 100).rounded()))%")
                         .font(.subheadline.monospacedDigit().weight(.semibold))
-                        .foregroundStyle(Color.cycleSage)
+                        .foregroundStyle(Color.cycleAccentText)
                 }
                 ProgressView(value: fraction)
-                    .tint(Color.cycleSage)
+                    .tint(Color.cycleAccentText)
                     .accessibilityLabel("Download progress")
                     .accessibilityValue("\(Int((fraction * 100).rounded())) percent")
                 Text("\(GemmaModelDownloader.formatBytes(written)) of \(GemmaModelDownloader.formatBytes(expected))")
@@ -228,7 +274,7 @@ struct SettingsView: View {
             VStack(alignment: .leading, spacing: 4) {
                 LabeledContent("Model file") {
                     Text(fileName)
-                        .foregroundStyle(Color.cycleSage)
+                        .foregroundStyle(Color.cycleAccentText)
                         .lineLimit(1)
                 }
                 LabeledContent("Size") {
@@ -263,14 +309,14 @@ struct SettingsView: View {
     }
 
     private var privacySection: some View {
-        Section {
+        CollapsibleSection(title: "Privacy", systemImage: "lock.shield.fill", isExpanded: expansion(.privacy)) {
             LabeledContent("Storage") {
                 Text("On this device")
-                    .foregroundStyle(Color.cycleSage)
+                    .foregroundStyle(Color.cycleAccentText)
             }
             LabeledContent("Tracking") {
                 Text("None")
-                    .foregroundStyle(Color.cycleSage)
+                    .foregroundStyle(Color.cycleAccentText)
             }
             Toggle("App lock", isOn: Binding(
                 get: { env.preferences.biometricLockEnabled },
@@ -279,7 +325,7 @@ struct SettingsView: View {
                         var prefs = env.preferences
                         prefs.biometricLockEnabled = enabled
                         if enabled {
-                            let ok = await env.appLock.unlock(reason: "Enable app lock for MyLune")
+                            let ok = await env.appLock.unlock(reason: "Enable app lock for Lumi")
                             guard ok else { return }
                         }
                         await env.updatePreferences(prefs)
@@ -297,13 +343,105 @@ struct SettingsView: View {
             Text(LuneLegal.privacySummary)
                 .font(.footnote)
                 .foregroundStyle(Color.cycleSecondary)
-        } header: {
-            Text("Privacy center")
         }
     }
 
-    private var notificationsSection: some View {
-        Section("Notifications") {
+    // MARK: - Period
+
+    private var periodSection: some View {
+        CollapsibleSection(title: "Period", systemImage: "drop.fill", isExpanded: expansion(.period)) {
+            if let stats = env.cycleStats {
+                LabeledContent("Cycle length", value: "\(stats.typicalCycleLength) days")
+                LabeledContent("Difference between cycles") {
+                    Text(stats.cycleDifference == 0
+                        ? "Same every time"
+                        : "\(stats.cycleDifference) days (\(stats.shortestCycle)–\(stats.longestCycle))")
+                }
+                if let periodLength = stats.typicalPeriodLength {
+                    LabeledContent("Period length", value: "\(periodLength) days")
+                }
+            } else {
+                Text("Log a few periods and Lumi will learn your cycle length and how much it changes.")
+                    .font(.subheadline)
+                    .foregroundStyle(Color.cycleSecondary)
+            }
+
+            Toggle("I know my usual cycle length", isOn: Binding(
+                get: { env.preferences.typicalCycleLength != nil },
+                set: { known in
+                    var prefs = env.preferences
+                    prefs.typicalCycleLength = known ? (env.cycleStats?.typicalCycleLength ?? 28) : nil
+                    Task { await env.updatePreferences(prefs) }
+                }
+            ))
+            .tint(Color.cycleAccentText)
+
+            if let length = env.preferences.typicalCycleLength {
+                Stepper(value: Binding(
+                    get: { length },
+                    set: { value in
+                        var prefs = env.preferences
+                        prefs.typicalCycleLength = value
+                        Task { await env.updatePreferences(prefs) }
+                    }
+                ), in: 21...45) {
+                    Text("Usual cycle: \(length) days")
+                }
+            }
+
+            Toggle("I get PMS", isOn: Binding(
+                get: { env.preferences.experiencesPMS },
+                set: { value in
+                    var prefs = env.preferences
+                    prefs.experiencesPMS = value
+                    if !value {
+                        prefs.pmsReminderEnabled = false
+                        prefs.typicalPMSSymptoms = []
+                    }
+                    Task { await env.updatePreferences(prefs) }
+                }
+            ))
+            .tint(Color.cycleAccentText)
+
+            NavigationLink {
+                PeriodSymptomsView()
+            } label: {
+                LabeledContent("Usual symptoms") {
+                    let count = Set(env.preferences.typicalPeriodSymptoms + env.preferences.typicalPMSSymptoms).count
+                    Text(count == 0 ? "None" : "\(count)")
+                }
+            }
+        } footer: {
+            Text(periodFooter)
+        }
+    }
+
+    private var periodFooter: String {
+        if let stats = env.cycleStats {
+            return "Learned from your last \(stats.cycleCount) \(stats.cycleCount == 1 ? "cycle" : "cycles"). Your usual cycle length is used until there's enough history."
+        }
+        return "Your usual cycle length is used for predictions until Lumi has enough history."
+    }
+
+    // MARK: - Communication
+
+    private var communicationSection: some View {
+        CollapsibleSection(title: "Communication", systemImage: "bubble.left.and.bubble.right.fill", isExpanded: expansion(.communication)) {
+            if notificationStatus == .denied {
+                VStack(alignment: .leading, spacing: 8) {
+                    Label("Notifications are turned off for Lumi in iOS Settings, so reminders can’t arrive.", systemImage: "bell.slash.fill")
+                        .font(.subheadline)
+                        .foregroundStyle(Color.cycleText)
+                    Button("Open Settings") {
+                        if let url = URL(string: UIApplication.openNotificationSettingsURLString) {
+                            UIApplication.shared.open(url)
+                        }
+                    }
+                    .font(.subheadline.weight(.semibold))
+                }
+                .padding(.vertical, 4)
+            }
+
             Toggle("Enable reminders", isOn: Binding(
                 get: { env.preferences.notificationsEnabled },
                 set: { enabled in
@@ -326,6 +464,29 @@ struct SettingsView: View {
                     }
                 }
             ))
+            DatePicker(
+                "Reminder time",
+                selection: Binding(
+                    get: {
+                        Calendar.current.date(
+                            bySettingHour: env.preferences.reminderHour,
+                            minute: env.preferences.reminderMinute,
+                            second: 0,
+                            of: .now
+                        ) ?? .now
+                    },
+                    set: { time in
+                        var prefs = env.preferences
+                        let parts = Calendar.current.dateComponents([.hour, .minute], from: time)
+                        prefs.reminderHour = parts.hour ?? 9
+                        prefs.reminderMinute = parts.minute ?? 0
+                        Task { await env.updatePreferences(prefs) }
+                    }
+                ),
+                displayedComponents: .hourAndMinute
+            )
+            .disabled(!env.preferences.notificationsEnabled)
+
             Toggle("Period is close", isOn: Binding(
                 get: { env.preferences.periodReminderEnabled },
                 set: { value in
@@ -378,52 +539,22 @@ struct SettingsView: View {
                 }
             ))
             .disabled(!env.preferences.notificationsEnabled)
-        }
-    }
 
-    private var iMessageSection: some View {
-        Section {
-            IMessageContactsEditor(
-                contacts: $contactsDraft,
-                enabled: $iMessageEnabledDraft
-            )
-            .listRowInsets(EdgeInsets(top: 8, leading: 0, bottom: 8, trailing: 0))
-            .listRowBackground(Color.clear)
-
-            Button("Save iMessage contacts") {
-                Task {
-                    var prefs = env.preferences
-                    prefs.iMessageContacts = contactsDraft.filter(\.isValid)
-                    prefs.iMessageRemindersEnabled = iMessageEnabledDraft && !prefs.iMessageContacts.isEmpty
-                    await env.updatePreferences(prefs)
-                    contactsDraft = prefs.iMessageContacts
-                    iMessageEnabledDraft = prefs.iMessageRemindersEnabled
+            NavigationLink {
+                MessagesSettingsView()
+            } label: {
+                LabeledContent("Messages to your people") {
+                    let count = env.preferences.iMessageContacts.count
+                    Text(count == 0 ? "Off" : "\(count) \(count == 1 ? "person" : "people")")
                 }
             }
-            .disabled(
-                contactsDraft == env.preferences.iMessageContacts
-                    && iMessageEnabledDraft == env.preferences.iMessageRemindersEnabled
-            )
-
-            if !env.preferences.iMessageContacts.isEmpty {
-                Button("Send period heads-up now") {
-                    env.queueAutomaticIMessage(kind: .periodClose)
-                }
-                if env.preferences.experiencesPMS {
-                    Button("Send PMS heads-up now") {
-                        env.queueAutomaticIMessage(kind: .pmsClose)
-                    }
-                }
-            }
-        } header: {
-            Text("iMessage")
         } footer: {
-            Text("With automatic reminders on, MyLune opens Messages at reminder time with your saved numbers filled in. iOS still requires one tap on Send — apps can’t send iMessage silently.")
+            Text("Gentle reminders for you, and optional iMessage heads-ups for people you choose.")
         }
     }
 
     private var dataSection: some View {
-        Section("Your data") {
+        CollapsibleSection(title: "Your data", systemImage: "tray.full.fill", isExpanded: expansion(.data)) {
             Button("Export JSON") {
                 Task {
                     do {
@@ -451,7 +582,7 @@ struct SettingsView: View {
     }
 
     private var aboutSection: some View {
-        Section("About") {
+        CollapsibleSection(title: "About", systemImage: "info.circle.fill", isExpanded: expansion(.about)) {
             LabeledContent("Version", value: AppInfo.marketingVersion)
             LabeledContent("Build", value: AppInfo.buildNumber)
             Text(LuneLegal.medicalDisclaimer)
@@ -469,4 +600,9 @@ struct ShareSheet: UIViewControllerRepresentable {
     }
 
     func updateUIViewController(_ uiViewController: UIActivityViewController, context: Context) {}
+}
+
+/// The collapsible groups on the Settings screen.
+private enum SettingsGroup: String {
+    case premium, ai, period, communication, appearance, privacy, data, about
 }

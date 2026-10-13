@@ -23,12 +23,16 @@ enum LocalHealthContextBuilder {
         prediction: PredictionResult?,
         insights: [InsightResult],
         currentCycleDay: Int?,
+        moment: CycleMoment? = nil,
         now: Date = .now
     ) -> LocalHealthContext {
         var lines: [String] = []
         lines.append("Today: \(now.formatted(dateFormat))")
         if let day = currentCycleDay {
             lines.append("Current cycle day: \(day)")
+        }
+        if let moment {
+            lines.append("Current phase: \(moment.displayName(experiencesPMS: preferences.experiencesPMS))")
         }
         if let typical = preferences.typicalCycleLength {
             lines.append("User-reported typical cycle length: \(typical) days")
@@ -82,6 +86,7 @@ enum LocalHealthContextBuilder {
             lines.append("Recent check-ins:")
             for checkIn in recentCheckIns {
                 var parts: [String] = []
+                if let feeling = checkIn.feeling { parts.append("feeling \(feeling.displayName)") }
                 if let mood = checkIn.mood { parts.append("mood \(mood.displayName)") }
                 if let energy = checkIn.energy { parts.append("energy \(energy.displayName)") }
                 if let sleep = checkIn.sleepQuality { parts.append("sleep \(sleep.displayName)") }

@@ -147,6 +147,7 @@ actor CycleDataStore: CycleRepositoryProtocol, FlowRepositoryProtocol, CheckInRe
             existing.sleepQuality = checkIn.sleepQuality
             existing.symptoms = checkIn.symptoms
             existing.note = checkIn.note
+            existing.feeling = checkIn.feeling
         } else {
             modelContext.insert(
                 SDDailyCheckIn(
@@ -156,7 +157,8 @@ actor CycleDataStore: CycleRepositoryProtocol, FlowRepositoryProtocol, CheckInRe
                     energy: checkIn.energy,
                     sleepQuality: checkIn.sleepQuality,
                     symptoms: checkIn.symptoms,
-                    note: checkIn.note
+                    note: checkIn.note,
+                    feeling: checkIn.feeling
                 )
             )
         }
@@ -197,11 +199,21 @@ actor CycleDataStore: CycleRepositoryProtocol, FlowRepositoryProtocol, CheckInRe
 
     // MARK: - Maintenance
 
+    /// Deletes every record one by one. (SwiftData's batch delete fails on the required
+    /// flow → cycle link and left periods behind, so it isn't used here.) Flow days go first.
     func deleteAllHealthData() async throws {
-        try modelContext.delete(model: SDFlowEntry.self)
-        try modelContext.delete(model: SDDailyCheckIn.self)
-        try modelContext.delete(model: SDCycle.self)
-        try modelContext.delete(model: SDPreferences.self)
+        for entry in try modelContext.fetch(FetchDescriptor<SDFlowEntry>()) {
+            modelContext.delete(entry)
+        }
+        for checkIn in try modelContext.fetch(FetchDescriptor<SDDailyCheckIn>()) {
+            modelContext.delete(checkIn)
+        }
+        for cycle in try modelContext.fetch(FetchDescriptor<SDCycle>()) {
+            modelContext.delete(cycle)
+        }
+        for preferences in try modelContext.fetch(FetchDescriptor<SDPreferences>()) {
+            modelContext.delete(preferences)
+        }
         modelContext.insert(SDPreferences())
         try modelContext.save()
     }
@@ -229,7 +241,8 @@ actor CycleDataStore: CycleRepositoryProtocol, FlowRepositoryProtocol, CheckInRe
                     energy: $0.energy?.rawValue,
                     sleepQuality: $0.sleepQuality?.rawValue,
                     symptoms: $0.symptoms.map { ExportSymptom(type: $0.symptomType.rawValue, intensity: $0.intensity.rawValue) },
-                    note: $0.note
+                    note: $0.note,
+                    feeling: $0.feeling?.rawValue
                 )
             },
             preferences: ExportPreferences(

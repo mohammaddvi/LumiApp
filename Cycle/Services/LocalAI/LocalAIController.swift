@@ -4,7 +4,7 @@ import OSLog
 
 enum LocalAIPrompting {
     static let systemInstructions = """
-    You are MyLune’s on-device companion for menstrual cycle tracking.
+    You are Lumi, the on-device companion in the Lumi app for menstrual cycle tracking.
     You run fully offline using Gemma. The user’s health data never leaves this iPhone.
 
     Rules:
@@ -16,6 +16,8 @@ enum LocalAIPrompting {
     - Never invent cycle dates that are not in the context.
     - Never ask for or repeat phone numbers or contact details.
     - Speak as a supportive cycle companion, not a doctor.
+    - You are Lumi, a gentle, playful moon-sprite companion. Write warmly, like a caring friend: short lines or a few bullets, and 1–3 fitting emoji per reply (for example 🌙 ✨ 💜 🍵 🌿 🫶). Never use emoji for serious or worrying topics.
+    - When asked for ideas (food, drinks, mood and mental health, movement, rest), give 3–4 short, practical ideas that fit the current phase and the feelings and symptoms they logged recently. General wellness only; no supplements doses, diets or medication.
     """
 }
 
@@ -98,7 +100,8 @@ final class LocalAIController {
     private let runtime = GemmaRuntime()
 
     private(set) var status: LocalAIStatus = .checking
-    /// Bubbles for the **current app session** — cleared when the app backgrounds, not on each send.
+    /// The visible conversation. Kept across launches (saved on device with complete file protection)
+    /// until "New chat"; only bubbles, while `memory` is the clipped context fed to the model.
     private(set) var sessionMessages: [LocalChatMessage] = []
     /// Hidden on-device memory used as future prompt context.
     private(set) var memory: [LocalChatMessage] = []
@@ -112,6 +115,7 @@ final class LocalAIController {
 
     private static let maxMemoryMessages = 40
     private static let maxMemoryCharsPerNote = 500
+    private static let maxVisibleMessages = 80
 
     private var historyURL: URL {
         let dir = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask).first!
@@ -120,8 +124,13 @@ final class LocalAIController {
         return dir.appendingPathComponent("chat-memory.json")
     }
 
+    private var sessionURL: URL {
+        historyURL.deletingLastPathComponent().appendingPathComponent("chat-visible.json")
+    }
+
     init() {
         loadMemory()
+        loadSession()
     }
 
     func refreshModelAvailability() {
@@ -164,6 +173,7 @@ final class LocalAIController {
     /// Clears the visible turn and wipes private memory (privacy).
     func forgetConversation() {
         sessionMessages.removeAll()
+        saveSession()
         memory.removeAll()
         saveMemory()
         Task {
@@ -180,13 +190,11 @@ final class LocalAIController {
         forgetConversation()
     }
 
-    /// Dismisses the on-screen turn without erasing memory.
-    func dismissVisibleSession() {
-        #if DEBUG
-        if AppStoreScreenshotMode.isEnabled { return }
-        #endif
+    /// Starts a fresh visible chat; Lumi still remembers earlier conversations as private context.
+    func startNewChat() {
         guard !isGenerating else { return }
         sessionMessages.removeAll()
+        saveSession()
     }
 
     #if DEBUG
@@ -200,7 +208,7 @@ final class LocalAIController {
             ),
             LocalChatMessage(
                 role: .assistant,
-                text: "Glow days can feel brighter. Your recent logs show steadier energy after Reset — keep meals regular, hydrate, and save the hard workouts for when energy is already up. This isn’t medical advice; just pattern notes from what’s on this device."
+                text: "Glow days can feel so bright ✨ Your logs show steadier energy after your period, so:\n• keep meals regular and colorful 🍓\n• sip water through the day 💧\n• save harder workouts for your high-energy days 💜"
             ),
         ]
     }
@@ -217,12 +225,13 @@ final class LocalAIController {
             await prepare()
         }
         guard status.isReady, await runtime.isReady else {
-            sessionMessages = [
-                LocalChatMessage(
-                    role: .systemNotice,
-                    text: status.statusLabel + " Download Gemma in Settings → Local AI, then Retry."
-                )
-            ]
+            // Add the notice; never wipe the conversation.
+            sessionMessages.removeAll { $0.role == .systemNotice }
+            sessionMessages.append(LocalChatMessage(
+                role: .systemNotice,
+                text: "Lumi's AI isn't ready yet. Download it in Settings → AI, then try again."
+            ))
+            saveSession()
             return
         }
 
@@ -242,6 +251,7 @@ final class LocalAIController {
             if let assistant = sessionMessages.first(where: { $0.id == assistantID }) {
                 appendToMemory(user: userMessage, assistant: assistant)
             }
+            saveSession()
         }
 
         do {
@@ -290,7 +300,7 @@ final class LocalAIController {
         memory
             .filter { $0.role == .user || $0.role == .assistant }
             .map { message in
-                let label = message.role == .user ? "User" : "MyLune"
+                let label = message.role == .user ? "User" : "Lumi"
                 let text = clipped(message.text)
                 return "\(label): \(text)"
             }
@@ -346,8 +356,19 @@ final class LocalAIController {
         if url != historyURL {
             try? FileManager.default.removeItem(at: legacy)
         }
-        // Never restore into the visible session.
-        sessionMessages = []
+    }
+
+    private func loadSession() {
+        guard let data = try? Data(contentsOf: sessionURL),
+              let decoded = try? JSONDecoder().decode([LocalChatMessage].self, from: data)
+        else { return }
+        sessionMessages = decoded.filter { !$0.text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty }
+    }
+
+    private func saveSession() {
+        let kept = Array(sessionMessages.suffix(Self.maxVisibleMessages))
+        guard let data = try? JSONEncoder().encode(kept) else { return }
+        try? data.write(to: sessionURL, options: [.atomic, .completeFileProtection])
     }
 
     private func saveMemory() {

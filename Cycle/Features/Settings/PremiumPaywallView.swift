@@ -11,8 +11,8 @@ struct PremiumPaywallView: View {
         NavigationStack {
             ScrollView {
                 VStack(alignment: .leading, spacing: 20) {
-                    Text("mylune premium")
-                        .font(.system(.largeTitle, design: .serif).weight(.medium))
+                    Text("lumi premium")
+                        .font(.system(.largeTitle, design: .rounded).weight(.medium))
                         .foregroundStyle(Color.cycleText)
 
                     Text("go deeper with on-device AI and pattern insights — still private, still on your phone.")
@@ -50,7 +50,7 @@ struct PremiumPaywallView: View {
                             if isPurchasing {
                                 ProgressView()
                             } else {
-                                Text("Start MyLune Premium")
+                                Text("Start Lumi Premium")
                             }
                         }
                     }

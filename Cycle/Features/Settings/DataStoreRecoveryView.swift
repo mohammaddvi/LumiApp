@@ -11,11 +11,11 @@ struct DataStoreRecoveryView: View {
 
             Image(systemName: "externaldrive.badge.exclamationmark")
                 .font(.system(size: 44))
-                .foregroundStyle(Color.cycleSage)
+                .foregroundStyle(Color.cycleAccentText)
                 .accessibilityHidden(true)
 
             Text("couldn’t open your data")
-                .font(.system(.title2, design: .serif).weight(.medium))
+                .font(.system(.title2, design: .rounded).weight(.medium))
                 .foregroundStyle(Color.cycleText)
 
             Text(failure.userMessage)
@@ -24,7 +24,7 @@ struct DataStoreRecoveryView: View {
                 .fixedSize(horizontal: false, vertical: true)
 
             if case .openFailed(_, let backupAvailable) = failure, backupAvailable {
-                Text("MyLune saved an automatic backup before this launch. Contact support if retry doesn’t work — your history may still be on this iPhone.")
+                Text("Lumi saved an automatic backup before this launch. Contact support if retry doesn’t work — your history may still be on this iPhone.")
                     .font(.footnote)
                     .foregroundStyle(Color.cycleSecondary)
             }
@@ -32,7 +32,7 @@ struct DataStoreRecoveryView: View {
             Button("Try again", action: onRetry)
                 .buttonStyle(PrimaryButtonStyle())
 
-            Link(destination: URL(string: "mailto:\(LuneLegal.supportEmail)?subject=MyLune%20data%20recovery")!) {
+            Link(destination: URL(string: "mailto:\(LuneLegal.supportEmail)?subject=Lumi%20data%20recovery")!) {
                 Label("Contact support", systemImage: "envelope")
             }
             .font(.subheadline.weight(.semibold))

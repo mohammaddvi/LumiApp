@@ -5,7 +5,7 @@ struct PrivacyPolicyView: View {
         ScrollView {
             VStack(alignment: .leading, spacing: 20) {
                 Text("Privacy policy")
-                    .font(.system(.title2, design: .serif).weight(.medium))
+                    .font(.system(.title2, design: .rounded).weight(.medium))
                     .foregroundStyle(Color.cycleText)
                     .accessibilityAddTraits(.isHeader)
 

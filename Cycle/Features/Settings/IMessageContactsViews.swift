@@ -16,12 +16,12 @@ struct IMessageContactsEditor: View {
                     VStack(alignment: .leading, spacing: 4) {
                         Text("Automatic iMessage reminders")
                             .foregroundStyle(Color.cycleText)
-                        Text("When a period or PMS reminder is due, MyLune opens Messages with your numbers and text filled in.")
+                        Text("When a period or PMS reminder is due, Lumi opens Messages with your numbers and text filled in.")
                             .font(.footnote)
                             .foregroundStyle(Color.cycleSecondary)
                     }
                 }
-                .tint(Color.cycleSage)
+                .tint(Color.cycleAccentText)
             }
 
             if enabled || !showsEnableToggle {
@@ -82,7 +82,7 @@ struct IMessageContactsEditor: View {
                     .opacity(canAdd ? 1 : 0.45)
                 }
 
-                Text("Apple doesn’t allow apps to send iMessage completely by themselves. MyLune opens Messages automatically with everything ready — you only tap Send.")
+                Text("Apple doesn’t allow apps to send iMessage completely by themselves. Lumi opens Messages automatically with everything ready — you only tap Send.")
                     .font(.caption)
                     .foregroundStyle(Color.cycleSecondary)
             }
@@ -154,7 +154,7 @@ struct SendIMessageReminderView: View {
                                 .foregroundStyle(Color.cycleSecondary)
                         }
                     }
-                    .tint(Color.cycleSage)
+                    .tint(Color.cycleAccentText)
                 }
             }
 

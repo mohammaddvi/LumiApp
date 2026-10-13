@@ -62,14 +62,14 @@ targets:
         PRODUCT_BUNDLE_IDENTIFIER: app.lune.tracker
         PRODUCT_NAME: MyLune
         PRODUCT_MODULE_NAME: Cycle
-        INFOPLIST_KEY_CFBundleDisplayName: MyLune
+        INFOPLIST_KEY_CFBundleDisplayName: Lumi
         INFOPLIST_KEY_UILaunchScreen_Generation: YES
         INFOPLIST_KEY_UILaunchScreen_BackgroundColor: LaunchBackground
         INFOPLIST_KEY_UISupportedInterfaceOrientations: UIInterfaceOrientationPortrait
         INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad: "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight"
         INFOPLIST_KEY_LSApplicationCategoryType: public.app-category.healthcare-fitness
-        INFOPLIST_KEY_NSFaceIDUsageDescription: MyLune uses Face ID to protect your health data when app lock is enabled.
-        INFOPLIST_KEY_NSUserNotificationsUsageDescription: MyLune sends optional local reminders about your cycle. No ads or tracking.
+        INFOPLIST_KEY_NSFaceIDUsageDescription: Lumi uses Face ID to protect your health data when app lock is enabled.
+        INFOPLIST_KEY_NSUserNotificationsUsageDescription: Lumi sends optional local reminders about your cycle. No ads or tracking.
         INFOPLIST_KEY_ITSAppUsesNonExemptEncryption: NO
         INFOPLIST_KEY_UIFileSharingEnabled: YES
         INFOPLIST_KEY_LSSupportsOpeningDocumentsInPlace: YES

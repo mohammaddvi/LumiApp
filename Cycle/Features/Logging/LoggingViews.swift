@@ -17,7 +17,7 @@ struct QuickCheckInView: View {
         ScrollView {
             VStack(alignment: .leading, spacing: 20) {
                 DatePicker("Date", selection: $date, in: ...Date(), displayedComponents: .date)
-                    .tint(Color.cycleSage)
+                    .tint(Color.cycleAccentText)
 
                 VStack(alignment: .leading, spacing: 12) {
                     Text("how are we feeling?")
@@ -76,7 +76,7 @@ struct QuickCheckInView: View {
                 }
 
                 VStack(alignment: .leading, spacing: 10) {
-                    Text("mylune notes ☁️")
+                    Text("lumi notes ☁️")
                         .font(.headline)
                         .foregroundStyle(Color.cycleText)
                         .accessibilityAddTraits(.isHeader)
@@ -104,7 +104,7 @@ struct QuickCheckInView: View {
                         }
                     }
 
-                    TextField("hey mylune, today i feel…", text: $note, axis: .vertical)
+                    TextField("hey lumi, today i feel…", text: $note, axis: .vertical)
                         .lineLimit(3...6)
                         .padding(12)
                         .background(Color.cycleSurface)
@@ -135,7 +135,8 @@ struct QuickCheckInView: View {
                             energy: energy,
                             sleepQuality: sleep,
                             symptoms: selected.map { SymptomOccurrence(symptomType: $0.key, intensity: $0.value) },
-                            note: note.isEmpty ? nil : note
+                            note: note.isEmpty ? nil : note,
+                            feeling: existing?.feeling
                         )
                         await env.saveCheckIn(record)
                         dismiss()
@@ -165,7 +166,8 @@ struct QuickCheckInView: View {
                         energy: energy,
                         sleepQuality: sleep,
                         symptoms: selected.map { SymptomOccurrence(symptomType: $0.key, intensity: $0.value) },
-                        note: note.isEmpty ? nil : note
+                        note: note.isEmpty ? nil : note,
+                        feeling: existing?.feeling
                     )
                     await env.saveCheckIn(record)
                     dismiss()

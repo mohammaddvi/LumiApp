@@ -15,7 +15,7 @@ struct PersistenceTests {
     @Test("In-memory container opens with migration plan")
     func inMemoryContainer() throws {
         _ = try PersistenceController.makeContainer(inMemory: true)
-        #expect(LuneSchema.currentVersion == Schema.Version(1, 0, 0))
+        #expect(LuneSchema.currentVersion == Schema.Version(2, 0, 0))
     }
 
     @Test("Cycle data survives container reopen")
@@ -28,7 +28,7 @@ struct PersistenceTests {
         let storeURL = tempDir.appending(path: LuneStoreLocation.storeFileName)
         let configuration = ModelConfiguration(
             "CycleStoreTest",
-            schema: Schema(versionedSchema: LuneSchemaV1.self),
+            schema: Schema(versionedSchema: LuneSchema.current),
             url: storeURL,
             cloudKitDatabase: .none
         )
@@ -38,7 +38,7 @@ struct PersistenceTests {
 
         do {
             let container = try ModelContainer(
-                for: Schema(versionedSchema: LuneSchemaV1.self),
+                for: Schema(versionedSchema: LuneSchema.current),
                 migrationPlan: LuneMigrationPlan.self,
                 configurations: configuration
             )
@@ -56,7 +56,7 @@ struct PersistenceTests {
         }
 
         let reopened = try ModelContainer(
-            for: Schema(versionedSchema: LuneSchemaV1.self),
+            for: Schema(versionedSchema: LuneSchema.current),
             migrationPlan: LuneMigrationPlan.self,
             configurations: configuration
         )
@@ -64,6 +64,82 @@ struct PersistenceTests {
         let cycles = try await reopenedStore.fetchCycles()
         #expect(cycles.count == 1)
         #expect(cycles.first?.id == cycleID)
+    }
+
+    @Test("A 1.0 (V1) store migrates to V2 without losing check-ins")
+    func migratesV1Store() async throws {
+        let fixture = try #require(
+            Bundle(for: FixtureBundleToken.self).url(forResource: "lune-v1", withExtension: "store")
+        )
+        let tempDir = FileManager.default.temporaryDirectory
+            .appending(path: "lune-migrate-\(UUID().uuidString)", directoryHint: .isDirectory)
+        try FileManager.default.createDirectory(at: tempDir, withIntermediateDirectories: true)
+        defer { try? FileManager.default.removeItem(at: tempDir) }
+
+        let storeURL = tempDir.appending(path: LuneStoreLocation.storeFileName)
+        try FileManager.default.copyItem(at: fixture, to: storeURL)
+        let configuration = ModelConfiguration(
+            "CycleStore",
+            schema: Schema(versionedSchema: LuneSchema.current),
+            url: storeURL,
+            cloudKitDatabase: .none
+        )
+        let day = Date(timeIntervalSince1970: 1_735_689_600)
+
+        do {
+            let container = try ModelContainer(
+                for: Schema(versionedSchema: LuneSchema.current),
+                migrationPlan: LuneMigrationPlan.self,
+                configurations: configuration
+            )
+            let store = CycleDataStore(modelContainer: container)
+
+            let checkIn = try #require(try await store.fetchCheckIns(from: day, to: day).first)
+            #expect(checkIn.mood == .low)
+            #expect(checkIn.energy == .drained)
+            #expect(checkIn.note == "v1 note")
+            #expect(checkIn.symptoms == [SymptomOccurrence(symptomType: .cramps, intensity: .strong)])
+            #expect(checkIn.feeling == nil)
+            #expect(try await store.fetchCycles().count == 1)
+            #expect(try await store.fetchFlowEntries(from: day, to: day).count == 1)
+            #expect(try await store.load().typicalCycleLength == 29)
+
+            try await store.upsertCheckIn(checkIn.applying(.anxious))
+        }
+
+        let reopened = try ModelContainer(
+            for: Schema(versionedSchema: LuneSchema.current),
+            migrationPlan: LuneMigrationPlan.self,
+            configurations: configuration
+        )
+        let saved = try await CycleDataStore(modelContainer: reopened).fetchCheckIns(from: day, to: day).first
+        #expect(saved?.feeling == .anxious)
+        #expect(saved?.note == "v1 note")
+    }
+
+    /// Guards updates: `LuneSchemaV1` must keep describing exactly what 1.0 wrote to disk
+    /// (fields taken from `Fixtures/lune-v1.store`). If a model changes without being frozen
+    /// into the old schema first, this fails before users lose the ability to upgrade.
+    @Test("Schema V1 still matches the 1.0 store on disk")
+    func schemaV1IsFrozen() {
+        let expected: [String: Set<String>] = [
+            // `flowEntries` is the to-many side of the flow → cycle link (no column of its own).
+            "SDCycle": ["id", "startDate", "endDate", "sourceRaw", "createdAt", "updatedAt", "flowEntries"],
+            "SDFlowEntry": ["id", "date", "intensityRaw", "spotting", "cycle"],
+            "SDDailyCheckIn": ["id", "date", "moodRaw", "energyRaw", "sleepQualityRaw", "note", "symptomsData"],
+            "SDPreferences": [
+                "id", "hasCompletedOnboarding", "typicalCycleLength", "firstDayOfWeek", "notificationsEnabled",
+                "periodReminderEnabled", "pmsReminderEnabled", "symptomReminderEnabled", "checkInReminderEnabled",
+                "reminderHour", "reminderMinute", "biometricLockEnabled", "experiencesPMS",
+                "typicalPeriodSymptomsData", "typicalPMSSymptomsData", "iMessageContactsData",
+                "iMessageRemindersEnabled", "appearanceModeRaw",
+            ],
+        ]
+        let schema = Schema(versionedSchema: LuneSchemaV1.self)
+        let actual = Dictionary(uniqueKeysWithValues: schema.entities.map { entity in
+            (entity.name, Set(entity.properties.map(\.name)))
+        })
+        #expect(actual == expected)
     }
 
     @Test("Backup is created for an existing store file")
@@ -89,3 +165,5 @@ struct PersistenceTests {
         _ = originalSupport // silence unused — backup mechanics validated in isolation
     }
 }
+
+private final class FixtureBundleToken {}

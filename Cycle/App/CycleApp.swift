@@ -8,6 +8,7 @@ struct CycleApp: App {
     @Environment(\.scenePhase) private var scenePhase
 
     init() {
+        LuneNotificationDelegate.shared.install()
         let launch = Self.initialLaunchState()
         _environment = State(initialValue: launch.environment)
         _persistenceFailure = State(initialValue: launch.failure)
@@ -18,6 +19,7 @@ struct CycleApp: App {
             Group {
                 if let environment {
                     RootView()
+                        .fontDesign(.rounded)
                         .environment(environment)
                         .modelContainer(environment.modelContainer)
                         .preferredColorScheme(environment.preferences.appearanceMode.preferredColorScheme)
@@ -34,7 +36,6 @@ struct CycleApp: App {
                 if environment.preferences.biometricLockEnabled {
                     environment.appLock.lock()
                 }
-                environment.localAI.dismissVisibleSession()
                 try? environment.modelContainer.mainContext.save()
             }
         }
@@ -55,7 +56,7 @@ struct CycleApp: App {
             return (
                 nil,
                 PersistenceFailure.openFailed(
-                    message: "MyLune couldn’t open your local cycle database.",
+                    message: "Lumi couldn’t open your local cycle database.",
                     backupAvailable: StoreBackupService.hasAnyBackup()
                 )
             )
@@ -72,6 +73,7 @@ struct RootView: View {
         ZStack {
             mainContent
                 .opacity(splashVisible ? 0 : 1)
+                .environment(\.isSplashFinished, !splashVisible)
 
             if splashVisible {
                 LuneSplashView()
@@ -150,9 +152,9 @@ struct AppLockView: View {
             VStack(spacing: 20) {
                 Image(systemName: "lock.fill")
                     .font(.largeTitle)
-                    .foregroundStyle(Color.cycleSage)
+                    .foregroundStyle(Color.cycleAccentText)
                     .accessibilityHidden(true)
-                Text("MyLune is locked")
+                Text("Lumi is locked")
                     .font(.title2.weight(.semibold))
                     .foregroundStyle(Color.cycleText)
                 Text("Use \(env.appLock.biometryLabel) or your device passcode to open your health data.")
@@ -199,9 +201,6 @@ struct MainTabView: View {
             Tab("Today", systemImage: LuneSymbolName.moon) {
                 NavigationStack { TodayView() }
             }
-            Tab("Calendar", systemImage: "calendar") {
-                NavigationStack { CalendarView() }
-            }
             if env.isPremium {
                 Tab("Ask", systemImage: "sparkles") {
                     NavigationStack { AskLuneView(ai: env.localAI) }
@@ -214,7 +213,7 @@ struct MainTabView: View {
                 NavigationStack { SettingsView() }
             }
         }
-        .tint(Color.cycleSage)
+        .tint(Color.cycleAccentText)
         .id(env.isPremium)
     }
 
@@ -223,9 +222,6 @@ struct MainTabView: View {
         TabView(selection: $selectedTab) {
             Tab("Today", systemImage: LuneSymbolName.moon, value: .today) {
                 NavigationStack { TodayView() }
-            }
-            Tab("Calendar", systemImage: "calendar", value: .calendar) {
-                NavigationStack { CalendarView() }
             }
             Tab("Ask", systemImage: "sparkles", value: .ask) {
                 NavigationStack { AskLuneView(ai: env.localAI) }
@@ -237,7 +233,7 @@ struct MainTabView: View {
                 NavigationStack { SettingsView() }
             }
         }
-        .tint(Color.cycleSage)
+        .tint(Color.cycleAccentText)
         .onAppear {
             if selectedTab == .splash {
                 selectedTab = .today
@@ -245,4 +241,9 @@ struct MainTabView: View {
         }
     }
     #endif
+}
+
+extension EnvironmentValues {
+    /// False while the launch splash covers the app, so screens can wait before Lumi speaks.
+    @Entry var isSplashFinished = true
 }

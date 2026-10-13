@@ -39,7 +39,7 @@ struct LuneSymbolIcon: View {
             case .accent:
                 Image(systemName: name)
                     .symbolRenderingMode(.hierarchical)
-                    .foregroundStyle(Color.cycleSage)
+                    .foregroundStyle(Color.cycleAccentText)
             case .multicolor:
                 Image(systemName: name)
                     .symbolRenderingMode(.multicolor)
