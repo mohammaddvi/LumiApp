@@ -14,7 +14,6 @@ final class AppEnvironment {
     let appLock = AppLockService()
     let localAI = LocalAIController()
     let modelDownloader = GemmaModelDownloader()
-    let premium = PremiumService()
 
     private(set) var preferences: UserPreferences = .default
     private(set) var cycles: [CycleRecord] = []
@@ -24,18 +23,6 @@ final class AppEnvironment {
     private(set) var insights: [InsightResult] = []
     private(set) var isLoading = true
     private(set) var lastErrorMessage: String?
-
-    #if DEBUG
-    /// Observable mirror of `PremiumEntitlementStore.debugOverride` so toggling it refreshes the UI.
-    private(set) var debugPremiumOverride = PremiumEntitlementStore.debugOverride
-    #endif
-
-    var isPremium: Bool {
-        #if DEBUG
-        if debugPremiumOverride { return true }
-        #endif
-        return PremiumEntitlementStore.resolvedEntitlement(storeKitEntitled: premium.hasEntitlement)
-    }
 
     init(container: ModelContainer) {
         self.modelContainer = container
@@ -69,8 +56,6 @@ final class AppEnvironment {
             GemmaModelLocator.ensureDirectories()
             localAI.refreshModelAvailability()
             modelDownloader.refreshInstalledState()
-            await premium.start()
-            await syncPremiumEntitlement()
             #if DEBUG
             if AppStoreScreenshotMode.isEnabled {
                 await seedAppStoreScreenshotData()
@@ -81,18 +66,6 @@ final class AppEnvironment {
         }
     }
 
-    /// Applies StoreKit entitlement to the local premium cache (not SwiftData).
-    func syncPremiumEntitlement() async {
-        await premium.refreshEntitlements()
-        PremiumEntitlementStore.persist(storeKitEntitled: premium.hasEntitlement)
-    }
-
-    #if DEBUG
-    func setPremiumForTesting(_ enabled: Bool) async {
-        PremiumEntitlementStore.debugOverride = enabled
-        debugPremiumOverride = enabled
-    }
-    #endif
 
     /// "Messages to your people" was removed: clear any saved phone numbers once and switch it off,
     /// so nothing from that feature keeps running or stays stored.
@@ -676,10 +649,9 @@ final class AppEnvironment {
     }
 
     #if DEBUG
-    /// Demo cycle history + premium for App Store screenshots / preview recording.
+    /// Demo cycle history for App Store screenshots / preview recording.
     func seedAppStoreScreenshotData() async {
         await deleteAllData()
-        await setPremiumForTesting(true)
 
         var prefs = UserPreferences.default
         prefs.hasCompletedOnboarding = true

@@ -9,7 +9,6 @@ struct SettingsView: View {
     @State private var showDeleteConfirm = false
     @State private var exportError: String?
     @State private var showDeleteModelConfirm = false
-    @State private var showPremiumPaywall = false
     /// Which sections are open, remembered on this device (comma-separated `SettingsGroup` raw values).
     @AppStorage("settings.expandedSections") private var expandedSections = ""
     @AppStorage(LumiBabble.enabledKey) private var lumiVoiceEnabled = true
@@ -18,7 +17,6 @@ struct SettingsView: View {
 
     var body: some View {
         List {
-            premiumSection
             aiSection
             periodSection
             communicationSection
@@ -62,9 +60,6 @@ struct SettingsView: View {
         } message: {
             Text(exportError ?? "")
         }
-        .sheet(isPresented: $showPremiumPaywall) {
-            PremiumPaywallView()
-        }
     }
 
     private func expansion(_ group: SettingsGroup) -> Binding<Bool> {
@@ -76,58 +71,6 @@ struct SettingsView: View {
                 expandedSections = open.sorted().joined(separator: ",")
             }
         )
-    }
-
-    private var premiumSection: some View {
-        CollapsibleSection(title: "Lumi Premium", systemImage: "crown.fill", isExpanded: expansion(.premium)) {
-            if env.isPremium {
-                LabeledContent("Plan") {
-                    Text("Lumi Premium")
-                        .foregroundStyle(Color.cycleAccentText)
-                }
-                Button("Manage subscription") {
-                    if let url = URL(string: "https://apps.apple.com/account/subscriptions") {
-                        UIApplication.shared.open(url)
-                    }
-                }
-            } else {
-                VStack(alignment: .leading, spacing: 8) {
-                    Text("Free plan")
-                        .font(.headline)
-                        .foregroundStyle(Color.cycleText)
-                    Text("Today, calendar, your cycle history and settings. Upgrade for Ask Lumi + patterns and trends.")
-                        .font(.footnote)
-                        .foregroundStyle(Color.cycleSecondary)
-                }
-                .padding(.vertical, 4)
-
-                Button("Upgrade to Lumi Premium") {
-                    showPremiumPaywall = true
-                }
-
-                Button("Restore purchases") {
-                    Task {
-                        await env.premium.restorePurchases()
-                        await env.syncPremiumEntitlement()
-                    }
-                }
-            }
-
-            #if DEBUG
-            if !AppStoreScreenshotMode.isEnabled {
-                Toggle("Premium (debug)", isOn: Binding(
-                    get: { env.debugPremiumOverride },
-                    set: { enabled in
-                        Task { await env.setPremiumForTesting(enabled) }
-                    }
-                ))
-            }
-            #endif
-        } footer: {
-            if !env.isPremium {
-                Text("Premium unlocks Ask Lumi (on-device AI) and patterns and trends in Insights. Core tracking stays free.")
-            }
-        }
     }
 
     private var appearanceSection: some View {
@@ -160,26 +103,8 @@ struct SettingsView: View {
 
     // MARK: - AI
 
-    @ViewBuilder
     private var aiSection: some View {
-        if env.isPremium {
-            localAISection
-        } else {
-            CollapsibleSection(title: "AI", systemImage: "sparkles", isExpanded: expansion(.ai)) {
-                Label {
-                    Text("Ask Lumi anything about your cycle. Answers come from an AI that runs only on this iPhone.")
-                        .foregroundStyle(Color.cycleText)
-                } icon: {
-                    Image(systemName: "sparkles")
-                        .foregroundStyle(Color.cycleAccentText)
-                }
-                Button("Unlock Ask Lumi") {
-                    showPremiumPaywall = true
-                }
-            } footer: {
-                Text("Your cycle data never leaves this device. AI answers are not medical advice.")
-            }
-        }
+        localAISection
     }
 
     private var localAISection: some View {
@@ -593,5 +518,5 @@ struct ShareSheet: UIViewControllerRepresentable {
 
 /// The collapsible groups on the Settings screen.
 private enum SettingsGroup: String {
-    case premium, ai, period, communication, appearance, privacy, data, about
+    case ai, period, communication, appearance, privacy, data, about
 }

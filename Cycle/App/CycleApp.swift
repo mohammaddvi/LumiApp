@@ -189,12 +189,9 @@ struct MainTabView: View {
             Tab("Today", systemImage: LuneSymbolName.moon) {
                 NavigationStack { TodayView() }
             }
-            if env.isPremium {
-                Tab("Ask", systemImage: "sparkles") {
-                    NavigationStack { AskLuneView(ai: env.localAI) }
-                }
+            Tab("Ask", systemImage: "sparkles") {
+                NavigationStack { AskLuneView(ai: env.localAI) }
             }
-            // Free: your cycle history. Premium adds patterns and trends inside.
             Tab("Insights", systemImage: "chart.line.uptrend.xyaxis") {
                 NavigationStack { InsightsView() }
             }
@@ -203,7 +200,6 @@ struct MainTabView: View {
             }
         }
         .tint(Color.cycleAccentText)
-        .id(env.isPremium)
     }
 
     #if DEBUG
