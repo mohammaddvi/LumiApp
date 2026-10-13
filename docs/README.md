@@ -1,4 +1,4 @@
-# MyLune public site (GitHub Pages)
+# Lumi public site (GitHub Pages)
 
 Static pages for App Store Connect **Privacy Policy URL** and **Support URL**.
 

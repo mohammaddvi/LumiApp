@@ -1,6 +1,6 @@
 import SwiftUI
 
-/// Lumi, MyLune's companion. Shows today's feeling (or the cycle phase when none is logged),
+/// Lumi, the app's companion. Shows today's feeling (or the cycle phase when none is logged),
 /// and breathes, blinks and sways unless Reduce Motion is on.
 struct LumiView: View {
     var feeling: Feeling?

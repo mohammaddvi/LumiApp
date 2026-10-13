@@ -19,7 +19,7 @@ IPAD_TARGET_H=2752
 
 BUNDLE_ID="app.lune.tracker"
 DERIVED="${ROOT}/build/DerivedData"
-APP="${DERIVED}/Build/Products/Debug-iphonesimulator/MyLune.app"
+APP="${DERIVED}/Build/Products/Debug-iphonesimulator/Lumi.app"
 OUT_ROOT="${ROOT}/AppStoreMarketing"
 OUT_69="${OUT_ROOT}/screenshots/6.9-iphone"
 OUT_65="${OUT_ROOT}/screenshots/6.5-iphone"
@@ -51,7 +51,7 @@ ensure_build_and_install() {
   xcrun simctl boot "${device_id}" 2>/dev/null || true
   xcrun simctl bootstatus "${device_id}" -b
 
-  echo "→ Building MyLune (Debug)…"
+  echo "→ Building Lumi (Debug)…"
   xcodebuild \
     -scheme Cycle \
     -configuration Debug \
@@ -148,7 +148,7 @@ Upload order suggestion:
 1. Splash / brand
 2. Today
 3. Calendar
-4. Ask MyLune
+4. Ask Lumi
 5. Insights
 6. Settings
 

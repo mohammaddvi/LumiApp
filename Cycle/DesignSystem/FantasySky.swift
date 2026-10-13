@@ -63,7 +63,7 @@ struct FantasySkyBackground: View {
     }
 }
 
-/// Four-point sparkle, MyLune's magic mark.
+/// Four-point sparkle, Lumi's magic mark.
 enum FantasySparkle {
     struct Star {
         let x: CGFloat

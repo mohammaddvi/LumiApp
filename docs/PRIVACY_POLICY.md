@@ -1,11 +1,11 @@
-# MyLune Privacy Policy
+# Lumi Privacy Policy
 
 **Last updated:** August 26, 2026  
 **Contact:** support@mylune.app
 
 ## Overview
 
-MyLune is a local-first period and cycle tracker for iOS. This policy describes what the app stores, what may leave your device, and your choices.
+Lumi is a local-first period and cycle tracker for iOS. This policy describes what the app stores, what may leave your device, and your choices.
 
 ## What stays on your device
 
@@ -15,7 +15,7 @@ MyLune is a local-first period and cycle tracker for iOS. This policy describes 
 - App settings (reminders, appearance, optional app lock)  
 - Optional on-device AI chat and downloaded Gemma model files  
 
-We do **not** operate a MyLune cloud that receives your health logs.
+We do **not** operate a Lumi cloud that receives your health logs.
 
 ## What we do not do
 
@@ -26,7 +26,7 @@ We do **not** operate a MyLune cloud that receives your health logs.
 
 ## Network use
 
-Tracking works offline. The only optional network feature is downloading the Gemma AI model from **Hugging Face** when you choose **Settings → Local AI → Download**. That connection goes directly to Hugging Face; MyLune does not proxy it. Hugging Face may log standard connection metadata under their policy.
+Tracking works offline. The only optional network feature is downloading the Gemma AI model from **Hugging Face** when you choose **Settings → AI → Download**. That connection goes directly to Hugging Face; Lumi does not proxy it. Hugging Face may log standard connection metadata under their policy.
 
 ## Security
 
@@ -41,7 +41,7 @@ Data is stored in the app sandbox using SwiftData. iOS Data Protection applies a
 
 ## Medical disclaimer
 
-MyLune is not a medical device and does not diagnose or treat conditions. It helps you notice personal patterns only.
+Lumi is not a medical device and does not diagnose or treat conditions. It helps you notice personal patterns only.
 
 ## Children
 

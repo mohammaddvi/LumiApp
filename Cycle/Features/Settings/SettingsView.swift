@@ -26,6 +26,7 @@ struct SettingsView: View {
             aboutSection
         }
         .listSectionSpacing(.compact)
+        .readableContentWidth(760)
         .scrollContentBackground(.hidden)
         .fantasySkyBackground()
         .navigationTitle("Settings")

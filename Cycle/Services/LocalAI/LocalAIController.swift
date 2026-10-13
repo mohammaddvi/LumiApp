@@ -196,7 +196,7 @@ final class LocalAIController {
     }
 
     #if DEBUG
-    /// Sample Ask MyLune thread for App Store screenshots (no on-device model required).
+    /// Sample Ask Lumi thread for App Store screenshots (no on-device model required).
     func seedDemoConversationForScreenshots() {
         status = .ready(modelName: "Gemma 4 (on-device)")
         sessionMessages = [

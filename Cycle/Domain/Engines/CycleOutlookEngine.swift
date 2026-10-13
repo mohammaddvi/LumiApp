@@ -3,7 +3,7 @@ import Foundation
 /// What a future day is likely to be, for planning ahead.
 enum PlannedDayKind: Equatable, Sendable {
     case period
-    /// MyLune's "soft days" before a period (PMS days for people who get PMS).
+    /// Lumi's "soft days" before a period (PMS days for people who get PMS).
     case prePeriod
     case ovulation
 }

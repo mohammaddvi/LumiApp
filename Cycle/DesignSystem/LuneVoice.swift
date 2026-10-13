@@ -59,7 +59,7 @@ enum LuneVoice {
     }
 
 
-    /// Lumi's first message in Ask MyLune.
+    /// Lumi's first message in Ask Lumi.
     /// - Parameter canPersonalize: false while the AI model isn't installed, so Lumi doesn't promise more.
     static func askOpener(cycleDay: Int?, moment: CycleMoment?, experiencesPMS: Bool, canPersonalize: Bool) -> String {
         guard let cycleDay, let moment else {

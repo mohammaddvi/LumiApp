@@ -33,7 +33,7 @@ The skills are written for iOS 26 / Swift 6.3. This project targets **iOS 18.0, 
 
 ## Design: fantasy theme
 
-MyLune is a **dreamy, moonlit storybook**, not a formal health app. It should feel like a gentle companion with a little magic, never like a medical form or a stock iOS settings screen. Read this section before any UI work; it overrides generic iOS styling and the apple-design skill's look.
+Lumi is a **dreamy, moonlit storybook**, not a formal health app. It should feel like a gentle companion with a little magic, never like a medical form or a stock iOS settings screen. Read this section before any UI work; it overrides generic iOS styling and the apple-design skill's look.
 
 ### Look
 

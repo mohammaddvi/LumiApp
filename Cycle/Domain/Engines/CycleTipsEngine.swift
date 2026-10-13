@@ -6,7 +6,7 @@ enum CycleMoment: String, CaseIterable, Sendable {
     case follicular
     case ovulation
     case luteal
-    /// The few days before the next period (MyLune's "soft days").
+    /// The few days before the next period (Lumi's "soft days").
     case prePeriod
 
     init(snapshot: TodaysLuneSnapshot) {

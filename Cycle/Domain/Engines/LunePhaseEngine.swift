@@ -1,6 +1,6 @@
 import Foundation
 
-/// Maps cycle day + predictions into MyLune's moon phases and daily copy.
+/// Maps cycle day + predictions into Lumi's moon phases and daily copy.
 enum LunePhaseEngine {
     static let defaultPeriodLength = 5
     static let softDaysBeforeReset = 5
