@@ -64,6 +64,7 @@ struct ExportCheckIn: Codable, Sendable {
     var sleepQuality: Int?
     var symptoms: [ExportSymptom]
     var note: String?
+    var feeling: String?
 }
 
 struct ExportSymptom: Codable, Sendable {

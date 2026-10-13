@@ -35,7 +35,7 @@ final class AppLockService {
         isUnlocked = true
     }
 
-    func unlock(reason: String = "Unlock MyLune to view your health data") async -> Bool {
+    func unlock(reason: String = "Unlock Lumi to view your health data") async -> Bool {
         let context = LAContext()
         context.localizedCancelTitle = "Cancel"
         do {

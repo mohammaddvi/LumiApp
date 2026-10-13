@@ -32,7 +32,8 @@ struct PeriodLogView: View {
                 DatePicker(
                     "Ends",
                     selection: $endDate,
-                    in: startDate...Date(),
+                    // `max` keeps the range valid even if the start is somehow after now.
+                    in: startDate...max(startDate, Date()),
                     displayedComponents: .date
                 )
             } header: {
@@ -54,7 +55,7 @@ struct PeriodLogView: View {
             if let errorMessage {
                 Section {
                     Text(errorMessage)
-                        .foregroundStyle(Color.cycleSage)
+                        .foregroundStyle(Color.cycleAccentText)
                 }
             }
         }
@@ -75,7 +76,8 @@ struct PeriodLogView: View {
             }
         }
         .onAppear {
-            startDate = initialDate.startOfDay
+            // Periods can't be logged in the future, so a future day starts on today.
+            startDate = min(initialDate, Date()).startOfDay
             // Default to a 5-day range ending today or start+4, whichever is earlier
             let suggestedEnd = min(initialDate.addingDays(4), Date().startOfDay)
             endDate = max(suggestedEnd, startDate)

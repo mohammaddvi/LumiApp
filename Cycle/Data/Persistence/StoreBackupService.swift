@@ -50,6 +50,13 @@ enum StoreBackupService {
             .first
     }
 
+    /// Removes every automatic backup (used by "Delete all data", so no copy of the old logs remains).
+    static func deleteAllBackups() throws {
+        let directory = LuneStoreLocation.backupsDirectory
+        guard FileManager.default.fileExists(atPath: directory.path) else { return }
+        try FileManager.default.removeItem(at: directory)
+    }
+
     static func hasAnyBackup() -> Bool {
         latestBackupDirectory != nil
     }

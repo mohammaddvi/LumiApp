@@ -137,6 +137,30 @@ struct PredictionEngineTests {
         #expect(result.confidence == .low)
     }
 
+    @Test("Ignores impossible cycle lengths, such as a period logged twice a few days apart")
+    func ignoresImplausibleCycles() {
+        // Reproduces a real store: starts Aug 14, Aug 21, Aug 26, Oct 7 → lengths 7, 5, 42.
+        let result = engine.predict(
+            completedCycles: [
+                CompletedCycle(startDate: date(2026, 8, 14), lengthDays: 7, periodLengthDays: 5),
+                CompletedCycle(startDate: date(2026, 8, 21), lengthDays: 5, periodLengthDays: 5),
+                CompletedCycle(startDate: date(2026, 8, 26), lengthDays: 42, periodLengthDays: 1),
+            ],
+            currentCycleStart: date(2026, 10, 7),
+            typicalCycleLength: 29,
+            now: date(2026, 10, 13),
+            calendar: calendar
+        )
+        #expect(result.predictedDate == date(2026, 11, 5))
+        #expect(result.confidence == .insufficient)
+    }
+
+    @Test("Short and very long gaps don't count as cycles")
+    func plausibleFilter() {
+        let filtered = CycleCalculator.plausible(cycles([5, 14, 15, 28, 60, 61], starting: date(2026, 1, 1)))
+        #expect(filtered.map(\.lengthDays) == [15, 28, 60])
+    }
+
     @Test("Median prefers central tendency over outliers")
     func medianRobustness() {
         #expect(PredictionEngine.median([28, 28, 28, 45, 27]) == 28)
@@ -245,5 +269,272 @@ struct LunePhaseEngineTests {
         )
         #expect(snapshot?.moodLine.contains("glowing") == true)
         #expect(snapshot?.energyLine.contains("up") == true)
+    }
+}
+
+@Suite("Feeling")
+struct FeelingTests {
+    private let day = Date(timeIntervalSince1970: 1_735_689_600)
+
+    @Test("Applying a feeling keeps symptoms, sleep and note")
+    func applyKeepsDetails() {
+        let checkIn = DailyCheckInRecord(
+            id: UUID(),
+            date: day,
+            mood: .great,
+            energy: .high,
+            sleepQuality: nil,
+            symptoms: [SymptomOccurrence(symptomType: .cramps, intensity: .mild)],
+            note: "note"
+        )
+        let updated = checkIn.applying(.sad)
+        #expect(updated.feeling == .sad)
+        #expect(updated.mood == .low)
+        #expect(updated.energy == .high)
+        #expect(updated.symptoms == checkIn.symptoms)
+        #expect(updated.note == "note")
+        #expect(updated.id == checkIn.id)
+    }
+
+    @Test("Tired also logs drained energy")
+    func tiredSetsEnergy() {
+        let checkIn = DailyCheckInRecord(id: UUID(), date: day, mood: nil, energy: .high, sleepQuality: nil, symptoms: [], note: nil)
+        #expect(checkIn.applying(.tired).energy == .drained)
+    }
+
+    @Test("Every feeling maps to a mood level")
+    func moodMapping() {
+        #expect(Feeling.happy.moodLevel == .great)
+        #expect(Feeling.calm.moodLevel == .good)
+        #expect(Feeling.tired.moodLevel == .okay)
+        for feeling in [Feeling.anxious, .irritable, .sad] {
+            #expect(feeling.moodLevel == .low)
+        }
+    }
+}
+
+@Suite("FeelingForecastEngine")
+struct FeelingForecastEngineTests {
+    private let calendar = Calendar(identifier: .gregorian)
+
+    private func date(_ y: Int, _ m: Int, _ d: Int) -> Date {
+        calendar.date(from: DateComponents(year: y, month: m, day: d))!
+    }
+
+    private func checkIn(_ day: Date, _ feeling: Feeling?) -> DailyCheckInRecord {
+        DailyCheckInRecord(id: UUID(), date: day, mood: nil, energy: nil, sleepQuality: nil, symptoms: [], note: nil, feeling: feeling)
+    }
+
+    /// Cycles starting Jan 1, Jan 29, Feb 26 (current).
+    private var starts: [Date] { [date(2026, 1, 1), date(2026, 1, 29), date(2026, 2, 26)] }
+
+    @Test("Uses the feeling logged most around this cycle day in past cycles")
+    func usesHistory() {
+        // Today is cycle day 10 of the current cycle.
+        let history = [
+            checkIn(date(2026, 1, 10), .anxious), // day 10
+            checkIn(date(2026, 2, 7), .anxious),  // day 10
+            checkIn(date(2026, 2, 8), .calm),     // day 11
+            checkIn(date(2026, 1, 20), .happy),   // day 20, outside the window
+        ]
+        let forecast = FeelingForecastEngine.forecast(phase: .bloom, cycleDay: 10, cycleStarts: starts, checkIns: history, calendar: calendar)
+        #expect(forecast == FeelingForecast(feeling: .anxious, basis: .history(sampleCount: 2)))
+    }
+
+    @Test("Ties go to the most recent feeling")
+    func tieBreaksByRecency() {
+        let history = [
+            checkIn(date(2026, 1, 10), .sad),
+            checkIn(date(2026, 2, 7), .calm),
+        ]
+        let forecast = FeelingForecastEngine.forecast(phase: .bloom, cycleDay: 10, cycleStarts: starts, checkIns: history, calendar: calendar)
+        #expect(forecast.feeling == .calm)
+    }
+
+    @Test("Ignores the current cycle and check-ins without a feeling")
+    func ignoresCurrentCycle() {
+        let history = [
+            checkIn(date(2026, 3, 5), .irritable), // current cycle, day 8
+            checkIn(date(2026, 3, 6), .irritable), // current cycle, day 9
+            checkIn(date(2026, 2, 7), nil),
+        ]
+        let forecast = FeelingForecastEngine.forecast(phase: .bloom, cycleDay: 10, cycleStarts: starts, checkIns: history, calendar: calendar)
+        #expect(forecast == FeelingForecast(feeling: .happy, basis: .phase))
+    }
+
+    @Test("Phase defaults never guess a hard feeling")
+    func gentleDefaults() {
+        for phase in LunePhase.allCases {
+            let feeling = FeelingForecastEngine.phaseDefault(for: phase)
+            #expect([Feeling.happy, .calm, .tired].contains(feeling))
+        }
+    }
+}
+
+@Suite("CycleStats")
+struct CycleStatsTests {
+    private let start = Date(timeIntervalSince1970: 1_735_689_600)
+
+    @Test("Summarizes cycle length, difference and period length")
+    func summarizes() throws {
+        let cycles = [
+            CompletedCycle(startDate: start, lengthDays: 26, periodLengthDays: 5),
+            CompletedCycle(startDate: start, lengthDays: 30, periodLengthDays: 4),
+            CompletedCycle(startDate: start, lengthDays: 28, periodLengthDays: 0),
+        ]
+        let stats = try #require(CycleStats.from(cycles))
+        #expect(stats.cycleCount == 3)
+        #expect(stats.typicalCycleLength == 28)
+        #expect(stats.cycleDifference == 4)
+        #expect(stats.shortestCycle == 26)
+        #expect(stats.longestCycle == 30)
+        #expect(stats.typicalPeriodLength != nil)
+    }
+
+    @Test("No completed cycles, no stats")
+    func empty() {
+        #expect(CycleStats.from([]) == nil)
+    }
+}
+
+@Suite("CycleTips")
+struct CycleTipsTests {
+    private func snapshot(_ phase: LunePhase, softDays: Bool = false) -> TodaysLuneSnapshot {
+        TodaysLuneSnapshot(phase: phase, cycleDay: 10, isSoftDays: softDays, moonIllumination: 0.5, headline: "", energyLine: "", moodLine: "", bodyLine: "")
+    }
+
+    @Test("Maps phases to cycle moments, soft days become pre-period")
+    func moments() {
+        #expect(CycleMoment(snapshot: snapshot(.reset)) == .period)
+        #expect(CycleMoment(snapshot: snapshot(.reset, softDays: true)) == .period)
+        #expect(CycleMoment(snapshot: snapshot(.bloom)) == .follicular)
+        #expect(CycleMoment(snapshot: snapshot(.glow)) == .ovulation)
+        #expect(CycleMoment(snapshot: snapshot(.slow)) == .luteal)
+        #expect(CycleMoment(snapshot: snapshot(.slow, softDays: true)) == .prePeriod)
+    }
+
+    @Test("Every moment has one tip per topic, each asking the AI about that moment")
+    func tipsCoverTopics() {
+        for moment in CycleMoment.allCases {
+            let tips = CycleTipsEngine.tips(for: moment, experiencesPMS: true)
+            #expect(tips.map(\.topic) == WellnessTopic.allCases)
+            for tip in tips {
+                #expect(!tip.text.isEmpty)
+                #expect(tip.prompt.contains(moment.displayName(experiencesPMS: true)))
+            }
+        }
+    }
+}
+
+@Suite("CycleOutlookEngine")
+struct CycleOutlookEngineTests {
+    private let calendar = Calendar(identifier: .gregorian)
+
+    private func date(_ y: Int, _ m: Int, _ d: Int) -> Date {
+        calendar.date(from: DateComponents(year: y, month: m, day: d))!
+    }
+
+    private var outlook: CycleOutlook {
+        CycleOutlookEngine.outlook(
+            nextPeriodStart: date(2026, 11, 5),
+            cycleLength: 28,
+            periodLength: 5,
+            baseUncertainty: 2,
+            count: 3,
+            calendar: calendar
+        )
+    }
+
+    @Test("Projects cycles forward by the cycle length")
+    func projects() {
+        let starts = outlook.cycles.map(\.periodStart)
+        #expect(starts == [date(2026, 11, 5), date(2026, 12, 3), date(2026, 12, 31)])
+        #expect(outlook.cycles[0].periodEnd == date(2026, 11, 9))
+        #expect(outlook.cycles[0].ovulation == date(2026, 10, 22))
+        #expect(outlook.cycles[0].prePeriodStart == date(2026, 10, 31))
+    }
+
+    @Test("Further cycles are less certain")
+    func uncertaintyGrows() {
+        #expect(outlook.cycles.map(\.uncertaintyDays) == [2, 2, 3])
+    }
+
+    @Test("Classifies days, period first")
+    func kinds() {
+        #expect(outlook.kind(on: date(2026, 11, 5)) == .period)
+        #expect(outlook.kind(on: date(2026, 11, 9)) == .period)
+        #expect(outlook.kind(on: date(2026, 11, 10)) == nil)
+        #expect(outlook.kind(on: date(2026, 11, 4)) == .prePeriod)
+        #expect(outlook.kind(on: date(2026, 11, 19)) == .ovulation)
+    }
+
+    @Test("Trip overlaps merge into runs")
+    func tripOverlaps() {
+        let overlaps = outlook.overlaps(tripStart: date(2026, 11, 2), tripEnd: date(2026, 11, 7))
+        #expect(overlaps == [
+            PlanOverlap(kind: .prePeriod, start: date(2026, 11, 2), end: date(2026, 11, 4)),
+            PlanOverlap(kind: .period, start: date(2026, 11, 5), end: date(2026, 11, 7)),
+        ])
+        #expect(outlook.overlaps(tripStart: date(2026, 11, 12), tripEnd: date(2026, 11, 16)).isEmpty)
+    }
+}
+
+@Suite("CycleDayEngine")
+struct CycleDayEngineTests {
+    private let calendar = Calendar(identifier: .gregorian)
+
+    private func date(_ y: Int, _ m: Int, _ d: Int) -> Date {
+        calendar.date(from: DateComponents(year: y, month: m, day: d))!
+    }
+
+    private var starts: [Date] { [date(2026, 9, 1), date(2026, 9, 29)] }
+
+    @Test("Past day uses its own cycle and the next logged start")
+    func pastDay() throws {
+        // Sep 1 → Sep 29 is a 28-day cycle; ovulation estimated Sep 15.
+        let period = try #require(CycleDayEngine.state(on: date(2026, 9, 3), cycleStarts: starts, periodLength: 5, predictedNextStart: nil, calendar: calendar))
+        #expect(period == CycleDayState(cycleDay: 3, phase: .reset, isPrePeriod: false))
+
+        let ovulation = try #require(CycleDayEngine.state(on: date(2026, 9, 15), cycleStarts: starts, periodLength: 5, predictedNextStart: nil, calendar: calendar))
+        #expect(ovulation.phase == .glow)
+
+        let prePeriod = try #require(CycleDayEngine.state(on: date(2026, 9, 26), cycleStarts: starts, periodLength: 5, predictedNextStart: nil, calendar: calendar))
+        #expect(prePeriod.isPrePeriod)
+        #expect(prePeriod.cycleDay == 26)
+    }
+
+    @Test("Current cycle falls back to the predicted next start")
+    func currentCycle() throws {
+        let state = try #require(CycleDayEngine.state(on: date(2026, 10, 24), cycleStarts: starts, periodLength: 5, predictedNextStart: date(2026, 10, 27), calendar: calendar))
+        #expect(state.cycleDay == 26)
+        #expect(state.isPrePeriod)
+    }
+
+    @Test("Days before the first logged period have no state")
+    func beforeHistory() {
+        #expect(CycleDayEngine.state(on: date(2026, 8, 20), cycleStarts: starts, periodLength: 5, predictedNextStart: nil, calendar: calendar) == nil)
+    }
+
+    @Test("A period day joins a period within two days, otherwise starts a new one")
+    func periodToExtend() {
+        let id = UUID()
+        let periods = [(id: id, days: [date(2026, 10, 7), date(2026, 10, 8), date(2026, 10, 9)])]
+        #expect(CycleCalculator.periodToExtend(day: date(2026, 10, 11), periods: periods, calendar: calendar) == id)
+        #expect(CycleCalculator.periodToExtend(day: date(2026, 10, 5), periods: periods, calendar: calendar) == id)
+        #expect(CycleCalculator.periodToExtend(day: date(2026, 10, 12), periods: periods, calendar: calendar) == nil)
+        #expect(CycleCalculator.periodToExtend(day: date(2026, 10, 4), periods: periods, calendar: calendar) == nil)
+    }
+}
+
+@Suite("LumiTone")
+struct LumiToneTests {
+    @Test("Reply tone picks Lumi's sticker face")
+    func tones() {
+        #expect(LumiTone.feeling(for: "Try an earlier bedtime and a little rest 🌙") == .tired)
+        #expect(LumiTone.feeling(for: "A warm chamomile tea can feel calming 🍵") == .calm)
+        #expect(LumiTone.feeling(for: "I'm sorry today feels hard. If it keeps worrying you, talk to a clinician.") == .sad)
+        #expect(LumiTone.feeling(for: "Colorful smoothies and a dance class! ✨") == .happy)
+        // Whole words only: "steadier" must not count as "tea", "interest" not as "rest".
+        #expect(LumiTone.feeling(for: "Your logs show steadier energy and more interest in plans ✨") == .happy)
     }
 }

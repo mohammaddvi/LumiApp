@@ -33,9 +33,42 @@ enum LuneStoreLocation {
 
 // MARK: - Schema versioning
 
-/// Initial production schema — cycles, flow, check-ins, preferences.
+/// Initial production schema (1.0) — cycles, flow, check-ins, preferences.
+/// Models that changed later are frozen here as nested copies; never edit them.
 enum LuneSchemaV1: VersionedSchema {
     static var versionIdentifier: Schema.Version { Schema.Version(1, 0, 0) }
+
+    static var models: [any PersistentModel.Type] {
+        [
+            SDCycle.self,
+            SDFlowEntry.self,
+            LuneSchemaV1.SDDailyCheckIn.self,
+            SDPreferences.self,
+        ]
+    }
+
+    /// `SDDailyCheckIn` exactly as shipped in 1.0 (before `feelingRaw`).
+    @Model
+    final class SDDailyCheckIn {
+        @Attribute(.unique) var id: UUID
+        var date: Date
+        var moodRaw: Int?
+        var energyRaw: Int?
+        var sleepQualityRaw: Int?
+        var note: String?
+        var symptomsData: Data
+
+        init(id: UUID, date: Date, symptomsData: Data) {
+            self.id = id
+            self.date = date
+            self.symptomsData = symptomsData
+        }
+    }
+}
+
+/// Adds the optional `SDDailyCheckIn.feelingRaw` (Lumi's feeling check-in).
+enum LuneSchemaV2: VersionedSchema {
+    static var versionIdentifier: Schema.Version { Schema.Version(2, 0, 0) }
 
     static var models: [any PersistentModel.Type] {
         [
@@ -50,15 +83,17 @@ enum LuneSchemaV1: VersionedSchema {
 /// Register every shipped schema version here. Add lightweight/custom stages when bumping version.
 enum LuneMigrationPlan: SchemaMigrationPlan {
     static var schemas: [any VersionedSchema.Type] {
-        [LuneSchemaV1.self]
+        [LuneSchemaV1.self, LuneSchemaV2.self]
     }
 
     static var stages: [MigrationStage] {
-        []
+        [
+            .lightweight(fromVersion: LuneSchemaV1.self, toVersion: LuneSchemaV2.self),
+        ]
     }
 }
 
 enum LuneSchema {
-    static let current = LuneSchemaV1.self
-    static let currentVersion = LuneSchemaV1.versionIdentifier
+    static let current = LuneSchemaV2.self
+    static let currentVersion = LuneSchemaV2.versionIdentifier
 }

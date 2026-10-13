@@ -30,4 +30,4 @@ Package.resolved
 # On-device LLM weights (multi‑GB; keep out of git)
 *.litertlm
 *.task
-Models/
+/Models/

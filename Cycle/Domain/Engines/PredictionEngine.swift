@@ -14,7 +14,7 @@ struct PredictionEngine: Sendable {
         now: Date = .now,
         calendar: Calendar = .current
     ) -> PredictionResult {
-        let recent = Array(completedCycles.suffix(Self.recentWindow))
+        let recent = Array(CycleCalculator.plausible(completedCycles).suffix(Self.recentWindow))
 
         guard recent.count >= Self.minimumCompletedCycles else {
             let fallbackLength = typicalCycleLength ?? 28

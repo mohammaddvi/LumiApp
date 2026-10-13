@@ -14,7 +14,7 @@ struct InsightsView: View {
             }
             .padding(20)
         }
-        .background(Color.cycleBackground.ignoresSafeArea())
+        .fantasySkyBackground()
         .navigationTitle("Insights")
     }
 
@@ -90,12 +90,12 @@ struct InsightsView: View {
                             x: .value("Cycle", index + 1),
                             y: .value("Days", cycle.lengthDays)
                         )
-                        .foregroundStyle(Color.cycleSage)
+                        .foregroundStyle(Color.cycleAccentText)
                         PointMark(
                             x: .value("Cycle", index + 1),
                             y: .value("Days", cycle.lengthDays)
                         )
-                        .foregroundStyle(Color.cycleSage)
+                        .foregroundStyle(Color.cycleAccentText)
                     }
                     .chartYAxisLabel("Days")
                     .frame(height: 180)

@@ -59,10 +59,10 @@ struct OnboardingFlowView: View {
     private var welcomeStep: some View {
         VStack(alignment: .leading, spacing: 16) {
             Spacer()
-            Text("MyLune")
-                .font(.system(.largeTitle, design: .serif).weight(.medium))
+            Text("Lumi")
+                .font(.system(.largeTitle, design: .rounded).weight(.medium))
                 .foregroundStyle(Color.cycleText)
-            Text("a few qs to personalize your mylune — everything stays on this phone.")
+            Text("a few qs to personalize your lumi — everything stays on this phone.")
                 .font(.title3)
                 .foregroundStyle(Color.cycleSecondary)
             Text("no account. no ads. no data sold.")
@@ -79,7 +79,7 @@ struct OnboardingFlowView: View {
             Spacer()
             SectionHeader(
                 title: "Private by design",
-                subtitle: "Before any health data is saved, here’s how MyLune works."
+                subtitle: "Before any health data is saved, here’s how Lumi works."
             )
             privacyRow(icon: "iphone", title: "On-device storage", body: "Periods, symptoms, and notes never leave this phone in the MVP.")
             privacyRow(icon: "lock.shield", title: "Optional app lock", body: "Protect the app with Face ID, Touch ID, or your passcode.")
@@ -103,19 +103,19 @@ struct OnboardingFlowView: View {
                     displayedComponents: .date
                 )
                 .datePickerStyle(.graphical)
-                .tint(Color.cycleSage)
+                .tint(Color.cycleAccentText)
                 .accessibilityLabel("Last period start date")
 
                 Toggle(isOn: $useTypicalLength) {
                     VStack(alignment: .leading, spacing: 4) {
                         Text("I know my typical cycle length")
                             .foregroundStyle(Color.cycleText)
-                        Text("Optional — used until MyLune learns from your history.")
+                        Text("Optional — used until Lumi learns from your history.")
                             .font(.footnote)
                             .foregroundStyle(Color.cycleSecondary)
                     }
                 }
-                .tint(Color.cycleSage)
+                .tint(Color.cycleAccentText)
 
                 if useTypicalLength {
                     Stepper(value: $typicalLength, in: 21...45) {
@@ -157,18 +157,16 @@ struct OnboardingFlowView: View {
                     subtitle: "Choose anything familiar. Categories are separated so Body and Mind stay easy to tell apart."
                 )
 
-                symptomPhaseCard(
+                SymptomBaselineCard(
                     title: "During your period",
                     subtitle: "Symptoms you notice while bleeding",
-                    accent: .cycleSage,
                     selection: $periodSymptoms
                 )
 
                 if experiencesPMS == true {
-                    symptomPhaseCard(
+                    SymptomBaselineCard(
                         title: "During PMS",
                         subtitle: "Symptoms in the days before your period",
-                        accent: .cycleSage,
                         selection: $pmsSymptoms
                     )
                 }
@@ -283,75 +281,6 @@ struct OnboardingFlowView: View {
         }
     }
 
-    private func symptomPhaseCard(
-        title: String,
-        subtitle: String,
-        accent: Color,
-        selection: Binding<Set<SymptomType>>
-    ) -> some View {
-        let bodySymptoms = SymptomType.allCases.filter { $0.group == .body }
-        let mindSymptoms = SymptomType.allCases.filter { $0.group == .mind }
-
-        return VStack(alignment: .leading, spacing: 12) {
-            Text(title)
-                .font(.system(.title3, design: .serif).weight(.semibold))
-                .foregroundStyle(Color.cycleText)
-                .accessibilityAddTraits(.isHeader)
-
-            Text(subtitle)
-                .font(.subheadline.weight(.medium))
-                .foregroundStyle(Color.cycleSecondary)
-
-            SymptomCategoryCard(
-                title: "Body",
-                subtitle: "Physical symptoms",
-                accent: .cycleSage
-            ) {
-                symptomChipGrid(symptoms: bodySymptoms, selection: selection, accent: .cycleSage)
-            }
-
-            SymptomCategoryCard(
-                title: "Mind & lifestyle",
-                subtitle: "Mood, energy, sleep, and appetite",
-                accent: .cycleSage
-            ) {
-                symptomChipGrid(symptoms: mindSymptoms, selection: selection, accent: .cycleSage)
-            }
-        }
-        .padding(16)
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .background(Color.cycleAccentSoft)
-        .clipShape(RoundedRectangle(cornerRadius: 22, style: .continuous))
-        .overlay(
-            RoundedRectangle(cornerRadius: 22, style: .continuous)
-                .stroke(Color.cycleBorder, lineWidth: 1)
-        )
-        .accessibilityElement(children: .contain)
-    }
-
-    private func symptomChipGrid(
-        symptoms: [SymptomType],
-        selection: Binding<Set<SymptomType>>,
-        accent: Color
-    ) -> some View {
-        FlowLayout(spacing: 10) {
-            ForEach(symptoms) { symptom in
-                ChipButton(
-                    title: symptom.displayName,
-                    isSelected: selection.wrappedValue.contains(symptom),
-                    accent: accent
-                ) {
-                    if selection.wrappedValue.contains(symptom) {
-                        selection.wrappedValue.remove(symptom)
-                    } else {
-                        selection.wrappedValue.insert(symptom)
-                    }
-                }
-                .accessibilityLabel("\(symptom.displayName), \(symptom.group.displayName)")
-            }
-        }
-    }
-
     private func pmsChoice(title: String, subtitle: String, value: Bool) -> some View {
         let selected = experiencesPMS == value
         return Button {
@@ -405,7 +334,7 @@ struct OnboardingFlowView: View {
                     .foregroundStyle(Color.cycleSecondary)
             }
         }
-        .tint(Color.cycleSage)
+        .tint(Color.cycleAccentText)
         .padding(16)
         .background(Color.cycleSurface)
         .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
@@ -419,7 +348,7 @@ struct OnboardingFlowView: View {
         HStack(alignment: .top, spacing: 14) {
             Image(systemName: icon)
                 .font(.title3)
-                .foregroundStyle(Color.cycleSage)
+                .foregroundStyle(Color.cycleAccentText)
                 .frame(width: 28)
                 .accessibilityHidden(true)
             VStack(alignment: .leading, spacing: 4) {
