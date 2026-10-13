@@ -39,7 +39,6 @@
 		54D00EF60509245DAD6A613A /* LuneVoice.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5E32C232C1F82E0EB28D65C /* LuneVoice.swift */; };
 		595B6583469FB16D3082ABF1 /* AppLockService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CFBBBDF000C046E4F3E36AB /* AppLockService.swift */; };
 		5A76A32CAD1CB9E5BBDD5A7C /* LuneSchema.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1C12FDE15E344566F7899EF /* LuneSchema.swift */; };
-		5C01E7A353634792B226709F /* LumiBabbleTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D65B6A6EF003218487D08211 /* LumiBabbleTests.swift */; };
 		5D8E71B2E5C9D0D4D956E947 /* CycleCalculator.swift in Sources */ = {isa = PBXBuildFile; fileRef = ED06AB51E3AF44C576995C8E /* CycleCalculator.swift */; };
 		5FE4BB1949EB14D010392A0A /* LumiView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85378E2D5F31B9834778450D /* LumiView.swift */; };
 		63517EF728EC3BA51150DD1C /* FeelingPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93148302EF02627B02EB37E1 /* FeelingPicker.swift */; };
@@ -57,7 +56,6 @@
 		A401A17B7B91E083F51D4341 /* CycleDataStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37AF56D84BE191C1E0B1BC5F /* CycleDataStore.swift */; };
 		AC68E906193DC8411115CFF8 /* AskLuneView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7DC9497C0129E3475DC2B08 /* AskLuneView.swift */; };
 		B3646366A5FB9EA97A0E2124 /* LiteRTLM in Frameworks */ = {isa = PBXBuildFile; productRef = 70748EDC01DB3B904EA50F08 /* LiteRTLM */; };
-		B50A61308B791A8F34027334 /* LumiBabble.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBB5F282FA6149599A0F11B4 /* LumiBabble.swift */; };
 		B8B1D154C4C4283EFFB31DC7 /* RepositoryProtocols.swift in Sources */ = {isa = PBXBuildFile; fileRef = D2DDD0BCB56A1A3DE23E2DA4 /* RepositoryProtocols.swift */; };
 		BB577C15A55EE713402665CE /* CycleOutlookEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B154E88E04F1110D310991A /* CycleOutlookEngine.swift */; };
 		BB93BDD57384FEDD341C471E /* PersistenceController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0368D42BAECF52ADFCB3E5D8 /* PersistenceController.swift */; };
@@ -153,8 +151,6 @@
 		CFBB425528933C0CAB5E5D45 /* CollapsibleSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollapsibleSection.swift; sourceTree = "<group>"; };
 		D066DF21C51404F10D8CB0DC /* DomainEngineTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DomainEngineTests.swift; sourceTree = "<group>"; };
 		D2DDD0BCB56A1A3DE23E2DA4 /* RepositoryProtocols.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RepositoryProtocols.swift; sourceTree = "<group>"; };
-		D65B6A6EF003218487D08211 /* LumiBabbleTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LumiBabbleTests.swift; sourceTree = "<group>"; };
-		DBB5F282FA6149599A0F11B4 /* LumiBabble.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LumiBabble.swift; sourceTree = "<group>"; };
 		DD79B99E3B780CDBA40F2513 /* LuneSplashView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LuneSplashView.swift; sourceTree = "<group>"; };
 		DF66991B2D2A91212F1E3DB3 /* GemmaModelDownloader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GemmaModelDownloader.swift; sourceTree = "<group>"; };
 		E472792D3843E50FB116C737 /* lune-v1.store-wal */ = {isa = PBXFileReference; path = "lune-v1.store-wal"; sourceTree = "<group>"; };
@@ -302,7 +298,6 @@
 				D99F980B3ADC0862F01AB762 /* Domain */,
 				86C34AC89C0D8EF36E6B0236 /* Fixtures */,
 				2DD5E4B1DB61F40A1CDCD0E0 /* Persistence */,
-				D65B6A6EF003218487D08211 /* LumiBabbleTests.swift */,
 				8F6BECAD6D4C41C86E389A92 /* ReminderPlannerTests.swift */,
 			);
 			path = CycleTests;
@@ -334,7 +329,6 @@
 				A3AF483C363DA10ED51B7A3E /* LocalAI */,
 				1CFBBBDF000C046E4F3E36AB /* AppLockService.swift */,
 				5DDD6FE11123E70E4ABE26F4 /* ExportService.swift */,
-				DBB5F282FA6149599A0F11B4 /* LumiBabble.swift */,
 				E641A4EDE8E53A0931DA829E /* NotificationService.swift */,
 				359CEBB445CC8E80C31A8CC8 /* ReminderPlanner.swift */,
 			);
@@ -635,7 +629,6 @@
 				DEDBED9B0778769715C33FCB /* LocalAITypes.swift in Sources */,
 				E780E7A9B624EAF63C55C69F /* LocalHealthContext.swift in Sources */,
 				7C68DAB5BC871716D0421D65 /* LoggingViews.swift in Sources */,
-				B50A61308B791A8F34027334 /* LumiBabble.swift in Sources */,
 				A384D50E9EB7D59C4F641050 /* LumiHolding.swift in Sources */,
 				E00F0A93F56F655980BA2DE8 /* LumiPalette.swift in Sources */,
 				3C1B23491A6A92AB2708AC8F /* LumiSpeech.swift in Sources */,
@@ -676,7 +669,6 @@
 				67ED729BC3B19626681E3FF9 /* DeleteAllDataTests.swift in Sources */,
 				BE739856D1A8DF76115CAA27 /* DomainEngineTests.swift in Sources */,
 				37C143433A12CFF02886A36B /* LocalHealthContextTests.swift in Sources */,
-				5C01E7A353634792B226709F /* LumiBabbleTests.swift in Sources */,
 				4B9061AA9E1362BB1ED5DE2B /* MarkPeriodDayTests.swift in Sources */,
 				419E79BC79D3EC6485FB2BF4 /* PersistenceTests.swift in Sources */,
 				EE3ABFACB19A676CBBD5B12D /* ReminderPlannerTests.swift in Sources */,

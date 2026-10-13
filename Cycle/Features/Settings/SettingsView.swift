@@ -11,7 +11,6 @@ struct SettingsView: View {
     @State private var showDeleteModelConfirm = false
     /// Which sections are open, remembered on this device (comma-separated `SettingsGroup` raw values).
     @AppStorage("settings.expandedSections") private var expandedSections = ""
-    @AppStorage(LumiBabble.enabledKey) private var lumiVoiceEnabled = true
     /// iOS permission for notifications; refreshed on appear and when returning from iOS Settings.
     @State private var notificationStatus: UNAuthorizationStatus = .notDetermined
 
@@ -87,16 +86,6 @@ struct SettingsView: View {
                 }
             }
             .pickerStyle(.segmented)
-
-            Toggle(isOn: $lumiVoiceEnabled) {
-                VStack(alignment: .leading, spacing: 2) {
-                    Text("Lumi's voice")
-                    Text("Cute babble when Lumi talks. Follows your silent switch.")
-                        .font(.footnote)
-                        .foregroundStyle(Color.cycleSecondary)
-                }
-            }
-            .tint(Color.cycleAccentText)
         } footer: {
             Text("Light is lavender mist, Dark is a starry night sky. System follows your iPhone setting.")
         }
