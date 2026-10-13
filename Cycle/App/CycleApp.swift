@@ -193,9 +193,10 @@ struct MainTabView: View {
                 Tab("Ask", systemImage: "sparkles") {
                     NavigationStack { AskLuneView(ai: env.localAI) }
                 }
-                Tab("Insights", systemImage: "chart.line.uptrend.xyaxis") {
-                    NavigationStack { InsightsView() }
-                }
+            }
+            // Free: your cycle history. Premium adds patterns and trends inside.
+            Tab("Insights", systemImage: "chart.line.uptrend.xyaxis") {
+                NavigationStack { InsightsView() }
             }
             Tab("Settings", systemImage: "gearshape") {
                 NavigationStack { SettingsView() }

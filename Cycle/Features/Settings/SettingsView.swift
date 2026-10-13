@@ -95,7 +95,7 @@ struct SettingsView: View {
                     Text("Free plan")
                         .font(.headline)
                         .foregroundStyle(Color.cycleText)
-                    Text("Today, calendar, and settings. Upgrade for Ask Lumi + Insights.")
+                    Text("Today, calendar, your cycle history and settings. Upgrade for Ask Lumi + patterns and trends.")
                         .font(.footnote)
                         .foregroundStyle(Color.cycleSecondary)
                 }
@@ -125,7 +125,7 @@ struct SettingsView: View {
             #endif
         } footer: {
             if !env.isPremium {
-                Text("Premium unlocks Ask Lumi (on-device AI) and Insights. Core tracking stays free.")
+                Text("Premium unlocks Ask Lumi (on-device AI) and patterns and trends in Insights. Core tracking stays free.")
             }
         }
     }

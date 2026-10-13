@@ -1,21 +1,57 @@
 import SwiftUI
 import Charts
 
+/// Your cycles are free; patterns and trends are Lumi Premium.
 struct InsightsView: View {
     @Environment(AppEnvironment.self) private var env
+    @State private var showPaywall = false
 
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 20) {
                 cyclesSection
-                patternsSection
-                trendsSection
+                if env.isPremium {
+                    patternsSection
+                    trendsSection
+                } else {
+                    premiumTeaser
+                }
                 disclaimer
             }
             .padding(20)
         }
         .fantasySkyBackground()
         .navigationTitle("Insights")
+        .sheet(isPresented: $showPaywall) {
+            PremiumPaywallView()
+        }
+    }
+
+    private var premiumTeaser: some View {
+        CycleCard {
+            VStack(alignment: .leading, spacing: 14) {
+                HStack(spacing: 12) {
+                    LumiView(feeling: .happy, size: 60, animated: false)
+                        .accessibilityHidden(true)
+                    VStack(alignment: .leading, spacing: 4) {
+                        Text("Patterns & trends")
+                            .font(.system(.title3, design: .rounded).weight(.bold))
+                            .foregroundStyle(Color.cycleText)
+                            .accessibilityAddTraits(.isHeader)
+                        Text("Lumi spots patterns in your logs and charts how your cycle changes over time.")
+                            .font(.subheadline)
+                            .foregroundStyle(Color.cycleSecondary)
+                            .fixedSize(horizontal: false, vertical: true)
+                    }
+                }
+                Button {
+                    showPaywall = true
+                } label: {
+                    Label("Unlock with Lumi Premium", systemImage: "sparkles")
+                }
+                .buttonStyle(PrimaryButtonStyle())
+            }
+        }
     }
 
     private var cyclesSection: some View {
