@@ -295,7 +295,8 @@ struct UserPreferences: Hashable, Sendable {
     var typicalPeriodSymptoms: [SymptomType]
     /// Baseline symptoms the user typically has during PMS (if any).
     var typicalPMSSymptoms: [SymptomType]
-    /// People who can receive optional iMessage reminder drafts.
+    /// Legacy: the removed "Messages to your people" feature. Kept only because it is part of the
+    /// stored schema; cleared on launch and never used.
     var iMessageContacts: [MessageContact]
     var iMessageRemindersEnabled: Bool
     /// Defaults to light (lavender mist) so the look stays consistent.
@@ -347,34 +348,6 @@ struct MessageContact: Identifiable, Hashable, Codable, Sendable {
     }
 }
 
-enum ReminderMessageKind: String, CaseIterable, Identifiable, Sendable {
-    case periodClose
-    case pmsClose
-    case custom
-
-    var id: String { rawValue }
-
-    var title: String {
-        switch self {
-        case .periodClose: "Period is close"
-        case .pmsClose: "PMS is close"
-        case .custom: "Custom note"
-        }
-    }
-
-    /// Calm, non-medical copy. No symptom details by default (privacy).
-    var defaultBody: String {
-        switch self {
-        case .periodClose:
-            "Hey — just a gentle heads-up that my period may be coming soon."
-        case .pmsClose:
-            "Hey — I might be in my PMS window soon. Thanks for understanding."
-        case .custom:
-            "Hey — wanted to share a quick update from my cycle tracker."
-        }
-    }
-}
-
 /// Snapshot of answers collected during first-run onboarding.
 struct OnboardingProfile: Sendable {
     var lastPeriodStart: Date
@@ -385,8 +358,6 @@ struct OnboardingProfile: Sendable {
     var remindPeriodClose: Bool
     var remindPMSClose: Bool
     var remindSymptoms: Bool
-    var iMessageContacts: [MessageContact]
-    var iMessageRemindersEnabled: Bool
 }
 
 struct CycleSummary: Identifiable, Hashable, Sendable {

@@ -85,18 +85,6 @@ struct RootView: View {
         .task {
             await dismissSplashWhenReady()
         }
-        .sheet(item: Binding(
-            get: { env.pendingIMessageDraft },
-            set: { env.pendingIMessageDraft = $0 }
-        )) { draft in
-            MessageComposeView(
-                recipients: draft.recipients,
-                body: draft.body
-            ) { _ in
-                env.clearPendingIMessage()
-            }
-            .ignoresSafeArea()
-        }
     }
 
     @ViewBuilder

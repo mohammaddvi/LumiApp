@@ -42,7 +42,6 @@ enum LuneLegal {
             • Flow intensity, symptoms, mood, energy, sleep, and notes
             • Predictions and insights generated on your phone
             • App preferences (reminders, appearance, optional app lock)
-            • Optional iMessage contact names and phone numbers you enter
             • Optional on-device AI chat history and downloaded Gemma model files
 
             This data stays on your iPhone unless you export or delete it.
@@ -60,8 +59,6 @@ enum LuneLegal {
             title: "Network use",
             body: """
             Lumi works offline for tracking. The only optional network feature is downloading the Gemma AI model from Hugging Face (litert-community) when you tap Download in Settings. That request goes directly to Hugging Face; we do not proxy it. Hugging Face may log standard connection metadata under their own policy.
-
-            iMessage reminders open Apple’s Messages app with text you send manually — Lumi cannot send messages silently.
             """
         ),
         Section(
@@ -78,7 +75,7 @@ enum LuneLegal {
             • Export your data as JSON or CSV in Settings
             • Delete all data on device in Settings
             • Remove the downloaded AI model without deleting cycle data
-            • Turn off notifications and iMessage reminders at any time
+            • Turn off reminders at any time
             """
         ),
         Section(

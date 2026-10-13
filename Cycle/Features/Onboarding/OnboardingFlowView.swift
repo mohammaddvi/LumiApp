@@ -12,8 +12,6 @@ struct OnboardingFlowView: View {
     @State private var remindPeriodClose = true
     @State private var remindPMSClose = true
     @State private var remindSymptoms = true
-    @State private var iMessageEnabled = false
-    @State private var iMessageContacts: [MessageContact] = []
 
     private let totalSteps = 6
 
@@ -208,11 +206,6 @@ struct OnboardingFlowView: View {
                     isOn: $remindSymptoms
                 )
 
-                IMessageContactsEditor(
-                    contacts: $iMessageContacts,
-                    enabled: $iMessageEnabled
-                )
-
                 Text("We’ll ask for notification permission only if you enable at least one on-device reminder.")
                     .font(.footnote)
                     .foregroundStyle(Color.cycleSecondary)
@@ -273,9 +266,7 @@ struct OnboardingFlowView: View {
                     pmsSymptoms: Array(pmsSymptoms).sorted { $0.rawValue < $1.rawValue },
                     remindPeriodClose: remindPeriodClose,
                     remindPMSClose: (experiencesPMS ?? false) && remindPMSClose,
-                    remindSymptoms: remindSymptoms,
-                    iMessageContacts: iMessageContacts,
-                    iMessageRemindersEnabled: iMessageEnabled && !iMessageContacts.isEmpty
+                    remindSymptoms: remindSymptoms
                 )
             )
         }

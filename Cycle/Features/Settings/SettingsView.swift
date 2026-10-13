@@ -464,92 +464,81 @@ struct SettingsView: View {
                     }
                 }
             ))
-            DatePicker(
-                "Reminder time",
-                selection: Binding(
-                    get: {
-                        Calendar.current.date(
-                            bySettingHour: env.preferences.reminderHour,
-                            minute: env.preferences.reminderMinute,
-                            second: 0,
-                            of: .now
-                        ) ?? .now
-                    },
-                    set: { time in
-                        var prefs = env.preferences
-                        let parts = Calendar.current.dateComponents([.hour, .minute], from: time)
-                        prefs.reminderHour = parts.hour ?? 9
-                        prefs.reminderMinute = parts.minute ?? 0
-                        Task { await env.updatePreferences(prefs) }
-                    }
-                ),
-                displayedComponents: .hourAndMinute
-            )
-            .disabled(!env.preferences.notificationsEnabled)
+            // Only shown once reminders are on, so the section stays short.
+            if env.preferences.notificationsEnabled {
+                DatePicker(
+                    "Reminder time",
+                    selection: Binding(
+                        get: {
+                            Calendar.current.date(
+                                bySettingHour: env.preferences.reminderHour,
+                                minute: env.preferences.reminderMinute,
+                                second: 0,
+                                of: .now
+                            ) ?? .now
+                        },
+                        set: { time in
+                            var prefs = env.preferences
+                            let parts = Calendar.current.dateComponents([.hour, .minute], from: time)
+                            prefs.reminderHour = parts.hour ?? 9
+                            prefs.reminderMinute = parts.minute ?? 0
+                            Task { await env.updatePreferences(prefs) }
+                        }
+                    ),
+                    displayedComponents: .hourAndMinute
+                )
 
-            Toggle("Period is close", isOn: Binding(
-                get: { env.preferences.periodReminderEnabled },
-                set: { value in
-                    Task {
-                        var prefs = env.preferences
-                        prefs.periodReminderEnabled = value
-                        if value { prefs.notificationsEnabled = true }
-                        await env.updatePreferences(prefs)
-                    }
-                }
-            ))
-            .disabled(!env.preferences.notificationsEnabled)
-
-            if env.preferences.experiencesPMS {
-                Toggle("PMS is close", isOn: Binding(
-                    get: { env.preferences.pmsReminderEnabled },
+                Toggle("Period is close", isOn: Binding(
+                    get: { env.preferences.periodReminderEnabled },
                     set: { value in
                         Task {
                             var prefs = env.preferences
-                            prefs.pmsReminderEnabled = value
+                            prefs.periodReminderEnabled = value
                             if value { prefs.notificationsEnabled = true }
                             await env.updatePreferences(prefs)
                         }
                     }
                 ))
-                .disabled(!env.preferences.notificationsEnabled)
-            }
 
-            Toggle("Symptoms you might notice", isOn: Binding(
-                get: { env.preferences.symptomReminderEnabled },
-                set: { value in
-                    Task {
-                        var prefs = env.preferences
-                        prefs.symptomReminderEnabled = value
-                        if value { prefs.notificationsEnabled = true }
-                        await env.updatePreferences(prefs)
+                if env.preferences.experiencesPMS {
+                    Toggle("PMS is close", isOn: Binding(
+                        get: { env.preferences.pmsReminderEnabled },
+                        set: { value in
+                            Task {
+                                var prefs = env.preferences
+                                prefs.pmsReminderEnabled = value
+                                if value { prefs.notificationsEnabled = true }
+                                await env.updatePreferences(prefs)
+                            }
+                        }
+                    ))
+                }
+
+                Toggle("Symptoms you might notice", isOn: Binding(
+                    get: { env.preferences.symptomReminderEnabled },
+                    set: { value in
+                        Task {
+                            var prefs = env.preferences
+                            prefs.symptomReminderEnabled = value
+                            if value { prefs.notificationsEnabled = true }
+                            await env.updatePreferences(prefs)
+                        }
                     }
-                }
-            ))
-            .disabled(!env.preferences.notificationsEnabled)
+                ))
 
-            Toggle("Daily check-in reminder", isOn: Binding(
-                get: { env.preferences.checkInReminderEnabled },
-                set: { value in
-                    Task {
-                        var prefs = env.preferences
-                        prefs.checkInReminderEnabled = value
-                        await env.updatePreferences(prefs)
+                Toggle("Daily check-in reminder", isOn: Binding(
+                    get: { env.preferences.checkInReminderEnabled },
+                    set: { value in
+                        Task {
+                            var prefs = env.preferences
+                            prefs.checkInReminderEnabled = value
+                            await env.updatePreferences(prefs)
+                        }
                     }
-                }
-            ))
-            .disabled(!env.preferences.notificationsEnabled)
-
-            NavigationLink {
-                MessagesSettingsView()
-            } label: {
-                LabeledContent("Messages to your people") {
-                    let count = env.preferences.iMessageContacts.count
-                    Text(count == 0 ? "Off" : "\(count) \(count == 1 ? "person" : "people")")
-                }
+                ))
             }
         } footer: {
-            Text("Gentle reminders for you, and optional iMessage heads-ups for people you choose.")
+            Text("Gentle reminders from Lumi. They stay on this iPhone.")
         }
     }
 

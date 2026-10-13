@@ -24,8 +24,6 @@ final class AppEnvironment {
     private(set) var insights: [InsightResult] = []
     private(set) var isLoading = true
     private(set) var lastErrorMessage: String?
-    /// When set, UI presents Messages with recipients/body already filled.
-    var pendingIMessageDraft: PendingIMessageDraft?
 
     #if DEBUG
     /// Observable mirror of `PremiumEntitlementStore.debugOverride` so toggling it refreshes the UI.
@@ -67,7 +65,7 @@ final class AppEnvironment {
             } else {
                 appLock.markUnlocked()
             }
-            LuneNotificationDelegate.shared.configure(environment: self)
+            await removeLegacyMessageContacts()
             GemmaModelLocator.ensureDirectories()
             localAI.refreshModelAvailability()
             modelDownloader.refreshInstalledState()
@@ -96,38 +94,14 @@ final class AppEnvironment {
     }
     #endif
 
-    /// Called from notification delivery / tap to auto-open Messages.
-    func handleReminderNotification(id: String, autoPresentMessage: Bool) {
-        guard autoPresentMessage else { return }
-        guard preferences.iMessageRemindersEnabled else { return }
-        guard let kind = LuneNotificationID.messageKind(forNotificationId: id) else { return }
-        queueAutomaticIMessage(kind: kind)
-    }
-
-    func queueAutomaticIMessage(kind: ReminderMessageKind) {
-        let recipients = preferences.iMessageContacts
-            .filter(\.isValid)
-            .map(\.normalizedNumber)
-        guard !recipients.isEmpty else { return }
-        guard MessageComposeView.canSend else {
-            lastErrorMessage = "Messages isn’t available on this device."
-            return
-        }
-
-        var resolvedKind = kind
-        if kind == .pmsClose, !preferences.experiencesPMS {
-            resolvedKind = .periodClose
-        }
-
-        pendingIMessageDraft = PendingIMessageDraft(
-            kind: resolvedKind,
-            recipients: recipients,
-            body: resolvedKind.defaultBody
-        )
-    }
-
-    func clearPendingIMessage() {
-        pendingIMessageDraft = nil
+    /// "Messages to your people" was removed: clear any saved phone numbers once and switch it off,
+    /// so nothing from that feature keeps running or stays stored.
+    private func removeLegacyMessageContacts() async {
+        guard !preferences.iMessageContacts.isEmpty || preferences.iMessageRemindersEnabled else { return }
+        var prefs = preferences
+        prefs.iMessageContacts = []
+        prefs.iMessageRemindersEnabled = false
+        await updatePreferences(prefs)
     }
 
     func refresh() async {
@@ -338,8 +312,6 @@ final class AppEnvironment {
             prefs.pmsReminderEnabled = profile.remindPMSClose && profile.experiencesPMS
             prefs.symptomReminderEnabled = profile.remindSymptoms
             prefs.checkInReminderEnabled = false
-            prefs.iMessageContacts = profile.iMessageContacts.filter(\.isValid)
-            prefs.iMessageRemindersEnabled = profile.iMessageRemindersEnabled && !prefs.iMessageContacts.isEmpty
 
             if wantsAnyReminder {
                 let granted = await notifications.requestAuthorization()

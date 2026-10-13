@@ -17,7 +17,6 @@
 		1A41696806C85A3A663F3C57 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4BF8A061F3C9125B74110F81 /* SettingsView.swift */; };
 		1CF2485EA5D7C76375673436 /* CycleTipsEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1FF2E3BD43634E4D69DF3605 /* CycleTipsEngine.swift */; };
 		21994395BF97C2D2E9B73C97 /* lune-v1.store in Resources */ = {isa = PBXBuildFile; fileRef = F6933A452292B3616277648C /* lune-v1.store */; };
-		21B3449E46F9F41C68D6D6BA /* MessageComposeService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89EF8696A33969356A207C52 /* MessageComposeService.swift */; };
 		25A6AA1FE3854FF0199EAEBA /* AppEnvironment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 986339F0EC1A362FF37CDF72 /* AppEnvironment.swift */; };
 		2D63A14A0340E56CE2287313 /* CycleStats.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5B6B28237472EA69705C68E /* CycleStats.swift */; };
 		2F972E6F24F91416DC5DAF5A /* LuneLegal.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96E41B85C90F82BD519F5A31 /* LuneLegal.swift */; };
@@ -34,7 +33,6 @@
 		3DCF28AD7A7B41D963DE0978 /* lune-v1.store-wal in Resources */ = {isa = PBXBuildFile; fileRef = E472792D3843E50FB116C737 /* lune-v1.store-wal */; };
 		419E79BC79D3EC6485FB2BF4 /* PersistenceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A7E5C32EFEA3FE3F985B48A /* PersistenceTests.swift */; };
 		45CD2CC40C8A56B997F69349 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 461730167F6E6E52F863898E /* Assets.xcassets */; };
-		4867840D5A0B871D70B98C42 /* IMessageContactsViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F4C97C70FD65F9B18B1868D /* IMessageContactsViews.swift */; };
 		4B9061AA9E1362BB1ED5DE2B /* MarkPeriodDayTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9AC990E7828D831C2F4A94EF /* MarkPeriodDayTests.swift */; };
 		4C0F670760D64FED5AD78140 /* PeriodLogView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D90F70AE29648DE317B0371 /* PeriodLogView.swift */; };
 		4FED3A99A539DF01796F877D /* LuneCheckIn.swift in Sources */ = {isa = PBXBuildFile; fileRef = A38F450EF1E0328F0A441FD5 /* LuneCheckIn.swift */; };
@@ -47,7 +45,6 @@
 		63517EF728EC3BA51150DD1C /* FeelingPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93148302EF02627B02EB37E1 /* FeelingPicker.swift */; };
 		67ED729BC3B19626681E3FF9 /* DeleteAllDataTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A570814C974AAA8FAAFD9776 /* DeleteAllDataTests.swift */; };
 		6860C7CA50F25541A10A0C12 /* LunePremium.swift in Sources */ = {isa = PBXBuildFile; fileRef = A58834BC531B2ECE5712ACCE /* LunePremium.swift */; };
-		69E33D16A5EA01C57E126160 /* MessagesSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E3E120F0C7CF8BB35ECCD62 /* MessagesSettingsView.swift */; };
 		7A30EF0E5B943440222BD755 /* LumiTone.swift in Sources */ = {isa = PBXBuildFile; fileRef = 479D1DC71430884728C1F053 /* LumiTone.swift */; };
 		7C68DAB5BC871716D0421D65 /* LoggingViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51BCC6B85268D6ADFEF2B289 /* LoggingViews.swift */; };
 		80F10B2C5D499B588574C1F7 /* AppInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2CF923D10870B8F0C6C825B0 /* AppInfo.swift */; };
@@ -136,7 +133,6 @@
 		5D10A1E717C0613168B5FDEF /* PeriodSymptomsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PeriodSymptomsView.swift; sourceTree = "<group>"; };
 		5DDB6C766D18220119949A19 /* PremiumEntitlementStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PremiumEntitlementStore.swift; sourceTree = "<group>"; };
 		5DDD6FE11123E70E4ABE26F4 /* ExportService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExportService.swift; sourceTree = "<group>"; };
-		5F4C97C70FD65F9B18B1868D /* IMessageContactsViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IMessageContactsViews.swift; sourceTree = "<group>"; };
 		69AA8035D69BDF8B137E9D84 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 		7092ADB473BBCC5190DEC164 /* InsightEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InsightEngine.swift; sourceTree = "<group>"; };
 		767E551D9EC257A1F8330147 /* PlanTripView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlanTripView.swift; sourceTree = "<group>"; };
@@ -145,9 +141,7 @@
 		837007F1020485DE0849FC0A /* SymptomBaselineCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SymptomBaselineCard.swift; sourceTree = "<group>"; };
 		85378E2D5F31B9834778450D /* LumiView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LumiView.swift; sourceTree = "<group>"; };
 		865DC3B1BBD2867C33DF3B08 /* FeelingCheckInSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeelingCheckInSheet.swift; sourceTree = "<group>"; };
-		89EF8696A33969356A207C52 /* MessageComposeService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageComposeService.swift; sourceTree = "<group>"; };
 		8D80A6165646EFFC1BA44524 /* CycleApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CycleApp.swift; sourceTree = "<group>"; };
-		8E3E120F0C7CF8BB35ECCD62 /* MessagesSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessagesSettingsView.swift; sourceTree = "<group>"; };
 		8F6BECAD6D4C41C86E389A92 /* ReminderPlannerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReminderPlannerTests.swift; sourceTree = "<group>"; };
 		93148302EF02627B02EB37E1 /* FeelingPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeelingPicker.swift; sourceTree = "<group>"; };
 		96C2DD45B36A959EDC29D480 /* LocalAITypes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalAITypes.swift; sourceTree = "<group>"; };
@@ -232,8 +226,6 @@
 			isa = PBXGroup;
 			children = (
 				BB619AB64B853D743443E7E2 /* DataStoreRecoveryView.swift */,
-				5F4C97C70FD65F9B18B1868D /* IMessageContactsViews.swift */,
-				8E3E120F0C7CF8BB35ECCD62 /* MessagesSettingsView.swift */,
 				5D10A1E717C0613168B5FDEF /* PeriodSymptomsView.swift */,
 				0AED84B909885CC1311AFE57 /* PremiumPaywallView.swift */,
 				3EC3AF0238C45A457F52FA28 /* PrivacyPolicyView.swift */,
@@ -352,7 +344,6 @@
 				1CFBBBDF000C046E4F3E36AB /* AppLockService.swift */,
 				5DDD6FE11123E70E4ABE26F4 /* ExportService.swift */,
 				DBB5F282FA6149599A0F11B4 /* LumiBabble.swift */,
-				89EF8696A33969356A207C52 /* MessageComposeService.swift */,
 				E641A4EDE8E53A0931DA829E /* NotificationService.swift */,
 				5DDB6C766D18220119949A19 /* PremiumEntitlementStore.swift */,
 				49C7B368BEB69E1DC5F4BA59 /* PremiumService.swift */,
@@ -650,7 +641,6 @@
 				E4308C988EA2631766C175F5 /* FeelingForecastEngine.swift in Sources */,
 				63517EF728EC3BA51150DD1C /* FeelingPicker.swift in Sources */,
 				012CBD617DEE0848505E14A3 /* GemmaModelDownloader.swift in Sources */,
-				4867840D5A0B871D70B98C42 /* IMessageContactsViews.swift in Sources */,
 				35C80E0709508A604F08A0A1 /* InsightEngine.swift in Sources */,
 				8FD289F02F14A3725A93C9BB /* InsightsView.swift in Sources */,
 				DAC95A4AF35B2FDB5101BB44 /* LocalAIController.swift in Sources */,
@@ -674,8 +664,6 @@
 				0E7B9DA2F0E8F42B568AD4BE /* LuneSplashView.swift in Sources */,
 				31DF9F7EC45A66B2B453B92A /* LuneSymbol.swift in Sources */,
 				54D00EF60509245DAD6A613A /* LuneVoice.swift in Sources */,
-				21B3449E46F9F41C68D6D6BA /* MessageComposeService.swift in Sources */,
-				69E33D16A5EA01C57E126160 /* MessagesSettingsView.swift in Sources */,
 				F0CF5AF67D2CEECB32B03A09 /* NotificationService.swift in Sources */,
 				2FC1CEB5F6D65D6DB9536A94 /* OnboardingFlowView.swift in Sources */,
 				4C0F670760D64FED5AD78140 /* PeriodLogView.swift in Sources */,

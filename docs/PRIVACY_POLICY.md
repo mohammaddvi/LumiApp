@@ -13,7 +13,6 @@ MyLune is a local-first period and cycle tracker for iOS. This policy describes 
 - Flow, symptoms, mood, energy, sleep, and notes  
 - Predictions and insights computed on your phone  
 - App settings (reminders, appearance, optional app lock)  
-- Optional iMessage contact names and numbers you enter  
 - Optional on-device AI chat and downloaded Gemma model files  
 
 We do **not** operate a MyLune cloud that receives your health logs.
@@ -29,8 +28,6 @@ We do **not** operate a MyLune cloud that receives your health logs.
 
 Tracking works offline. The only optional network feature is downloading the Gemma AI model from **Hugging Face** when you choose **Settings → Local AI → Download**. That connection goes directly to Hugging Face; MyLune does not proxy it. Hugging Face may log standard connection metadata under their policy.
 
-iMessage reminders open Apple Messages with pre-filled text; you must tap Send. MyLune cannot send messages silently.
-
 ## Security
 
 Data is stored in the app sandbox using SwiftData. iOS Data Protection applies at rest. Optional Face ID / Touch ID lock uses Apple LocalAuthentication on device only.
@@ -40,7 +37,7 @@ Data is stored in the app sandbox using SwiftData. iOS Data Protection applies a
 - Export JSON or CSV in Settings  
 - Delete all data on device in Settings  
 - Remove the AI model without deleting cycle data  
-- Disable notifications and iMessage reminders  
+- Turn off reminders  
 
 ## Medical disclaimer
 
