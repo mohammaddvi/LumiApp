@@ -13,8 +13,8 @@ Cycle logs, check-ins, preferences, chat history, and Gemma inference all stay o
 ## Clone & open
 
 ```bash
-git clone https://github.com/mohammaddvi/LuneApp.git
-cd LuneApp
+git clone https://github.com/mohammaddvi/LumiApp.git
+cd LumiApp
 xcodegen generate   # sync project.yml → Cycle.xcodeproj after pulling changes
 open Cycle.xcodeproj
 ```
@@ -31,7 +31,7 @@ If you created this repo locally and need a remote:
 
 ```bash
 gh auth login
-gh repo create LuneApp --private --source=. --remote=origin --push
+gh repo create LumiApp --private --source=. --remote=origin --push
 ```
 
 Use `--public` instead of `--private` if you want a public repository. The first push includes the app source, tests, privacy policy, and Xcode project — not on-device model weights (`.litertlm` files are gitignored).
@@ -63,16 +63,16 @@ You can also place a `.litertlm` file in **Files → On My iPhone → Lumi → M
 1. **Privacy Policy URL (required)**  
    Apple requires a **public HTTPS URL** in App Store Connect, even for local-only apps.  
    - Enable GitHub Pages from `docs/` (see `docs/README.md`)  
-   - URL: `https://mohammaddvi.github.io/LuneApp/privacy.html`  
+   - URL: `https://mohammaddvi.github.io/LumiApp/privacy.html`  
    - Enter the same URL in **App Store Connect → App Information → Privacy Policy URL**  
    - Do **not** use the bare GitHub repo URL here
 
 2. **Support URL (required)**  
-   - URL: `https://mohammaddvi.github.io/LuneApp/support.html`  
+   - URL: `https://mohammaddvi.github.io/LumiApp/support.html`  
    - Matches `LuneLegal.supportURL` — paste into **App Store Connect → Support URL**
 
 3. **Marketing URL**  
-   - URL: `https://github.com/mohammaddvi/LuneApp`  
+   - URL: `https://github.com/mohammaddvi/LumiApp`  
    - Matches `LuneLegal.marketingURL`
 
 4. **App Privacy questionnaire (App Store Connect)**  

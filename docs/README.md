@@ -4,13 +4,13 @@ Static pages for App Store Connect **Privacy Policy URL** and **Support URL**.
 
 ## Enable GitHub Pages
 
-1. Open the repo on GitHub: [mohammaddvi/LuneApp](https://github.com/mohammaddvi/LuneApp)
+1. Open the repo on GitHub: [mohammaddvi/LumiApp](https://github.com/mohammaddvi/LumiApp)
 2. **Settings → Pages**
 3. Under **Build and deployment → Source**, choose **Deploy from a branch**
 4. Branch: **`main`** · Folder: **`/docs`**
 5. Save. Wait a minute for the site to publish.
 
-Site root: `https://mohammaddvi.github.io/LuneApp/`
+Site root: `https://mohammaddvi.github.io/LumiApp/`
 
 ## App Store Connect URLs
 
@@ -18,15 +18,15 @@ Paste these exactly:
 
 | Field | URL |
 |--------|-----|
-| **Privacy Policy URL** | `https://mohammaddvi.github.io/LuneApp/privacy.html` |
-| **Support URL** | `https://mohammaddvi.github.io/LuneApp/support.html` |
-| **Marketing URL** | `https://github.com/mohammaddvi/LuneApp` |
+| **Privacy Policy URL** | `https://mohammaddvi.github.io/LumiApp/privacy.html` |
+| **Support URL** | `https://mohammaddvi.github.io/LumiApp/support.html` |
+| **Marketing URL** | `https://github.com/mohammaddvi/LumiApp` |
 
 Do **not** use the bare repo URL for Privacy or Support — Apple needs readable HTML pages.
 
 In-app constants live in `Cycle/App/LuneLegal.swift` and should match the table above.
 
-**Source repo:** [github.com/mohammaddvi/LuneApp](https://github.com/mohammaddvi/LuneApp)
+**Source repo:** [github.com/mohammaddvi/LumiApp](https://github.com/mohammaddvi/LumiApp)
 
 ## Files
 

@@ -5,11 +5,11 @@ enum LuneLegal {
     static let appName = "Lumi"
     static let supportEmail = "support@mylune.app"
     /// Public URL for App Store Connect “Privacy Policy URL”.
-    static let privacyPolicyURL = URL(string: "https://mohammaddvi.github.io/LuneApp/privacy.html")!
+    static let privacyPolicyURL = URL(string: "https://mohammaddvi.github.io/LumiApp/privacy.html")!
     /// Public URL for App Store Connect “Support URL”.
-    static let supportURL = URL(string: "https://mohammaddvi.github.io/LuneApp/support.html")!
+    static let supportURL = URL(string: "https://mohammaddvi.github.io/LumiApp/support.html")!
     /// Marketing URL (App Store Connect) — public GitHub repository.
-    static let marketingURL = URL(string: "https://github.com/mohammaddvi/LuneApp")!
+    static let marketingURL = URL(string: "https://github.com/mohammaddvi/LumiApp")!
     static let lastUpdated = "August 26, 2026"
 
     static let medicalDisclaimer = """

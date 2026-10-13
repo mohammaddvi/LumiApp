@@ -53,7 +53,7 @@ We may update this policy when the app changes. Continued use after an update me
 
 ---
 
-Public HTML: `https://mohammaddvi.github.io/LuneApp/privacy.html`  
+Public HTML: `https://mohammaddvi.github.io/LumiApp/privacy.html`  
 Enter that URL in **App Store Connect → App Information → Privacy Policy URL**.
 
-Source repository: [github.com/mohammaddvi/LuneApp](https://github.com/mohammaddvi/LuneApp)
+Source repository: [github.com/mohammaddvi/LumiApp](https://github.com/mohammaddvi/LumiApp)
