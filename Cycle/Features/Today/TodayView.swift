@@ -55,7 +55,7 @@ struct TodayView: View {
         guard !Task.isCancelled, force || env.todayFeeling == nil else { return }
         lastQuestionDay = today
         withAnimation(.spring(response: 0.4, dampingFraction: 0.75)) {
-            speech.say(LuneVoice.lumiAsksFeeling.randomElement() ?? LuneVoice.feelingPrompt, mood: env.feelingForecast?.feeling)
+            speech.say(LuneVoice.lumiAsksFeeling.randomElement() ?? LuneVoice.feelingPrompt)
         }
     }
 
@@ -66,7 +66,7 @@ struct TodayView: View {
             try? await Task.sleep(for: .milliseconds(650))
             guard let feeling = env.todayFeeling else { return }
             withAnimation(.spring(response: 0.4, dampingFraction: 0.75)) {
-                speech.say(LuneVoice.lumiMessage(for: feeling), mood: feeling)
+                speech.say(LuneVoice.lumiMessage(for: feeling))
             }
         }
     }

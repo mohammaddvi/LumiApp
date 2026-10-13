@@ -25,3 +25,22 @@ struct DeleteAllDataTests {
         #expect(!StoreBackupService.hasAnyBackup())
     }
 }
+
+@MainActor
+@Suite("Removed Messages feature")
+struct RemovedMessagesFeatureTests {
+    @Test("Saved phone numbers from the removed feature are cleared on launch")
+    func clearsLegacyContacts() async {
+        let env = AppEnvironment.preview()
+        var prefs = env.preferences
+        prefs.iMessageContacts = [MessageContact(label: "Sam", phoneNumber: "+31612345678")]
+        prefs.iMessageRemindersEnabled = true
+        await env.updatePreferences(prefs)
+
+        await env.bootstrap()
+
+        #expect(env.preferences.iMessageContacts.isEmpty)
+        #expect(env.preferences.iMessageRemindersEnabled == false)
+        #expect(try! await env.store.load().iMessageContacts.isEmpty)
+    }
+}

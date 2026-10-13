@@ -116,7 +116,7 @@ struct AskLuneView: View {
                     }
                 }
                 .padding(20)
-                .frame(maxWidth: .infinity, alignment: .leading)
+                .readableContentWidth()
             }
             .scrollDismissesKeyboard(.interactively)
             .onChange(of: ai.sessionMessages.count) { _, _ in
@@ -320,6 +320,7 @@ struct AskLuneView: View {
                 .foregroundStyle(Color.cycleSecondary)
                 .frame(maxWidth: .infinity, alignment: .leading)
         }
+        .readableContentWidth()
         .padding(.horizontal, 16)
         .padding(.top, 10)
         .padding(.bottom, 8)

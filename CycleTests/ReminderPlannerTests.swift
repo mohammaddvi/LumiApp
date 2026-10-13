@@ -62,21 +62,23 @@ struct ReminderPlannerTests {
         #expect(!plan.contains { $0.id.hasPrefix(LuneNotificationID.pmsReminder) })
     }
 
-    @Test("Nothing is planned when reminders and iMessage are off")
+    @Test("Nothing is planned when reminders are off")
     func allOff() {
         #expect(ReminderPlanner.plan(preferences: .default, periodStarts: [date(2026, 11, 5)], now: date(2026, 10, 13), calendar: calendar).isEmpty)
     }
 
-    @Test("iMessage heads-ups are planned with the Messages action")
-    func iMessage() {
+    @Test("Settings left over from the removed Messages feature schedule nothing extra")
+    func legacyMessagesIgnored() {
         var prefs = allOn
         prefs.iMessageRemindersEnabled = true
         prefs.iMessageContacts = [MessageContact(label: "Sam", phoneNumber: "+31612345678")]
         let plan = ReminderPlanner.plan(preferences: prefs, periodStarts: [date(2026, 11, 5)], now: date(2026, 10, 13), calendar: calendar)
-        let heads = plan.first { $0.id == "lune.imessage.period.0" }
-        #expect(heads?.category == LuneNotificationID.autoMessageCategory)
-        #expect(LuneNotificationID.messageKind(forNotificationId: "lune.imessage.period.0") == .periodClose)
-        #expect(LuneNotificationID.messageKind(forNotificationId: "lune.pms.reminder.2") == .pmsClose)
-        #expect(LuneNotificationID.messageKind(forNotificationId: LuneNotificationID.checkInReminder) == nil)
+        #expect(!plan.contains { $0.id.contains("imessage") })
+        #expect(plan.allSatisfy { $0.id.hasPrefix("lune.") })
+
+        var off = UserPreferences.default
+        off.iMessageRemindersEnabled = true
+        off.iMessageContacts = prefs.iMessageContacts
+        #expect(ReminderPlanner.plan(preferences: off, periodStarts: [date(2026, 11, 5)], now: date(2026, 10, 13), calendar: calendar).isEmpty)
     }
 }

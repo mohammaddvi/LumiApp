@@ -8,7 +8,6 @@ struct PlannedReminder: Equatable, Sendable {
     let repeats: Bool
     let title: String
     let body: String
-    let category: String?
 }
 
 /// Decides which reminders to schedule. Covers the next few predicted periods, so reminders keep
@@ -27,14 +26,11 @@ enum ReminderPlanner {
         now: Date = .now,
         calendar: Calendar = .current
     ) -> [PlannedReminder] {
-        let wantsOnDevice = preferences.notificationsEnabled
-        let wantsIMessage = preferences.iMessageRemindersEnabled
-            && !preferences.iMessageContacts.filter(\.isValid).isEmpty
-        guard wantsOnDevice || wantsIMessage else { return [] }
+        guard preferences.notificationsEnabled else { return [] }
 
         var reminders: [PlannedReminder] = []
 
-        func add(_ id: String, index: Int, daysBefore: Int, start: Date, title: String, body: String, category: String?) {
+        func add(_ id: String, index: Int, daysBefore: Int, start: Date, title: String, body: String) {
             guard let day = calendar.date(byAdding: .day, value: -daysBefore, to: calendar.startOfDay(for: start)) else { return }
             var components = calendar.dateComponents([.year, .month, .day], from: day)
             components.hour = preferences.reminderHour
@@ -46,51 +42,31 @@ enum ReminderPlanner {
                 fireDate: components,
                 repeats: false,
                 title: title,
-                body: body,
-                category: category
+                body: body
             ))
         }
 
         let hasSymptoms = !preferences.typicalPeriodSymptoms.isEmpty || !preferences.typicalPMSSymptoms.isEmpty
-        let messageCategory = wantsIMessage ? LuneNotificationID.autoMessageCategory : nil
-        let messageBody = "Lumi will open Messages so you can notify your people."
 
         for (index, start) in periodStarts.prefix(cyclesAhead).enumerated() {
-            if wantsOnDevice, preferences.periodReminderEnabled {
+            if preferences.periodReminderEnabled {
                 add(LuneNotificationID.periodReminder, index: index, daysBefore: periodLeadDays, start: start,
                     title: "Period window approaching",
-                    body: wantsIMessage ? messageBody : "Your next period is likely soon. No pressure — log when you’re ready.",
-                    category: messageCategory)
+                    body: "Your next period is likely soon. No pressure — log when you’re ready.")
             }
-            if wantsOnDevice, preferences.pmsReminderEnabled, preferences.experiencesPMS {
+            if preferences.pmsReminderEnabled, preferences.experiencesPMS {
                 add(LuneNotificationID.pmsReminder, index: index, daysBefore: pmsLeadDays, start: start,
                     title: "PMS window may be near",
-                    body: wantsIMessage ? messageBody : pmsBody(preferences),
-                    category: messageCategory)
+                    body: pmsBody(preferences))
             }
-            if wantsIMessage {
-                if preferences.periodReminderEnabled || !preferences.notificationsEnabled {
-                    add(LuneNotificationID.iMessagePeriod, index: index, daysBefore: periodLeadDays, start: start,
-                        title: "Send period heads-up",
-                        body: "Tap to open Messages with your saved numbers — ready to send.",
-                        category: LuneNotificationID.autoMessageCategory)
-                }
-                if preferences.experiencesPMS, preferences.pmsReminderEnabled || !preferences.notificationsEnabled {
-                    add(LuneNotificationID.iMessagePMS, index: index, daysBefore: pmsLeadDays, start: start,
-                        title: "Send PMS heads-up",
-                        body: "Tap to open Messages with your saved numbers — ready to send.",
-                        category: LuneNotificationID.autoMessageCategory)
-                }
-            }
-            if wantsOnDevice, preferences.symptomReminderEnabled, hasSymptoms {
+            if preferences.symptomReminderEnabled, hasSymptoms {
                 add(LuneNotificationID.symptomReminder, index: index, daysBefore: symptomLeadDays, start: start,
                     title: "Symptoms you often notice",
-                    body: symptomBody(preferences),
-                    category: nil)
+                    body: symptomBody(preferences))
             }
         }
 
-        if wantsOnDevice, preferences.checkInReminderEnabled {
+        if preferences.checkInReminderEnabled {
             var components = DateComponents()
             components.hour = preferences.reminderHour
             components.minute = preferences.reminderMinute
@@ -99,8 +75,7 @@ enum ReminderPlanner {
                 fireDate: components,
                 repeats: true,
                 title: "How are you today?",
-                body: "Tap to tell Lumi how you feel 🌙",
-                category: nil
+                body: "Tap to tell Lumi how you feel 🌙"
             ))
         }
 

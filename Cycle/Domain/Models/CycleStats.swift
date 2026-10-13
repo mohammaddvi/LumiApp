@@ -1,6 +1,6 @@
 import Foundation
 
-/// What MyLune has learned from recent completed cycles (shown in Settings → Period).
+/// What Lumi has learned from recent completed cycles (shown in Settings → Period).
 struct CycleStats: Equatable, Sendable {
     let cycleCount: Int
     /// Median days from one period start to the next.

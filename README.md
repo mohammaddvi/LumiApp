@@ -1,8 +1,8 @@
-# MyLune
+# Lumi
 
 Local-first, privacy-first period & cycle tracker for iOS. Named for the moon.
 
-Cycle logs, check-ins, preferences, chat history, and Gemma inference all stay on device. There is no MyLune health cloud in this release.
+Cycle logs, check-ins, preferences, chat history, and Gemma inference all stay on device. There is no Lumi health cloud in this release.
 
 ## Requirements
 
@@ -13,13 +13,13 @@ Cycle logs, check-ins, preferences, chat history, and Gemma inference all stay o
 ## Clone & open
 
 ```bash
-git clone https://github.com/mohammaddvi/LuneApp.git
-cd LuneApp
+git clone https://github.com/mohammaddvi/LumiApp.git
+cd LumiApp
 xcodegen generate   # sync project.yml → Cycle.xcodeproj after pulling changes
 open Cycle.xcodeproj
 ```
 
-Run the **Cycle** scheme — the home-screen name and icon show as **MyLune**.
+Run the **Cycle** scheme — the home-screen name and icon show as **Lumi**.
 
 ### Signing
 
@@ -31,7 +31,7 @@ If you created this repo locally and need a remote:
 
 ```bash
 gh auth login
-gh repo create LuneApp --private --source=. --remote=origin --push
+gh repo create LumiApp --private --source=. --remote=origin --push
 ```
 
 Use `--public` instead of `--private` if you want a public repository. The first push includes the app source, tests, privacy policy, and Xcode project — not on-device model weights (`.litertlm` files are gitignored).
@@ -42,7 +42,7 @@ Use `--public` instead of `--private` if you want a public repository. The first
 2. Tap **Download Gemma 4** (~2.6 GB; Wi‑Fi recommended)
 3. Use the **Ask** tab after the model loads
 
-You can also place a `.litertlm` file in **Files → On My iPhone → MyLune → Models**.
+You can also place a `.litertlm` file in **Files → On My iPhone → Lumi → Models**.
 
 ## Production / App Store checklist
 
@@ -63,20 +63,20 @@ You can also place a `.litertlm` file in **Files → On My iPhone → MyLune →
 1. **Privacy Policy URL (required)**  
    Apple requires a **public HTTPS URL** in App Store Connect, even for local-only apps.  
    - Enable GitHub Pages from `docs/` (see `docs/README.md`)  
-   - URL: `https://mohammaddvi.github.io/LuneApp/privacy.html`  
+   - URL: `https://mohammaddvi.github.io/LumiApp/privacy.html`  
    - Enter the same URL in **App Store Connect → App Information → Privacy Policy URL**  
    - Do **not** use the bare GitHub repo URL here
 
 2. **Support URL (required)**  
-   - URL: `https://mohammaddvi.github.io/LuneApp/support.html`  
+   - URL: `https://mohammaddvi.github.io/LumiApp/support.html`  
    - Matches `LuneLegal.supportURL` — paste into **App Store Connect → Support URL**
 
 3. **Marketing URL**  
-   - URL: `https://github.com/mohammaddvi/LuneApp`  
+   - URL: `https://github.com/mohammaddvi/LumiApp`  
    - Matches `LuneLegal.marketingURL`
 
 4. **App Privacy questionnaire (App Store Connect)**  
-   For this build (no MyLune server, no analytics):
+   For this build (no Lumi server, no analytics):
    - **Data Not Collected** — if you do not receive health data on your servers  
    - Disclose in the policy that optional Hugging Face downloads use their servers  
    - No tracking, no advertising
@@ -96,7 +96,7 @@ xcodegen generate
 xcodebuild -scheme Cycle -configuration Release \
   -destination 'generic/platform=iOS' \
   -allowProvisioningUpdates DEVELOPMENT_TEAM=23PXPK4JQ6 archive \
-  -archivePath build/MyLune.xcarchive
+  -archivePath build/Lumi.xcarchive
 ```
 
 Then **Xcode → Organizer → Distribute App → App Store Connect**.
@@ -105,7 +105,7 @@ Then **Xcode → Organizer → Distribute App → App Store Connect**.
 
 ### Privacy policy — do you need one?
 
-**Yes.** App Store Connect requires a privacy policy URL for apps that handle health-related or personal data. MyLune also includes an in-app copy under **Settings → Privacy policy** so users can read it without leaving the app.
+**Yes.** App Store Connect requires a privacy policy URL for apps that handle health-related or personal data. Lumi also includes an in-app copy under **Settings → Privacy policy** so users can read it without leaving the app.
 
 ## Architecture
 
@@ -113,7 +113,7 @@ Then **Xcode → Organizer → Distribute App → App Store Connect**.
 - **Schema versioning** — `LuneSchemaV1` (1.0) → `LuneSchemaV2` (adds the check-in `feelingRaw`) via `LuneMigrationPlan`
 - **Automatic backups** — timestamped copy of the store before each launch (`Application Support/Cycle/Backups/`)
 - **Stable store path** — `Application Support/Cycle/cycle.store` (never rename after 1.0)
-- **Ask MyLune** — on-device Gemma via LiteRT-LM
+- **Ask Lumi** — on-device Gemma via LiteRT-LM
 - **Notifications** — local only (UNUserNotificationCenter)
 
 ### Adding a schema change in a future update

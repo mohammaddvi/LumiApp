@@ -15,7 +15,7 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "FFEA45BFD56057E540242F1B"
-               BuildableName = "MyLune.app"
+               BuildableName = "Lumi.app"
                BlueprintName = "Cycle"
                ReferencedContainer = "container:Cycle.xcodeproj">
             </BuildableReference>
@@ -45,7 +45,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "FFEA45BFD56057E540242F1B"
-            BuildableName = "MyLune.app"
+            BuildableName = "Lumi.app"
             BlueprintName = "Cycle"
             ReferencedContainer = "container:Cycle.xcodeproj">
          </BuildableReference>
@@ -79,7 +79,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "FFEA45BFD56057E540242F1B"
-            BuildableName = "MyLune.app"
+            BuildableName = "Lumi.app"
             BlueprintName = "Cycle"
             ReferencedContainer = "container:Cycle.xcodeproj">
          </BuildableReference>
@@ -96,7 +96,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "FFEA45BFD56057E540242F1B"
-            BuildableName = "MyLune.app"
+            BuildableName = "Lumi.app"
             BlueprintName = "Cycle"
             ReferencedContainer = "container:Cycle.xcodeproj">
          </BuildableReference>

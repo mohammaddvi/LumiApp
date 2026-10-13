@@ -1,7 +1,7 @@
 import Foundation
 import SwiftData
 
-/// Stable on-disk layout for MyLune's SwiftData store.
+/// Stable on-disk layout for Lumi's SwiftData store.
 /// Do not rename `directoryName` or `storeFileName` after release — updates rely on this path.
 enum LuneStoreLocation {
     static let directoryName = "Cycle"

@@ -1,11 +1,11 @@
-# MyLune Privacy Policy
+# Lumi Privacy Policy
 
 **Last updated:** August 26, 2026  
 **Contact:** support@mylune.app
 
 ## Overview
 
-MyLune is a local-first period and cycle tracker for iOS. This policy describes what the app stores, what may leave your device, and your choices.
+Lumi is a local-first period and cycle tracker for iOS. This policy describes what the app stores, what may leave your device, and your choices.
 
 ## What stays on your device
 
@@ -13,10 +13,9 @@ MyLune is a local-first period and cycle tracker for iOS. This policy describes 
 - Flow, symptoms, mood, energy, sleep, and notes  
 - Predictions and insights computed on your phone  
 - App settings (reminders, appearance, optional app lock)  
-- Optional iMessage contact names and numbers you enter  
 - Optional on-device AI chat and downloaded Gemma model files  
 
-We do **not** operate a MyLune cloud that receives your health logs.
+We do **not** operate a Lumi cloud that receives your health logs.
 
 ## What we do not do
 
@@ -27,9 +26,7 @@ We do **not** operate a MyLune cloud that receives your health logs.
 
 ## Network use
 
-Tracking works offline. The only optional network feature is downloading the Gemma AI model from **Hugging Face** when you choose **Settings → Local AI → Download**. That connection goes directly to Hugging Face; MyLune does not proxy it. Hugging Face may log standard connection metadata under their policy.
-
-iMessage reminders open Apple Messages with pre-filled text; you must tap Send. MyLune cannot send messages silently.
+Tracking works offline. The only optional network feature is downloading the Gemma AI model from **Hugging Face** when you choose **Settings → AI → Download**. That connection goes directly to Hugging Face; Lumi does not proxy it. Hugging Face may log standard connection metadata under their policy.
 
 ## Security
 
@@ -40,11 +37,11 @@ Data is stored in the app sandbox using SwiftData. iOS Data Protection applies a
 - Export JSON or CSV in Settings  
 - Delete all data on device in Settings  
 - Remove the AI model without deleting cycle data  
-- Disable notifications and iMessage reminders  
+- Turn off reminders  
 
 ## Medical disclaimer
 
-MyLune is not a medical device and does not diagnose or treat conditions. It helps you notice personal patterns only.
+Lumi is not a medical device and does not diagnose or treat conditions. It helps you notice personal patterns only.
 
 ## Children
 
@@ -56,7 +53,7 @@ We may update this policy when the app changes. Continued use after an update me
 
 ---
 
-Public HTML: `https://mohammaddvi.github.io/LuneApp/privacy.html`  
+Public HTML: `https://mohammaddvi.github.io/LumiApp/privacy.html`  
 Enter that URL in **App Store Connect → App Information → Privacy Policy URL**.
 
-Source repository: [github.com/mohammaddvi/LuneApp](https://github.com/mohammaddvi/LuneApp)
+Source repository: [github.com/mohammaddvi/LumiApp](https://github.com/mohammaddvi/LumiApp)

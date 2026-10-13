@@ -85,18 +85,6 @@ struct RootView: View {
         .task {
             await dismissSplashWhenReady()
         }
-        .sheet(item: Binding(
-            get: { env.pendingIMessageDraft },
-            set: { env.pendingIMessageDraft = $0 }
-        )) { draft in
-            MessageComposeView(
-                recipients: draft.recipients,
-                body: draft.body
-            ) { _ in
-                env.clearPendingIMessage()
-            }
-            .ignoresSafeArea()
-        }
     }
 
     @ViewBuilder
@@ -201,20 +189,17 @@ struct MainTabView: View {
             Tab("Today", systemImage: LuneSymbolName.moon) {
                 NavigationStack { TodayView() }
             }
-            if env.isPremium {
-                Tab("Ask", systemImage: "sparkles") {
-                    NavigationStack { AskLuneView(ai: env.localAI) }
-                }
-                Tab("Insights", systemImage: "chart.line.uptrend.xyaxis") {
-                    NavigationStack { InsightsView() }
-                }
+            Tab("Ask", systemImage: "sparkles") {
+                NavigationStack { AskLuneView(ai: env.localAI) }
+            }
+            Tab("Insights", systemImage: "chart.line.uptrend.xyaxis") {
+                NavigationStack { InsightsView() }
             }
             Tab("Settings", systemImage: "gearshape") {
                 NavigationStack { SettingsView() }
             }
         }
         .tint(Color.cycleAccentText)
-        .id(env.isPremium)
     }
 
     #if DEBUG

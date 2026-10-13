@@ -10,7 +10,7 @@ extension AppearanceMode {
     }
 }
 
-/// MyLune palette — dreamy moonlit storybook: lavender mist by day, night sky by dark.
+/// Lumi palette — dreamy moonlit storybook: lavender mist by day, night sky by dark.
 /// Token names (`sage`, `cycleCoral`, …) are kept for call-site stability; values are the fantasy palette.
 enum CyclePalette {
     // MARK: Light — lavender mist
@@ -301,6 +301,13 @@ struct SymptomCategoryCard<Content: View>: View {
 // MARK: - Accessibility helpers
 
 extension View {
+    /// Caps content at a comfortable reading width and centers it, so iPad layouts don't stretch
+    /// edge to edge. No effect on iPhone, which is narrower than the cap.
+    func readableContentWidth(_ maxWidth: CGFloat = 720) -> some View {
+        frame(maxWidth: maxWidth)
+            .frame(maxWidth: .infinity)
+    }
+
     /// Minimum 44×44 pt tap target for custom icon-only controls.
     func cycleAccessibleTapTarget() -> some View {
         frame(minWidth: 44, minHeight: 44)

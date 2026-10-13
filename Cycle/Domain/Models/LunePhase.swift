@@ -1,6 +1,6 @@
 import Foundation
 
-/// Moon-inspired cycle phases — MyLune's secret language.
+/// Moon-inspired cycle phases — Lumi's secret language.
 enum LunePhase: String, CaseIterable, Sendable {
     case reset
     case bloom
@@ -60,7 +60,7 @@ enum LunePhase: String, CaseIterable, Sendable {
     }
 }
 
-/// MyLune vocabulary — warm names for clinical terms.
+/// Lumi vocabulary — warm names for clinical terms.
 enum LuneLexicon {
     static let period = "Reset"
     static let ovulation = "Glow"

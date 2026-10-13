@@ -46,6 +46,7 @@ struct CalendarView<Header: View>: View {
             .padding(.horizontal, 22)
             .padding(.top, 8)
             .padding(.bottom, 32)
+            .readableContentWidth()
         }
         .fantasySkyBackground()
         .navigationTitle(title)
@@ -781,7 +782,7 @@ struct DateDetailView: View {
         }
     }
 
-    /// Future days can't be logged; show what MyLune expects instead.
+    /// Future days can't be logged; show what Lumi expects instead.
     private var predictionCard: some View {
         let kind = env.cycleOutlook?.kind(on: date)
         let pms = env.preferences.experiencesPMS

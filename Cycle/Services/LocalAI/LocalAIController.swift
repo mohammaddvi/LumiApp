@@ -100,8 +100,8 @@ final class LocalAIController {
     private let runtime = GemmaRuntime()
 
     private(set) var status: LocalAIStatus = .checking
-    /// The visible conversation. Kept across launches (saved on device with complete file protection)
-    /// until "New chat"; only bubbles, while `memory` is the clipped context fed to the model.
+    /// The visible conversation, kept in memory only: it survives switching apps but resets when the
+    /// app is closed (a fresh launch starts a new chat). `memory` is the clipped context fed to the model.
     private(set) var sessionMessages: [LocalChatMessage] = []
     /// Hidden on-device memory used as future prompt context.
     private(set) var memory: [LocalChatMessage] = []
@@ -115,7 +115,6 @@ final class LocalAIController {
 
     private static let maxMemoryMessages = 40
     private static let maxMemoryCharsPerNote = 500
-    private static let maxVisibleMessages = 80
 
     private var historyURL: URL {
         let dir = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask).first!
@@ -124,13 +123,14 @@ final class LocalAIController {
         return dir.appendingPathComponent("chat-memory.json")
     }
 
-    private var sessionURL: URL {
+    /// Where an earlier build saved the visible chat; removed at launch so nothing lingers on disk.
+    private var legacySessionURL: URL {
         historyURL.deletingLastPathComponent().appendingPathComponent("chat-visible.json")
     }
 
     init() {
         loadMemory()
-        loadSession()
+        try? FileManager.default.removeItem(at: legacySessionURL)
     }
 
     func refreshModelAvailability() {
@@ -173,7 +173,6 @@ final class LocalAIController {
     /// Clears the visible turn and wipes private memory (privacy).
     func forgetConversation() {
         sessionMessages.removeAll()
-        saveSession()
         memory.removeAll()
         saveMemory()
         Task {
@@ -194,11 +193,10 @@ final class LocalAIController {
     func startNewChat() {
         guard !isGenerating else { return }
         sessionMessages.removeAll()
-        saveSession()
     }
 
     #if DEBUG
-    /// Sample Ask MyLune thread for App Store screenshots (no on-device model required).
+    /// Sample Ask Lumi thread for App Store screenshots (no on-device model required).
     func seedDemoConversationForScreenshots() {
         status = .ready(modelName: "Gemma 4 (on-device)")
         sessionMessages = [
@@ -231,7 +229,6 @@ final class LocalAIController {
                 role: .systemNotice,
                 text: "Lumi's AI isn't ready yet. Download it in Settings → AI, then try again."
             ))
-            saveSession()
             return
         }
 
@@ -251,7 +248,6 @@ final class LocalAIController {
             if let assistant = sessionMessages.first(where: { $0.id == assistantID }) {
                 appendToMemory(user: userMessage, assistant: assistant)
             }
-            saveSession()
         }
 
         do {
@@ -358,18 +354,7 @@ final class LocalAIController {
         }
     }
 
-    private func loadSession() {
-        guard let data = try? Data(contentsOf: sessionURL),
-              let decoded = try? JSONDecoder().decode([LocalChatMessage].self, from: data)
-        else { return }
-        sessionMessages = decoded.filter { !$0.text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty }
-    }
 
-    private func saveSession() {
-        let kept = Array(sessionMessages.suffix(Self.maxVisibleMessages))
-        guard let data = try? JSONEncoder().encode(kept) else { return }
-        try? data.write(to: sessionURL, options: [.atomic, .completeFileProtection])
-    }
 
     private func saveMemory() {
         guard let data = try? JSONEncoder().encode(memory) else { return }

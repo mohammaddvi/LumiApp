@@ -5,15 +5,13 @@ import SwiftUI
 @Observable
 final class LumiSpeech {
     private(set) var text: String?
-    private(set) var mood: Feeling?
     /// True while the words are still typing out (Lumi's mouth moves).
     var isTalking = false
     /// Changes on every `say`, so the same line can be said twice.
     private(set) var utterance = 0
 
-    func say(_ text: String, mood: Feeling?) {
+    func say(_ text: String) {
         self.text = text
-        self.mood = mood
         utterance += 1
     }
 
@@ -23,7 +21,7 @@ final class LumiSpeech {
     }
 }
 
-/// A speech bubble whose text types out with Lumi's babble, then fades away on its own.
+/// A speech bubble whose text types out while Lumi's mouth moves, then fades away on its own.
 struct LumiSpeechBubble: View {
     let speech: LumiSpeech
     let onTap: () -> Void
@@ -73,7 +71,6 @@ struct LumiSpeechBubble: View {
             for (index, character) in text.enumerated() {
                 guard !Task.isCancelled else { return }
                 shownCount = index + 1
-                LumiBabble.shared.chirp(for: character, mood: speech.mood)
                 let pause: Duration = ".,!?".contains(character) ? .milliseconds(220) : .milliseconds(58)
                 try? await Task.sleep(for: pause)
             }

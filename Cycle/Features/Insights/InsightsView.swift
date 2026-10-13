@@ -13,6 +13,7 @@ struct InsightsView: View {
                 disclaimer
             }
             .padding(20)
+            .readableContentWidth()
         }
         .fantasySkyBackground()
         .navigationTitle("Insights")
