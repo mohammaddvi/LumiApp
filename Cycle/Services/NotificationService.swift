@@ -92,27 +92,49 @@ final class LuneNotificationDelegate: NSObject, UNUserNotificationCenterDelegate
         }
     }
 
+    // Completion-handler versions on purpose: the async versions finished iOS's completion handler
+    // off the main thread, and UIKit aborts when that happens on a tap that launches the app.
+
     nonisolated func userNotificationCenter(
         _ center: UNUserNotificationCenter,
-        willPresent notification: UNNotification
-    ) async -> UNNotificationPresentationOptions {
+        willPresent notification: UNNotification,
+        withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void
+    ) {
         let id = notification.request.identifier
-        await MainActor.run {
+        let completion = MainThreadCompletion(completionHandler)
+        Task { @MainActor in
             handle(id: id, autoPresentMessage: true)
+            completion.call([.banner, .sound, .list])
         }
-        return [.banner, .sound, .list]
     }
 
     nonisolated func userNotificationCenter(
         _ center: UNUserNotificationCenter,
-        didReceive response: UNNotificationResponse
-    ) async {
+        didReceive response: UNNotificationResponse,
+        withCompletionHandler completionHandler: @escaping () -> Void
+    ) {
         let id = response.notification.request.identifier
         let forceMessage = response.actionIdentifier == "LUNE_SEND_IMESSAGE"
             || response.actionIdentifier == UNNotificationDefaultActionIdentifier
-        await MainActor.run {
+        let completion = MainThreadCompletion(completionHandler)
+        Task { @MainActor in
             handle(id: id, autoPresentMessage: forceMessage)
+            completion.call(())
         }
+    }
+}
+
+/// Carries a UserNotifications completion handler to the main actor, where it is called exactly once.
+private struct MainThreadCompletion<Value>: @unchecked Sendable {
+    private let handler: (Value) -> Void
+
+    init(_ handler: @escaping (Value) -> Void) {
+        self.handler = handler
+    }
+
+    @MainActor
+    func call(_ value: Value) {
+        handler(value)
     }
 }
 
