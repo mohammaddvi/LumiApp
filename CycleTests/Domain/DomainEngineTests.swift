@@ -468,6 +468,21 @@ struct CycleOutlookEngineTests {
         #expect(outlook.kind(on: date(2026, 11, 19)) == .ovulation)
     }
 
+    @Test("The 5 days before ovulation are fertile days")
+    func fertileDays() {
+        // Ovulation Oct 22 → fertile Oct 17–21.
+        #expect(outlook.cycles[0].fertileStart == date(2026, 10, 17))
+        #expect(outlook.kind(on: date(2026, 10, 16)) == nil)
+        #expect(outlook.kind(on: date(2026, 10, 17)) == .fertile)
+        #expect(outlook.kind(on: date(2026, 10, 21)) == .fertile)
+        #expect(outlook.kind(on: date(2026, 10, 22)) == .ovulation)
+        #expect(outlook.kind(on: date(2026, 10, 23)) == nil)
+        #expect(outlook.overlaps(tripStart: date(2026, 10, 15), tripEnd: date(2026, 10, 23)) == [
+            PlanOverlap(kind: .fertile, start: date(2026, 10, 17), end: date(2026, 10, 21)),
+            PlanOverlap(kind: .ovulation, start: date(2026, 10, 22), end: date(2026, 10, 22)),
+        ])
+    }
+
     @Test("Trip overlaps merge into runs")
     func tripOverlaps() {
         let overlaps = outlook.overlaps(tripStart: date(2026, 11, 2), tripEnd: date(2026, 11, 7))
@@ -475,7 +490,7 @@ struct CycleOutlookEngineTests {
             PlanOverlap(kind: .prePeriod, start: date(2026, 11, 2), end: date(2026, 11, 4)),
             PlanOverlap(kind: .period, start: date(2026, 11, 5), end: date(2026, 11, 7)),
         ])
-        #expect(outlook.overlaps(tripStart: date(2026, 11, 12), tripEnd: date(2026, 11, 16)).isEmpty)
+        #expect(outlook.overlaps(tripStart: date(2026, 11, 10), tripEnd: date(2026, 11, 13)).isEmpty)
     }
 }
 
@@ -501,6 +516,19 @@ struct CycleDayEngineTests {
         let prePeriod = try #require(CycleDayEngine.state(on: date(2026, 9, 26), cycleStarts: starts, periodLength: 5, predictedNextStart: nil, calendar: calendar))
         #expect(prePeriod.isPrePeriod)
         #expect(prePeriod.cycleDay == 26)
+    }
+
+    @Test("Fertile window covers the 5 days before ovulation and ovulation day")
+    func fertileWindow() throws {
+        // Ovulation Sep 15 → fertile Sep 10–15.
+        func state(_ day: Int) throws -> CycleDayState {
+            try #require(CycleDayEngine.state(on: date(2026, 9, day), cycleStarts: starts, periodLength: 5, predictedNextStart: nil, calendar: calendar))
+        }
+        #expect(try !state(9).isFertile)
+        #expect(try state(10).isFertile)
+        #expect(try !state(14).isOvulationDay)
+        #expect(try state(15).isFertile && state(15).isOvulationDay)
+        #expect(try !state(16).isFertile)
     }
 
     @Test("Current cycle falls back to the predicted next start")

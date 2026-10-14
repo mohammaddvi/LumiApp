@@ -43,7 +43,7 @@ enum LuneSchemaV1: VersionedSchema {
             SDCycle.self,
             SDFlowEntry.self,
             LuneSchemaV1.SDDailyCheckIn.self,
-            SDPreferences.self,
+            LuneSchemaV1.SDPreferences.self,
         ]
     }
 
@@ -64,11 +64,60 @@ enum LuneSchemaV1: VersionedSchema {
             self.symptomsData = symptomsData
         }
     }
+
+    /// `SDPreferences` exactly as shipped in 1.0 and 1.1 (before `userName`). Also used by V2.
+    @Model
+    final class SDPreferences {
+        var id: String
+        var hasCompletedOnboarding: Bool
+        var typicalCycleLength: Int?
+        var firstDayOfWeek: Int
+        var notificationsEnabled: Bool
+        var periodReminderEnabled: Bool
+        var pmsReminderEnabled: Bool = false
+        var symptomReminderEnabled: Bool = false
+        var checkInReminderEnabled: Bool
+        var reminderHour: Int
+        var reminderMinute: Int
+        var biometricLockEnabled: Bool
+        var experiencesPMS: Bool = false
+        var typicalPeriodSymptomsData: Data = Data()
+        var typicalPMSSymptomsData: Data = Data()
+        var iMessageContactsData: Data = Data()
+        var iMessageRemindersEnabled: Bool = false
+        var appearanceModeRaw: String = "light"
+
+        init() {
+            id = "default"
+            hasCompletedOnboarding = false
+            firstDayOfWeek = 1
+            notificationsEnabled = false
+            periodReminderEnabled = false
+            checkInReminderEnabled = false
+            reminderHour = 9
+            reminderMinute = 0
+            biometricLockEnabled = false
+        }
+    }
 }
 
 /// Adds the optional `SDDailyCheckIn.feelingRaw` (Lumi's feeling check-in).
 enum LuneSchemaV2: VersionedSchema {
     static var versionIdentifier: Schema.Version { Schema.Version(2, 0, 0) }
+
+    static var models: [any PersistentModel.Type] {
+        [
+            SDCycle.self,
+            SDFlowEntry.self,
+            SDDailyCheckIn.self,
+            LuneSchemaV1.SDPreferences.self,
+        ]
+    }
+}
+
+/// Adds the optional `SDPreferences.userName` (what Lumi calls you).
+enum LuneSchemaV3: VersionedSchema {
+    static var versionIdentifier: Schema.Version { Schema.Version(3, 0, 0) }
 
     static var models: [any PersistentModel.Type] {
         [
@@ -83,17 +132,18 @@ enum LuneSchemaV2: VersionedSchema {
 /// Register every shipped schema version here. Add lightweight/custom stages when bumping version.
 enum LuneMigrationPlan: SchemaMigrationPlan {
     static var schemas: [any VersionedSchema.Type] {
-        [LuneSchemaV1.self, LuneSchemaV2.self]
+        [LuneSchemaV1.self, LuneSchemaV2.self, LuneSchemaV3.self]
     }
 
     static var stages: [MigrationStage] {
         [
             .lightweight(fromVersion: LuneSchemaV1.self, toVersion: LuneSchemaV2.self),
+            .lightweight(fromVersion: LuneSchemaV2.self, toVersion: LuneSchemaV3.self),
         ]
     }
 }
 
 enum LuneSchema {
-    static let current = LuneSchemaV2.self
-    static let currentVersion = LuneSchemaV2.versionIdentifier
+    static let current = LuneSchemaV3.self
+    static let currentVersion = LuneSchemaV3.versionIdentifier
 }

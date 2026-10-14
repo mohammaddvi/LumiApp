@@ -276,6 +276,7 @@ final class AppEnvironment {
 
             var prefs = preferences
             prefs.hasCompletedOnboarding = true
+            prefs.userName = profile.userName.flatMap(UserPreferences.cleanedName)
             prefs.typicalCycleLength = profile.typicalCycleLength
             prefs.experiencesPMS = profile.experiencesPMS
             prefs.typicalPeriodSymptoms = profile.periodSymptoms
@@ -573,6 +574,30 @@ final class AppEnvironment {
         }
     }
 
+    /// Saves what Lumi calls you; blank clears it.
+    func setUserName(_ raw: String) async {
+        var prefs = preferences
+        prefs.userName = UserPreferences.cleanedName(raw)
+        guard prefs.userName != preferences.userName else { return }
+        await updatePreferences(prefs)
+    }
+
+    /// Everything Lumi needs to pick today's greeting.
+    func lumiMomentInput(daysSinceLastVisit: Int?, now: Date = .now) -> LumiMomentInput {
+        let today = now.startOfDay
+        let periodDay: Int? = flow(on: today).flatMap { flow in
+            cycles.first { $0.id == flow.cycleId }.map { today.daysSince($0.startDate.startOfDay) + 1 }
+        }
+        return LumiMomentInput(
+            hour: Calendar.current.component(.hour, from: now),
+            daysSinceLastVisit: daysSinceLastVisit,
+            periodDay: periodDay,
+            daysUntilPredictedPeriod: prediction?.predictedDate.map { $0.startOfDay.daysSince(today) },
+            dayState: cycleDayState(on: today),
+            fertileStartsToday: predictedFertileWindow?.lowerBound.startOfDay == today
+        )
+    }
+
     func setAppearanceMode(_ mode: AppearanceMode) {
         guard preferences.appearanceMode != mode else { return }
         var prefs = preferences
@@ -646,6 +671,19 @@ final class AppEnvironment {
 
     func isEstimatedOvulationDay(_ date: Date) -> Bool {
         estimatedOvulationDates.contains(date.startOfDay)
+    }
+
+    /// One of the estimated fertile days before an ovulation day (past cycles and the current one).
+    func isEstimatedFertileDay(_ date: Date) -> Bool {
+        let day = date.startOfDay
+        return estimatedOvulationDates.contains { ovulation in
+            day != ovulation && CycleCalculator.fertileWindow(ovulation: ovulation).contains(day)
+        }
+    }
+
+    /// The current cycle's estimated fertile window, ovulation day included.
+    var predictedFertileWindow: ClosedRange<Date>? {
+        prediction?.predictedOvulationDate.map { CycleCalculator.fertileWindow(ovulation: $0) }
     }
 
     #if DEBUG

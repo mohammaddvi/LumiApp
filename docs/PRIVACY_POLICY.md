@@ -1,6 +1,6 @@
 # Lumi Privacy Policy
 
-**Last updated:** August 26, 2026  
+**Last updated:** October 14, 2026  
 **Contact:** support@mylune.app
 
 ## Overview
@@ -12,7 +12,7 @@ Lumi is a local-first period and cycle tracker for iOS. This policy describes wh
 - Period and cycle dates you log  
 - Flow, symptoms, mood, energy, sleep, and notes  
 - Predictions and insights computed on your phone  
-- App settings (reminders, appearance, optional app lock)  
+- App settings (reminders, appearance, optional app lock) and, if you give one, the name Lumi calls you  
 - Optional on-device AI chat and downloaded Gemma model files  
 
 We do **not** operate a Lumi cloud that receives your health logs.

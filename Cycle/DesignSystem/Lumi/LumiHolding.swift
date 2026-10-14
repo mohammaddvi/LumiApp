@@ -78,12 +78,16 @@ private struct LumiHoldingModifier: ViewModifier {
             .overlay(alignment: .topTrailing) {
                 if let speech, speech.text != nil {
                     // Beside Lumi's head, tail pointing at her.
+                    // Uses the room left of Lumi, so longer lines stay at about two lines
+                    // instead of growing up into the title.
                     LumiSpeechBubble(speech: speech, onTap: action)
-                        .frame(maxWidth: 210, alignment: .trailing)
+                        .frame(maxWidth: 300, alignment: .trailing)
+                        .frame(maxWidth: .infinity, alignment: .trailing)
+                        .padding(.trailing, trailingInset + size * 0.82)
                         // A zero-height frame at the card's top edge: the bubble grows upward from it,
                         // so its bottom sits just above the card whatever its line count.
                         .frame(height: 0, alignment: .bottom)
-                        .offset(x: -(trailingInset + size * 0.82), y: -8)
+                        .offset(y: -8)
                 } else if isGuess {
                     guessBubble
                         .offset(x: -(trailingInset + size * 0.86), y: -rise + size * 0.08)

@@ -32,4 +32,32 @@ struct MarkPeriodDayTests {
         #expect(env.flow(on: today.addingDays(-10)) == nil)
         #expect(env.cycles.count == 1)
     }
+
+    @Test("Editing a real period moves the next period, ovulation and fertile days")
+    func editsMovePredictions() async throws {
+        let env = AppEnvironment.preview()
+        let today = Date().startOfDay
+        #expect(await env.logPeriodRange(from: today.addingDays(-5), to: today.addingDays(-3)) == nil)
+        let next = try #require(env.prediction?.predictedDate).startOfDay
+        let ovulation = try #require(env.prediction?.predictedOvulationDate).startOfDay
+        #expect(env.cycleOutlook?.cycles.first?.periodStart == next)
+
+        // Period actually started two days earlier.
+        #expect(await env.markPeriodDay(on: today.addingDays(-7)) == nil)
+        #expect(env.prediction?.predictedDate?.startOfDay == next.addingDays(-2))
+        #expect(env.prediction?.predictedOvulationDate?.startOfDay == ovulation.addingDays(-2))
+        #expect(env.cycleOutlook?.cycles.first?.periodStart == next.addingDays(-2))
+        #expect(env.predictedFertileWindow?.lowerBound == ovulation.addingDays(-7))
+
+        // Removing that day again puts the start, and everything predicted from it, back.
+        await env.clearFlow(on: today.addingDays(-7))
+        #expect(env.prediction?.predictedDate?.startOfDay == next)
+        #expect(env.prediction?.predictedOvulationDate?.startOfDay == ovulation)
+
+        // A newer period resets the prediction from its start.
+        #expect(await env.logPeriodRange(from: today.addingDays(-1), to: today) == nil)
+        #expect(env.prediction?.predictedDate?.startOfDay == today.addingDays(-1 + 28))
+        #expect(env.isEstimatedOvulationDay(today.addingDays(-1 + 14)))
+        #expect(env.isEstimatedFertileDay(today.addingDays(-1 + 10)))
+    }
 }

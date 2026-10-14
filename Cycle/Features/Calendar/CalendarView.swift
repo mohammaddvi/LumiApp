@@ -20,6 +20,7 @@ struct CalendarView<Header: View>: View {
 
     private var calendar: Calendar { .current }
     @ScaledMetric(relativeTo: .body) private var cellHeight: CGFloat = 48
+    @ScaledMetric(relativeTo: .body) private var todaySize: CGFloat = 38
 
     init(
         title: String,
@@ -300,11 +301,27 @@ struct CalendarView<Header: View>: View {
         let isPredicted = (isPredictedDay(date) || planned == .period) && status == .none
         let isOvulation = (env.isEstimatedOvulationDay(date) || planned == .ovulation) && status != .period
         let isPrePeriod = planned == .prePeriod && status == .none
+        let isFertile = (env.isEstimatedFertileDay(date) || planned == .fertile)
+            && !isOvulation && status != .period && status != .spotting
 
         return Button {
             selectedDate = date
         } label: {
             ZStack {
+                // The fertile window: a soft gold wash that runs into the ovulation day.
+                if isFertile || isOvulation {
+                    Capsule()
+                        .fill(Color.cycleFertile.opacity(0.26))
+                        .padding(.vertical, 4)
+                        .padding(.horizontal, 3)
+                }
+                if isFertile && differentiateWithoutColor {
+                    Capsule()
+                        .stroke(Color.cycleOvulation, style: StrokeStyle(lineWidth: 1.4, dash: [1, 3]))
+                        .padding(.vertical, 4)
+                        .padding(.horizontal, 3)
+                }
+
                 if isPrePeriod {
                     Capsule()
                         .fill(Color.cycleCoral.opacity(0.16))
@@ -335,6 +352,14 @@ struct CalendarView<Header: View>: View {
                         .padding(.horizontal, 3)
                 }
 
+                // Today is the only solid shape on the calendar, so it reads first.
+                if isToday {
+                    Circle()
+                        .fill(Color.cycleAccentText)
+                        .frame(width: todaySize, height: todaySize)
+                        .shadow(color: Color.cycleAccentText.opacity(0.35), radius: 6, y: 2)
+                }
+
                 Text("\(calendar.component(.day, from: date))")
                     .font(.body.weight(isToday ? .bold : .medium))
                     .monospacedDigit()
@@ -354,7 +379,7 @@ struct CalendarView<Header: View>: View {
                         isOvulation: isOvulation,
                         feeling: env.checkIn(on: date)?.feeling
                     )
-                        .padding(.bottom, 5)
+                        .padding(.bottom, isToday ? 7 : 5)
                 }
                 .frame(maxWidth: .infinity, minHeight: cellHeight)
             }
@@ -367,6 +392,7 @@ struct CalendarView<Header: View>: View {
             status: status,
             isPredicted: isPredicted,
             isOvulation: isOvulation,
+            isFertile: isFertile,
             isPrePeriod: isPrePeriod,
             isToday: isToday
         ))
@@ -381,22 +407,17 @@ struct CalendarView<Header: View>: View {
     @ViewBuilder
     private func markerRow(status: CalendarDayStatus, isToday: Bool, isOvulation: Bool, feeling: Feeling?) -> some View {
         HStack(spacing: 3) {
-            if isToday {
-                Circle()
-                    .fill(Color.cycleText)
-                    .frame(width: 4, height: 4)
-            }
             if isOvulation {
                 Diamond()
-                    .fill(Color.cycleOvulation)
+                    .fill(isToday ? Color.cycleSurface : Color.cycleOvulation)
                     .frame(width: 5, height: 5)
             } else if status == .logged {
                 Circle()
-                    .fill(feeling.map { LumiPalette.for($0).bodyDark } ?? Color.cycleSage)
+                    .fill(isToday ? Color.cycleSurface : feeling.map { LumiPalette.for($0).bodyDark } ?? Color.cycleSage)
                     .frame(width: feeling == nil ? 4 : 6, height: feeling == nil ? 4 : 6)
             } else if status == .spotting {
                 Circle()
-                    .fill(Color.cycleSecondary.opacity(0.65))
+                    .fill(isToday ? Color.cycleSurface : Color.cycleSecondary.opacity(0.65))
                     .frame(width: 4, height: 4)
             } else {
                 Color.clear.frame(width: 4, height: 4)
@@ -411,6 +432,8 @@ struct CalendarView<Header: View>: View {
         isToday: Bool,
         isOvulation: Bool
     ) -> Color {
+        // White on purple in light mode, deep night on lilac in dark: 4.5:1+ both ways.
+        if isToday { return Color.cycleSurface }
         if status == .period || status == .spotting { return Color.cycleText }
         if isOvulation { return Color.cycleSecondary }
         // Full secondary, not faded: future days are tappable, so their numbers need 4.5:1.
@@ -425,21 +448,26 @@ struct CalendarView<Header: View>: View {
         VStack(alignment: .leading, spacing: 14) {
             HStack(spacing: 16) {
                 legendPill(fill: Color.cycleCoral.opacity(0.65), title: "Period")
+                legendOutline(title: "Predicted period")
+            }
+            HStack(spacing: 16) {
                 legendPill(fill: Color.cycleOvulation, title: "Ovulation")
+                legendPill(fill: Color.cycleFertile.opacity(0.5), title: "Fertile days")
             }
             HStack(spacing: 16) {
                 legendPill(fill: Color.cycleSage, title: "Logged")
-                legendOutline(title: "Predicted period")
+                legendPill(fill: Color.cycleCoral.opacity(0.3), title: env.preferences.experiencesPMS ? "PMS days" : "Days before period")
             }
-            legendPill(fill: Color.cycleCoral.opacity(0.3), title: env.preferences.experiencesPMS ? "PMS days" : "Days before period")
 
             if let prediction = env.prediction {
-                if let ovulation = prediction.predictedOvulationDate {
-                    Text("Estimated ovulation \(ovulation.formatted(.dateTime.month(.abbreviated).day())) · ~14 days before next period")
+                if let ovulation = prediction.predictedOvulationDate, let fertile = env.predictedFertileWindow {
+                    let short = Date.FormatStyle.dateTime.month(.abbreviated).day()
+                    let wide = Date.FormatStyle.dateTime.month(.wide).day()
+                    Text("Fertile days \((fertile.lowerBound..<fertile.upperBound).formatted(.interval.month(.abbreviated).day())) · ovulation \(ovulation.formatted(short))")
                         .font(.footnote.weight(.medium))
                         .foregroundStyle(Color.cycleSecondary)
                         .fixedSize(horizontal: false, vertical: true)
-                        .accessibilityLabel("Estimated ovulation \(ovulation.formatted(.dateTime.month(.wide).day()))")
+                        .accessibilityLabel("Estimated fertile days \(fertile.lowerBound.formatted(wide)) to \(fertile.upperBound.formatted(wide)), ovulation \(ovulation.formatted(wide))")
                 }
                 if let date = prediction.predictedDate {
                     Text("Next period likely \(date.formatted(.dateTime.month(.abbreviated).day())) · \(prediction.confidence.displayName.lowercased()) confidence")
@@ -450,7 +478,7 @@ struct CalendarView<Header: View>: View {
                 }
             }
 
-            Text("Ovulation is an estimate from your cycle length, not a fertility diagnosis.")
+            Text("Fertile days and ovulation are estimates from your cycle length. Not a fertility diagnosis or birth control.")
                 .font(.caption)
                 .foregroundStyle(Color.cycleSecondary.opacity(0.9))
         }
@@ -498,6 +526,7 @@ struct CalendarView<Header: View>: View {
         status: CalendarDayStatus,
         isPredicted: Bool,
         isOvulation: Bool,
+        isFertile: Bool,
         isPrePeriod: Bool,
         isToday: Bool
     ) -> String {
@@ -510,6 +539,7 @@ struct CalendarView<Header: View>: View {
         case .none: break
         }
         if isOvulation { parts.append("estimated ovulation") }
+        if isFertile { parts.append("likely fertile day, an estimate") }
         if isPredicted { parts.append("in predicted period window") }
         if isPrePeriod { parts.append(env.preferences.experiencesPMS ? "likely PMS day" : "likely day before your period") }
         return parts.joined(separator: ", ")
@@ -642,6 +672,8 @@ struct DateDetailView: View {
         if state.isPrePeriod {
             return env.preferences.experiencesPMS ? "PMS days" : "A few days before your period"
         }
+        if state.isOvulationDay { return "Estimated ovulation day. An estimate, not birth control." }
+        if state.isFertile { return "Likely fertile day. An estimate, not birth control." }
         switch state.phase {
         case .reset: return "Period days"
         case .bloom: return "Energy building after your period"
@@ -789,7 +821,7 @@ struct DateDetailView: View {
         return CycleCard {
             HStack(alignment: .top, spacing: 12) {
                 LumiView(
-                    feeling: kind == .ovulation ? .happy : (kind == nil ? .calm : .tired),
+                    feeling: kind == .ovulation || kind == .fertile ? .happy : (kind == nil ? .calm : .tired),
                     size: 56,
                     animated: false
                 )
@@ -798,7 +830,7 @@ struct DateDetailView: View {
                     Text(kind.map { "\(LuneVoice.plannedDayTitle($0, experiencesPMS: pms)) likely" } ?? "Nothing predicted")
                         .font(.system(.title3, design: .rounded).weight(.semibold))
                         .foregroundStyle(Color.cycleText)
-                    Text(kind.map { LuneVoice.tripTip($0, experiencesPMS: pms) } ?? "No period, PMS days or ovulation expected on this day.")
+                    Text(kind.map { LuneVoice.tripTip($0, experiencesPMS: pms) } ?? "No period, PMS, fertile or ovulation days expected on this day.")
                         .font(.subheadline)
                         .foregroundStyle(Color.cycleSecondary)
                         .fixedSize(horizontal: false, vertical: true)

@@ -9,13 +9,16 @@ struct SettingsView: View {
     @State private var showDeleteConfirm = false
     @State private var exportError: String?
     @State private var showDeleteModelConfirm = false
-    /// Which sections are open, remembered on this device (comma-separated `SettingsGroup` raw values).
-    @AppStorage("settings.expandedSections") private var expandedSections = ""
+    /// Which sections are open. Kept only while the app runs: a fresh launch starts all closed.
+    @State private var expandedSections: Set<SettingsGroup> = []
     /// iOS permission for notifications; refreshed on appear and when returning from iOS Settings.
     @State private var notificationStatus: UNAuthorizationStatus = .notDetermined
+    @State private var nameDraft = ""
+    @FocusState private var isEditingName: Bool
 
     var body: some View {
         List {
+            youSection
             aiSection
             periodSection
             communicationSection
@@ -36,6 +39,7 @@ struct SettingsView: View {
             Task { notificationStatus = await env.notifications.authorizationStatus() }
         }
         .onAppear {
+            nameDraft = env.preferences.userName ?? ""
             env.modelDownloader.refreshInstalledState()
             env.localAI.refreshModelAvailability()
         }
@@ -64,13 +68,39 @@ struct SettingsView: View {
 
     private func expansion(_ group: SettingsGroup) -> Binding<Bool> {
         Binding(
-            get: { expandedSections.split(separator: ",").contains(Substring(group.rawValue)) },
+            get: { expandedSections.contains(group) },
             set: { isOpen in
-                var open = Set(expandedSections.split(separator: ",").map(String.init))
-                if isOpen { open.insert(group.rawValue) } else { open.remove(group.rawValue) }
-                expandedSections = open.sorted().joined(separator: ",")
+                if isOpen { expandedSections.insert(group) } else { expandedSections.remove(group) }
             }
         )
+    }
+
+    // MARK: - You
+
+    private var youSection: some View {
+        CollapsibleSection(title: "You", systemImage: "person.crop.circle.fill", isExpanded: expansion(.you)) {
+            TextField("Your name", text: $nameDraft)
+                .textContentType(.givenName)
+                .textInputAutocapitalization(.words)
+                .autocorrectionDisabled()
+                .submitLabel(.done)
+                .focused($isEditingName)
+                .onSubmit { Task { await env.setUserName(nameDraft) } }
+                .onChange(of: isEditingName) { _, editing in
+                    if !editing { Task { await env.setUserName(nameDraft) } }
+                }
+                .onChange(of: env.preferences.userName) { _, saved in
+                    if !isEditingName { nameDraft = saved ?? "" }
+                }
+                .onChange(of: nameDraft) { _, new in
+                    if new.count > UserPreferences.maxNameLength {
+                        nameDraft = String(new.prefix(UserPreferences.maxNameLength))
+                    }
+                }
+                .accessibilityLabel(LuneVoice.namePrompt)
+        } footer: {
+            Text(LuneVoice.nameFooter)
+        }
     }
 
     private var appearanceSection: some View {
@@ -507,6 +537,6 @@ struct ShareSheet: UIViewControllerRepresentable {
 }
 
 /// The collapsible groups on the Settings screen.
-private enum SettingsGroup: String {
-    case ai, period, communication, appearance, privacy, data, about
+private enum SettingsGroup: String, Hashable {
+    case you, ai, period, communication, appearance, privacy, data, about
 }

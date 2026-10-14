@@ -15,7 +15,7 @@ struct PersistenceTests {
     @Test("In-memory container opens with migration plan")
     func inMemoryContainer() throws {
         _ = try PersistenceController.makeContainer(inMemory: true)
-        #expect(LuneSchema.currentVersion == Schema.Version(2, 0, 0))
+        #expect(LuneSchema.currentVersion == Schema.Version(3, 0, 0))
     }
 
     @Test("Cycle data survives container reopen")
@@ -140,6 +140,88 @@ struct PersistenceTests {
             (entity.name, Set(entity.properties.map(\.name)))
         })
         #expect(actual == expected)
+    }
+
+    /// V2 is what 1.1 builds wrote (V1 plus `SDDailyCheckIn.feelingRaw`).
+    @Test("Schema V2 still matches the 1.1 store on disk")
+    func schemaV2IsFrozen() {
+        let expected: [String: Set<String>] = [
+            "SDCycle": ["id", "startDate", "endDate", "sourceRaw", "createdAt", "updatedAt", "flowEntries"],
+            "SDFlowEntry": ["id", "date", "intensityRaw", "spotting", "cycle"],
+            "SDDailyCheckIn": ["id", "date", "moodRaw", "energyRaw", "sleepQualityRaw", "note", "symptomsData", "feelingRaw"],
+            "SDPreferences": [
+                "id", "hasCompletedOnboarding", "typicalCycleLength", "firstDayOfWeek", "notificationsEnabled",
+                "periodReminderEnabled", "pmsReminderEnabled", "symptomReminderEnabled", "checkInReminderEnabled",
+                "reminderHour", "reminderMinute", "biometricLockEnabled", "experiencesPMS",
+                "typicalPeriodSymptomsData", "typicalPMSSymptomsData", "iMessageContactsData",
+                "iMessageRemindersEnabled", "appearanceModeRaw",
+            ],
+        ]
+        let schema = Schema(versionedSchema: LuneSchemaV2.self)
+        let actual = Dictionary(uniqueKeysWithValues: schema.entities.map { entity in
+            (entity.name, Set(entity.properties.map(\.name)))
+        })
+        #expect(actual == expected)
+    }
+
+    @Test("A 1.1 (V2) store migrates to V3 without losing data, and keeps a name")
+    func migratesV2Store() async throws {
+        let fixture = try #require(
+            Bundle(for: FixtureBundleToken.self).url(forResource: "lune-v2", withExtension: "store")
+        )
+        let tempDir = FileManager.default.temporaryDirectory
+            .appending(path: "lune-migrate-\(UUID().uuidString)", directoryHint: .isDirectory)
+        try FileManager.default.createDirectory(at: tempDir, withIntermediateDirectories: true)
+        defer { try? FileManager.default.removeItem(at: tempDir) }
+
+        let storeURL = tempDir.appending(path: LuneStoreLocation.storeFileName)
+        try FileManager.default.copyItem(at: fixture, to: storeURL)
+        let configuration = ModelConfiguration(
+            "CycleStore",
+            schema: Schema(versionedSchema: LuneSchema.current),
+            url: storeURL,
+            cloudKitDatabase: .none
+        )
+        let feelingDay = Date(timeIntervalSinceReferenceDate: 813_621_600)
+
+        do {
+            let container = try ModelContainer(
+                for: Schema(versionedSchema: LuneSchema.current),
+                migrationPlan: LuneMigrationPlan.self,
+                configurations: configuration
+            )
+            let store = CycleDataStore(modelContainer: container)
+
+            #expect(try await store.fetchCycles().count == 7)
+            let all = Date(timeIntervalSinceReferenceDate: 0)...Date(timeIntervalSinceReferenceDate: 1_000_000_000)
+            #expect(try await store.fetchFlowEntries(from: all.lowerBound, to: all.upperBound).count == 33)
+            #expect(try await store.fetchCheckIns(from: all.lowerBound, to: all.upperBound).count == 19)
+            #expect(try await store.fetchCheckIns(from: feelingDay, to: feelingDay).first?.feeling == .happy)
+
+            var preferences = try await store.load()
+            #expect(preferences.typicalCycleLength == 28)
+            #expect(preferences.experiencesPMS)
+            #expect(preferences.userName == nil)
+
+            preferences.userName = "Sara"
+            try await store.save(preferences)
+        }
+
+        let reopened = try ModelContainer(
+            for: Schema(versionedSchema: LuneSchema.current),
+            migrationPlan: LuneMigrationPlan.self,
+            configurations: configuration
+        )
+        let saved = try await CycleDataStore(modelContainer: reopened).load()
+        #expect(saved.userName == "Sara")
+        #expect(saved.typicalCycleLength == 28)
+    }
+
+    @Test("Names are trimmed and blank names are dropped")
+    func cleansNames() {
+        #expect(UserPreferences.cleanedName("  Sara \n") == "Sara")
+        #expect(UserPreferences.cleanedName("   ") == nil)
+        #expect(UserPreferences.cleanedName(String(repeating: "a", count: 50))?.count == UserPreferences.maxNameLength)
     }
 
     @Test("Backup is created for an existing store file")

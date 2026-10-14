@@ -96,6 +96,11 @@ extension Color {
         t.userInterfaceStyle == .dark ? CyclePalette.nightSageMuted : CyclePalette.ovulationStrong
     })
 
+    /// Bright star gold for the fertile-days wash (decorative fill; days also carry a label).
+    static let cycleFertile = Color(uiColor: UIColor { t in
+        t.userInterfaceStyle == .dark ? CyclePalette.nightSageMuted : CyclePalette.sageMuted
+    })
+
     /// Selection washes, draft ranges, subtle chips.
     static let cycleAccentSoft = Color(uiColor: UIColor { t in
         t.userInterfaceStyle == .dark ? CyclePalette.nightSageSoft : CyclePalette.sageSoft

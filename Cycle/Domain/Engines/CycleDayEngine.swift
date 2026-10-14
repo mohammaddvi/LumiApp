@@ -6,6 +6,9 @@ struct CycleDayState: Equatable, Sendable {
     let phase: LunePhase
     /// One of the few days right before the next period (PMS days).
     let isPrePeriod: Bool
+    /// In the estimated fertile window (ovulation day included).
+    var isFertile = false
+    var isOvulationDay = false
 }
 
 enum CycleDayEngine {
@@ -37,6 +40,13 @@ enum CycleDayEngine {
         let daysUntilNext = nextStart.flatMap { calendar.dateComponents([.day], from: day, to: $0).day }
         let isPrePeriod = phase != .reset
             && (daysUntilNext.map { (1...LunePhaseEngine.softDaysBeforeReset).contains($0) } ?? false)
-        return CycleDayState(cycleDay: cycleDay, phase: phase, isPrePeriod: isPrePeriod)
+        let fertileWindow = ovulation.map { CycleCalculator.fertileWindow(ovulation: $0, calendar: calendar) }
+        return CycleDayState(
+            cycleDay: cycleDay,
+            phase: phase,
+            isPrePeriod: isPrePeriod,
+            isFertile: phase != .reset && (fertileWindow?.contains(day) ?? false),
+            isOvulationDay: phase != .reset && fertileWindow?.upperBound == day
+        )
     }
 }

@@ -5,6 +5,11 @@ struct AskLuneView: View {
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @Bindable private var ai: LocalAIController
     @FocusState private var promptFocused: Bool
+    /// Height of the visible chat, so the latest exchange can fill a screen and its question can sit at the top.
+    @State private var viewportHeight: CGFloat = 0
+
+    private static let latestTurnID = "latestTurn"
+    private static let chatPadding: CGFloat = 20
     @ScaledMetric(relativeTo: .body) private var sendIconSize: CGFloat = 32
 
     init(ai: LocalAIController) {
@@ -31,7 +36,7 @@ struct AskLuneView: View {
                         Button {
                             ai.startNewChat()
                         } label: {
-                            Label("New chat", systemImage: "square.and.pencil")
+                            Label("Reset chat", systemImage: "arrow.counterclockwise")
                         }
                         .disabled(ai.isGenerating)
                     }
@@ -109,30 +114,42 @@ struct AskLuneView: View {
                     if ai.sessionMessages.isEmpty {
                         emptyState
                     } else {
-                        ForEach(ai.sessionMessages) { message in
+                        let messages = ai.sessionMessages
+                        let split = messages.lastIndex { $0.role == .user } ?? messages.count
+                        ForEach(messages[..<split]) { message in
                             bubble(message)
                                 .id(message.id)
                         }
+                        if split < messages.count {
+                            // Your latest message and Lumi's reply fill at least a screen, so the
+                            // message can scroll to the top while the reply types out below it.
+                            VStack(alignment: .leading, spacing: 14) {
+                                ForEach(messages[split...]) { message in
+                                    bubble(message)
+                                        .id(message.id)
+                                }
+                            }
+                            .frame(
+                                maxWidth: .infinity,
+                                minHeight: max(0, viewportHeight - Self.chatPadding * 2),
+                                alignment: .topLeading
+                            )
+                            .id(Self.latestTurnID)
+                        }
                     }
                 }
-                .padding(20)
+                .padding(Self.chatPadding)
                 .readableContentWidth()
             }
             .scrollDismissesKeyboard(.interactively)
+            .onGeometryChange(for: CGFloat.self) { $0.size.height } action: { viewportHeight = $0 }
             .onChange(of: ai.sessionMessages.count) { _, _ in
-                if let last = ai.sessionMessages.last {
-                    scrollToLast(last.id, proxy: proxy, animated: !reduceMotion)
-                }
-            }
-            .onChange(of: ai.sessionMessages.last?.text) { _, _ in
-                if let last = ai.sessionMessages.last {
-                    scrollToLast(last.id, proxy: proxy, animated: false)
-                }
+                showLatestTurn(proxy: proxy, animated: !reduceMotion)
             }
             .onChange(of: promptFocused) { _, focused in
-                guard focused, let last = ai.sessionMessages.last else { return }
+                guard focused else { return }
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.05) {
-                    scrollToLast(last.id, proxy: proxy, animated: !reduceMotion)
+                    showLatestTurn(proxy: proxy, animated: !reduceMotion)
                 }
             }
         }
@@ -151,7 +168,8 @@ struct AskLuneView: View {
                     cycleDay: env.currentCycleDay,
                     moment: env.cycleMoment,
                     experiencesPMS: env.preferences.experiencesPMS,
-                    canPersonalize: !isModelMissing
+                    canPersonalize: !isModelMissing,
+                    name: env.preferences.userName
                 ))
                 .font(.body)
                 .foregroundStyle(Color.cycleText)
@@ -344,7 +362,8 @@ struct AskLuneView: View {
             prediction: env.prediction,
             insights: env.insights,
             currentCycleDay: env.currentCycleDay,
-            moment: env.cycleMoment
+            moment: env.cycleMoment,
+            outlook: env.cycleOutlook
         )
         await ai.send(userText: ai.draft, context: context)
     }
@@ -354,11 +373,20 @@ struct AskLuneView: View {
         await send()
     }
 
-    private func scrollToLast(_ id: UUID, proxy: ScrollViewProxy, animated: Bool) {
+    /// Puts your latest message at the top; without one (only a notice), shows the newest message.
+    private func showLatestTurn(proxy: ScrollViewProxy, animated: Bool) {
+        let hasTurn = ai.sessionMessages.contains { $0.role == .user }
+        let scroll = {
+            if hasTurn {
+                proxy.scrollTo(Self.latestTurnID, anchor: .top)
+            } else if let last = ai.sessionMessages.last {
+                proxy.scrollTo(last.id, anchor: .bottom)
+            }
+        }
         if animated {
-            withAnimation { proxy.scrollTo(id, anchor: .bottom) }
+            withAnimation(.smooth(duration: 0.35)) { scroll() }
         } else {
-            proxy.scrollTo(id, anchor: .bottom)
+            scroll()
         }
     }
 }

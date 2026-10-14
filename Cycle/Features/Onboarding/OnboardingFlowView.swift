@@ -3,6 +3,9 @@ import SwiftUI
 struct OnboardingFlowView: View {
     @Environment(AppEnvironment.self) private var env
     @State private var step = 0
+    @State private var userName = ""
+    /// Onboarding is where Lumi asks your name; Today won't ask again.
+    @AppStorage("lumi.askedName") private var askedName = false
     @State private var lastPeriodStart = Date().addingDays(-5)
     @State private var typicalLength = 28
     @State private var useTypicalLength = false
@@ -66,6 +69,22 @@ struct OnboardingFlowView: View {
             Text("no account. no ads. no data sold.")
                 .font(.body)
                 .foregroundStyle(Color.cycleSecondary)
+
+            VStack(alignment: .leading, spacing: 8) {
+                Text(LuneVoice.namePrompt)
+                    .font(.system(.headline, design: .rounded))
+                    .foregroundStyle(Color.cycleText)
+                TextField("Your name (optional)", text: $userName)
+                    .textContentType(.givenName)
+                    .textInputAutocapitalization(.words)
+                    .autocorrectionDisabled()
+                    .submitLabel(.done)
+                    .padding(.horizontal, 16)
+                    .padding(.vertical, 12)
+                    .background(Color.cycleSurface, in: Capsule())
+                    .overlay(Capsule().stroke(Color.cycleBorder, lineWidth: 1))
+            }
+            .padding(.top, 12)
             Spacer()
         }
         .padding(28)
@@ -256,9 +275,11 @@ struct OnboardingFlowView: View {
             return
         }
 
+        askedName = true
         Task {
             await env.completeOnboarding(
                 OnboardingProfile(
+                    userName: UserPreferences.cleanedName(userName),
                     lastPeriodStart: lastPeriodStart,
                     typicalCycleLength: useTypicalLength ? typicalLength : nil,
                     experiencesPMS: experiencesPMS ?? false,

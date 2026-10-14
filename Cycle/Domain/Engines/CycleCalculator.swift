@@ -50,6 +50,17 @@ enum CycleCalculator {
         return calendar.date(byAdding: .day, value: offset, to: start)
     }
 
+    /// Days before ovulation that count as fertile: sperm can survive about five days.
+    static let fertileDaysBeforeOvulation = 5
+
+    /// The estimated fertile window: the 5 days before ovulation plus ovulation day.
+    /// An estimate from cycle length, not birth control.
+    static func fertileWindow(ovulation: Date, calendar: Calendar = .current) -> ClosedRange<Date> {
+        let end = calendar.startOfDay(for: ovulation)
+        let start = calendar.date(byAdding: .day, value: -fertileDaysBeforeOvulation, to: end) ?? end
+        return start...end
+    }
+
     /// Estimated ovulation from a predicted (or observed) next-period start.
     static func estimatedOvulationDate(
         beforeNextPeriod nextPeriodStart: Date,

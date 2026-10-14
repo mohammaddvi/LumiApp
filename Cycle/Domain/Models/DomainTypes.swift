@@ -301,6 +301,18 @@ struct UserPreferences: Hashable, Sendable {
     var iMessageRemindersEnabled: Bool
     /// Defaults to light (lavender mist) so the look stays consistent.
     var appearanceMode: AppearanceMode
+    /// What Lumi calls you; `nil` until you tell her.
+    var userName: String? = nil
+
+    /// Longest name Lumi stores; keeps bubbles and greetings tidy.
+    static let maxNameLength = 30
+
+    /// Trimmed, length-limited name, or `nil` when blank.
+    static func cleanedName(_ raw: String) -> String? {
+        let trimmed = raw.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !trimmed.isEmpty else { return nil }
+        return String(trimmed.prefix(maxNameLength))
+    }
 
     static let `default` = UserPreferences(
         hasCompletedOnboarding: false,
@@ -350,6 +362,7 @@ struct MessageContact: Identifiable, Hashable, Codable, Sendable {
 
 /// Snapshot of answers collected during first-run onboarding.
 struct OnboardingProfile: Sendable {
+    var userName: String? = nil
     var lastPeriodStart: Date
     var typicalCycleLength: Int?
     var experiencesPMS: Bool
