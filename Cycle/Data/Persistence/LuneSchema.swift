@@ -33,8 +33,9 @@ enum LuneStoreLocation {
 
 // MARK: - Schema versioning
 
-/// Initial production schema (1.0) — cycles, flow, check-ins, preferences.
-/// Models that changed later are frozen here as nested copies; never edit them.
+/// First schema, written by pre-release builds (MyLune 1.0) — cycles, flow, check-ins, preferences.
+/// Models that changed later are frozen here as nested copies; never edit them. Pre-release stores
+/// still exist on test devices, so every version keeps migrating forward.
 enum LuneSchemaV1: VersionedSchema {
     static var versionIdentifier: Schema.Version { Schema.Version(1, 0, 0) }
 
@@ -47,7 +48,7 @@ enum LuneSchemaV1: VersionedSchema {
         ]
     }
 
-    /// `SDDailyCheckIn` exactly as shipped in 1.0 (before `feelingRaw`).
+    /// `SDDailyCheckIn` exactly as MyLune 1.0 builds wrote it (before `feelingRaw`).
     @Model
     final class SDDailyCheckIn {
         @Attribute(.unique) var id: UUID
@@ -65,7 +66,7 @@ enum LuneSchemaV1: VersionedSchema {
         }
     }
 
-    /// `SDPreferences` exactly as shipped in 1.0 and 1.1 (before `userName`). Also used by V2.
+    /// `SDPreferences` exactly as pre-release builds wrote it (before `userName`). Also used by V2.
     @Model
     final class SDPreferences {
         var id: String
@@ -129,7 +130,7 @@ enum LuneSchemaV3: VersionedSchema {
     }
 }
 
-/// Register every shipped schema version here. Add lightweight/custom stages when bumping version.
+/// Register every schema version that ever reached a device here. Add lightweight/custom stages when bumping version.
 enum LuneMigrationPlan: SchemaMigrationPlan {
     static var schemas: [any VersionedSchema.Type] {
         [LuneSchemaV1.self, LuneSchemaV2.self, LuneSchemaV3.self]

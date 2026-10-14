@@ -169,7 +169,7 @@ final class GemmaModelDownloader {
             self.session = session
 
             var request = URLRequest(url: Self.remoteURL)
-            request.setValue("Lumi/1.1 (iOS; on-device Gemma)", forHTTPHeaderField: "User-Agent")
+            request.setValue("Lumi/\(AppInfo.marketingVersion) (iOS; on-device Gemma)", forHTTPHeaderField: "User-Agent")
             request.setValue("application/octet-stream", forHTTPHeaderField: "Accept")
 
             let downloadTask = session.downloadTask(with: request)
