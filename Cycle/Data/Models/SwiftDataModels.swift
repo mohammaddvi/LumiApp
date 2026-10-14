@@ -180,6 +180,8 @@ final class SDPreferences {
     var iMessageContactsData: Data = Data()
     var iMessageRemindersEnabled: Bool = false
     var appearanceModeRaw: String = AppearanceMode.light.rawValue
+    /// What Lumi calls you (schema V3); optional.
+    var userName: String? = nil
 
     init(from preferences: UserPreferences = .default) {
         self.id = "default"
@@ -200,6 +202,7 @@ final class SDPreferences {
         self.iMessageContactsData = Self.encodeContacts(preferences.iMessageContacts)
         self.iMessageRemindersEnabled = preferences.iMessageRemindersEnabled
         self.appearanceModeRaw = preferences.appearanceMode.rawValue
+        self.userName = preferences.userName
     }
 
     func apply(_ preferences: UserPreferences) {
@@ -220,6 +223,7 @@ final class SDPreferences {
         iMessageContactsData = Self.encodeContacts(preferences.iMessageContacts)
         iMessageRemindersEnabled = preferences.iMessageRemindersEnabled
         appearanceModeRaw = preferences.appearanceMode.rawValue
+        userName = preferences.userName
     }
 
     func toDomain() -> UserPreferences {
@@ -240,7 +244,8 @@ final class SDPreferences {
             typicalPMSSymptoms: Self.decodeSymptoms(typicalPMSSymptomsData),
             iMessageContacts: Self.decodeContacts(iMessageContactsData),
             iMessageRemindersEnabled: iMessageRemindersEnabled,
-            appearanceMode: AppearanceMode(rawValue: appearanceModeRaw) ?? .light
+            appearanceMode: AppearanceMode(rawValue: appearanceModeRaw) ?? .light,
+            userName: userName
         )
     }
 

@@ -10,8 +10,12 @@ struct LocalHealthContext: Sendable, Equatable {
 }
 
 enum LocalHealthContextBuilder {
-    private static let maxCycles = 12
-    private static let maxCheckIns = 40
+    // Kept small: the whole prompt has to fit Gemma's on-device token budget with room for the reply.
+    private static let maxCycles = 6
+    private static let maxFlows = 14
+    private static let maxCheckIns = 14
+    private static let maxInsights = 4
+    private static let followingCycles = 2
     private static let dateFormat: Date.FormatStyle = .dateTime.year().month(.abbreviated).day()
 
     static func build(
@@ -24,10 +28,16 @@ enum LocalHealthContextBuilder {
         insights: [InsightResult],
         currentCycleDay: Int?,
         moment: CycleMoment? = nil,
-        now: Date = .now
+        outlook: CycleOutlook? = nil,
+        now: Date = .now,
+        calendar: Calendar = .current
     ) -> LocalHealthContext {
         var lines: [String] = []
         lines.append("Today: \(now.formatted(dateFormat))")
+        if let name = preferences.userName {
+            lines.append("The user's name: \(name) (use it now and then, warmly; not in every reply)")
+        }
+        lines.append(contentsOf: keyDateLines(prediction: prediction, outlook: outlook, now: now, calendar: calendar))
         if let day = currentCycleDay {
             lines.append("Current cycle day: \(day)")
         }
@@ -69,7 +79,7 @@ enum LocalHealthContextBuilder {
             }
         }
 
-        let recentFlows = Array(flows.sorted { $0.date < $1.date }.suffix(30))
+        let recentFlows = Array(flows.sorted { $0.date < $1.date }.suffix(maxFlows))
         if !recentFlows.isEmpty {
             lines.append("Recent flow days:")
             for flow in recentFlows {
@@ -106,18 +116,12 @@ enum LocalHealthContextBuilder {
         }
 
         if let prediction {
-            lines.append("Prediction: \(prediction.explanation)")
-            if let date = prediction.predictedDate {
-                lines.append("Predicted next period: \(date.formatted(dateFormat)) (\(prediction.confidence.rawValue) confidence)")
-            }
-            if let ovulation = prediction.predictedOvulationDate {
-                lines.append("Estimated ovulation: \(ovulation.formatted(dateFormat)) (~14 days before next period)")
-            }
+            lines.append("Prediction note (\(prediction.confidence.rawValue) confidence): \(prediction.explanation)")
         }
 
         if !insights.isEmpty {
             lines.append("Evidence-based insights already computed on device:")
-            for insight in insights.prefix(6) {
+            for insight in insights.prefix(maxInsights) {
                 lines.append("- \(insight.title): \(insight.body) (\(insight.evidence))")
             }
         }
@@ -128,5 +132,70 @@ enum LocalHealthContextBuilder {
             cycleCount: cycles.count,
             checkInCount: checkIns.count
         )
+    }
+
+    /// Upcoming dates worked out by the app, with "in N days", so the model never does date math.
+    static func keyDateLines(
+        prediction: PredictionResult?,
+        outlook: CycleOutlook?,
+        now: Date,
+        calendar: Calendar = .current
+    ) -> [String] {
+        let today = calendar.startOfDay(for: now)
+        var format = dateFormat
+        format.timeZone = calendar.timeZone
+        func describe(_ date: Date) -> String {
+            let day = calendar.startOfDay(for: date)
+            let days = calendar.dateComponents([.day], from: today, to: day).day ?? 0
+            let relative = switch days {
+            case 0: "today"
+            case 1: "tomorrow"
+            case 2...: "in \(days) days"
+            case -1: "yesterday"
+            default: "\(-days) days ago"
+            }
+            return "\(day.formatted(format)) (\(relative))"
+        }
+
+        let upcoming = (outlook?.cycles ?? []).filter { $0.periodEnd >= today }
+        let periods = upcoming.map(\.periodStart)
+        // The current cycle's ovulation may already be behind us; "next" means the first one still ahead.
+        var ovulations = upcoming.map(\.ovulation).filter { $0 >= today }
+        if ovulations.isEmpty, let ovulation = prediction?.predictedOvulationDate,
+           calendar.startOfDay(for: ovulation) >= today {
+            ovulations = [ovulation]
+        }
+        let nextPeriod = periods.first ?? prediction?.predictedDate
+        guard nextPeriod != nil || !ovulations.isEmpty else { return [] }
+
+        var lines = ["Key dates (calculated by the app; these are estimates, use them exactly):"]
+        if let nextPeriod {
+            var line = "- Next period: around \(describe(nextPeriod))"
+            if let lower = prediction?.lowerBound, let upper = prediction?.upperBound,
+               lower <= nextPeriod, nextPeriod <= upper {
+                line += ", likely between \(lower.formatted(format)) and \(upper.formatted(format))"
+            }
+            lines.append(line)
+        }
+        if let ovulation = ovulations.first {
+            lines.append("- Next ovulation (estimate): around \(describe(ovulation))")
+            let fertile = CycleCalculator.fertileWindow(ovulation: ovulation, calendar: calendar)
+            let span = "\(fertile.lowerBound.formatted(format)) to \(fertile.upperBound.formatted(format))"
+            lines.append(fertile.lowerBound <= today
+                ? "- Fertile window (estimate, not birth control): now, \(span)"
+                : "- Fertile window (estimate, not birth control): \(span), starts \(describe(fertile.lowerBound))")
+        }
+        if let preStart = upcoming.first?.prePeriodStart, preStart >= today {
+            lines.append("- PMS / pre-period days start: around \(describe(preStart))")
+        }
+        let laterPeriods = periods.dropFirst().prefix(followingCycles)
+        if !laterPeriods.isEmpty {
+            lines.append("- Following periods: " + laterPeriods.map { $0.formatted(format) }.joined(separator: ", "))
+        }
+        let laterOvulations = ovulations.dropFirst().prefix(followingCycles)
+        if !laterOvulations.isEmpty {
+            lines.append("- Following ovulations: " + laterOvulations.map { $0.formatted(format) }.joined(separator: ", "))
+        }
+        return lines
     }
 }

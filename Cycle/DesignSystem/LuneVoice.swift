@@ -37,35 +37,73 @@ enum LuneVoice {
 
     // MARK: - Today / Lumi
 
-    static func greeting(hour: Int) -> String {
-        switch hour {
+    static func greeting(hour: Int, name: String? = nil) -> String {
+        let base = switch hour {
         case 5..<12: "Good morning"
         case 12..<17: "Good afternoon"
         case 17..<22: "Good evening"
         default: "Hi, night owl"
         }
+        return base + comma(name)
+    }
+
+    /// ", Sara" with a name, "" without, so every line reads naturally either way.
+    private static func comma(_ name: String?) -> String {
+        name.map { ", \($0)" } ?? ""
     }
 
     /// Lumi's reply once a feeling is logged.
-    static func lumiMessage(for feeling: Feeling) -> String {
-        switch feeling {
-        case .happy: "Great! Keep going!"
-        case .calm: "Everything feels more balanced."
-        case .tired: "Rest is productive too."
-        case .anxious: "It's okay to feel this way."
-        case .irritable: "You're doing more than you think."
-        case .sad: "It's just a phase. You'll feel better soon."
+    static func lumiMessage(for feeling: Feeling, name: String? = nil) -> String {
+        let n = comma(name)
+        return switch feeling {
+        case .happy: "Great\(n)! Keep going!"
+        case .calm: "Everything feels more balanced\(n)."
+        case .tired: "Rest is productive too\(n)."
+        case .anxious: "It's okay to feel this way\(n)."
+        case .irritable: "You're doing more than you think\(n)."
+        case .sad: "It's just a phase\(n). You'll feel better soon."
         }
     }
+
+    /// Lumi's line for today's situation (once a day on Today).
+    static func lumiSays(_ moment: LumiMoment, name: String? = nil, experiencesPMS: Bool) -> String {
+        let n = comma(name)
+        return switch moment {
+        case .welcome: "Hi\(n)! I'm Lumi. I'll be with you through every phase 🌙"
+        case .welcomeBack: "I missed you\(n)! How have you been? 💜"
+        case .periodStarted: "Day one\(n). Cozy socks, warm tea and extra rest 🍵"
+        case .periodDay: "How's your flow today\(n)? Be gentle with yourself 🌸"
+        case .periodEnding: "Almost through\(n)! Your energy is on its way back ✨"
+        case .periodToday: "Your period may start today\(n). Pack a pad, just in case 🎒"
+        case .periodTomorrow: "Heads-up\(n): your period may come tomorrow 🌙"
+        case .periodLate: "Your period is a few days late\(n). Cycles shift sometimes, so no stress 💜"
+        case .pmsDays: experiencesPMS
+            ? "PMS days are here\(n). Extra snacks and extra kindness 🍫"
+            : "Your period is getting close\(n). Slow down a little if you can 🍫"
+        case .fertileStart: "Your fertile days start today\(n) 🌼 Just an estimate, not birth control."
+        case .fertileDays: "You're in your fertile days\(n) 🌼 Just an estimate, not birth control."
+        case .ovulation: "It's ovulation day\(n)! Many people feel extra glowy ✨"
+        case .bloom: "Fresh energy is blooming\(n)! A good day to try something new 🌱"
+        case .slow: "Slower days are okay\(n). Go at your own pace 🐢"
+        case .lateNight: "It's late\(n)! Your body loves a good sleep 😴"
+        }
+    }
+
+    /// Lumi asks once what to call you (people who set up Lumi before names existed).
+    static let lumiAsksName = "Hi! What should I call you? Tap me to tell me 💜"
+    static func lumiNiceToMeet(_ name: String) -> String { "Nice to meet you, \(name)! 💜" }
+    static let namePrompt = "What should Lumi call you?"
+    static let nameFooter = "Lumi uses your name in her messages. It stays on this iPhone."
 
 
     /// Lumi's first message in Ask Lumi.
     /// - Parameter canPersonalize: false while the AI model isn't installed, so Lumi doesn't promise more.
-    static func askOpener(cycleDay: Int?, moment: CycleMoment?, experiencesPMS: Bool, canPersonalize: Bool) -> String {
+    static func askOpener(cycleDay: Int?, moment: CycleMoment?, experiencesPMS: Bool, canPersonalize: Bool, name: String? = nil) -> String {
+        let hi = "Hi" + comma(name) + "!"
         guard let cycleDay, let moment else {
-            return "Hi! I'm Lumi. Log your period and I'll share ideas for every phase of your cycle."
+            return "\(hi) I'm Lumi. Log your period and I'll share ideas for every phase of your cycle."
         }
-        let opener = "Hi! It's day \(cycleDay), \(moment.displayName(experiencesPMS: experiencesPMS)). Here are a few ideas for today."
+        let opener = "\(hi) It's day \(cycleDay), \(moment.displayName(experiencesPMS: experiencesPMS)). Here are a few ideas for today."
         return canPersonalize ? opener + " Tap one and I'll make it personal." : opener
     }
 
@@ -81,6 +119,7 @@ enum LuneVoice {
         switch kind {
         case .period: "Period"
         case .prePeriod: experiencesPMS ? "PMS days" : "Days before period"
+        case .fertile: "Fertile days"
         case .ovulation: "Ovulation"
         }
     }
@@ -91,6 +130,7 @@ enum LuneVoice {
         case .prePeriod: experiencesPMS
             ? "PMS days can bring cravings or lower energy. Plan a little downtime."
             : "The days before your period can feel lower energy. Plan a little downtime."
+        case .fertile: "The days before ovulation, when pregnancy is most likely. An estimate, not birth control."
         case .ovulation: "Energy is often higher around ovulation. Great for busy days."
         }
     }

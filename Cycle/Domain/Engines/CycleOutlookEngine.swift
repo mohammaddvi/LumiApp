@@ -5,6 +5,8 @@ enum PlannedDayKind: Equatable, Sendable {
     case period
     /// Lumi's "soft days" before a period (PMS days for people who get PMS).
     case prePeriod
+    /// The estimated fertile days before ovulation (ovulation day itself is `.ovulation`).
+    case fertile
     case ovulation
 }
 
@@ -16,6 +18,8 @@ struct UpcomingCycle: Equatable, Sendable, Identifiable {
     let uncertaintyDays: Int
     let prePeriodStart: Date
     let ovulation: Date
+    /// First day of the estimated fertile window; it runs through `ovulation`.
+    let fertileStart: Date
 
     var id: Date { periodStart }
 }
@@ -32,7 +36,7 @@ struct CycleOutlook: Equatable, Sendable {
     let cycles: [UpcomingCycle]
     let calendar: Calendar
 
-    /// Period beats ovulation beats pre-period when they touch.
+    /// Period beats ovulation beats fertile days beat pre-period when they touch.
     func kind(on date: Date) -> PlannedDayKind? {
         let day = calendar.startOfDay(for: date)
         for cycle in cycles {
@@ -40,6 +44,9 @@ struct CycleOutlook: Equatable, Sendable {
         }
         for cycle in cycles where cycle.ovulation == day {
             return .ovulation
+        }
+        for cycle in cycles where day >= cycle.fertileStart && day < cycle.ovulation {
+            return .fertile
         }
         for cycle in cycles where day >= cycle.prePeriodStart && day < cycle.periodStart {
             return .prePeriod
@@ -99,7 +106,8 @@ enum CycleOutlookEngine {
                 // Further-out cycles are less certain: widen by a day every other cycle.
                 uncertaintyDays: min(maxUncertainty, max(1, baseUncertainty) + index / 2),
                 prePeriodStart: prePeriod,
-                ovulation: calendar.startOfDay(for: ovulation)
+                ovulation: calendar.startOfDay(for: ovulation),
+                fertileStart: CycleCalculator.fertileWindow(ovulation: ovulation, calendar: calendar).lowerBound
             )
         }
         return CycleOutlook(cycles: cycles, calendar: calendar)

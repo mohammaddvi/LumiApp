@@ -247,7 +247,8 @@ actor CycleDataStore: CycleRepositoryProtocol, FlowRepositoryProtocol, CheckInRe
             },
             preferences: ExportPreferences(
                 typicalCycleLength: prefs.typicalCycleLength,
-                notificationsEnabled: prefs.notificationsEnabled
+                notificationsEnabled: prefs.notificationsEnabled,
+                userName: prefs.userName
             )
         )
     }

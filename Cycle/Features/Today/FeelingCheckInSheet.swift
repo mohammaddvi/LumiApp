@@ -29,7 +29,7 @@ struct FeelingCheckInSheet: View {
                         .font(.system(.title2, design: .rounded).weight(.bold))
                         .foregroundStyle(Color.cycleText)
                     if let previewFeeling {
-                        Text(LuneVoice.lumiMessage(for: previewFeeling))
+                        Text(LuneVoice.lumiMessage(for: previewFeeling, name: env.preferences.userName))
                             .font(.body)
                             .foregroundStyle(Color.cycleSecondary)
                             .multilineTextAlignment(.center)

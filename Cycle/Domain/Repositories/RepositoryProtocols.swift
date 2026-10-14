@@ -75,4 +75,5 @@ struct ExportSymptom: Codable, Sendable {
 struct ExportPreferences: Codable, Sendable {
     var typicalCycleLength: Int?
     var notificationsEnabled: Bool
+    var userName: String? = nil
 }

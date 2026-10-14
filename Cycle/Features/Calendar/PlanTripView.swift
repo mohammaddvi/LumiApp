@@ -113,6 +113,9 @@ struct PlanTripView: View {
         case .prePeriod:
             Capsule().fill(Color.cycleCoral.opacity(0.3))
                 .frame(width: 16, height: 9)
+        case .fertile:
+            Capsule().fill(Color.cycleFertile.opacity(0.5))
+                .frame(width: 16, height: 9)
         case .ovulation:
             Circle().stroke(Color.cycleOvulation, lineWidth: 2)
                 .frame(width: 10, height: 10)
