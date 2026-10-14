@@ -110,9 +110,9 @@ Then **Xcode → Organizer → Distribute App → App Store Connect**.
 ## Architecture
 
 - **SwiftData** — cycles, flow, check-ins, preferences (local only, no CloudKit sync)
-- **Schema versioning** — `LuneSchemaV1` (1.0) → `LuneSchemaV2` (adds the check-in `feelingRaw`) → `LuneSchemaV3` (adds the optional `SDPreferences.userName`) via `LuneMigrationPlan`
+- **Schema versioning** — `LuneSchemaV1` (pre-release MyLune) → `LuneSchemaV2` (adds the check-in `feelingRaw`) → `LuneSchemaV3` (adds the optional `SDPreferences.userName`) via `LuneMigrationPlan`
 - **Automatic backups** — timestamped copy of the store before each launch (`Application Support/Cycle/Backups/`)
-- **Stable store path** — `Application Support/Cycle/cycle.store` (never rename after 1.0)
+- **Stable store path** — `Application Support/Cycle/cycle.store` (never rename: pre-release test installs use it too)
 - **Ask Lumi** — on-device Gemma via LiteRT-LM
 - **Notifications** — local only (UNUserNotificationCenter)
 

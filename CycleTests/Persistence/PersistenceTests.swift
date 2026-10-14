@@ -66,7 +66,7 @@ struct PersistenceTests {
         #expect(cycles.first?.id == cycleID)
     }
 
-    @Test("A 1.0 (V1) store migrates to V2 without losing check-ins")
+    @Test("A MyLune 1.0 (V1) store migrates to V2 without losing check-ins")
     func migratesV1Store() async throws {
         let fixture = try #require(
             Bundle(for: FixtureBundleToken.self).url(forResource: "lune-v1", withExtension: "store")
@@ -120,7 +120,7 @@ struct PersistenceTests {
     /// Guards updates: `LuneSchemaV1` must keep describing exactly what 1.0 wrote to disk
     /// (fields taken from `Fixtures/lune-v1.store`). If a model changes without being frozen
     /// into the old schema first, this fails before users lose the ability to upgrade.
-    @Test("Schema V1 still matches the 1.0 store on disk")
+    @Test("Schema V1 still matches the MyLune 1.0 store on disk")
     func schemaV1IsFrozen() {
         let expected: [String: Set<String>] = [
             // `flowEntries` is the to-many side of the flow → cycle link (no column of its own).
@@ -142,8 +142,8 @@ struct PersistenceTests {
         #expect(actual == expected)
     }
 
-    /// V2 is what 1.1 builds wrote (V1 plus `SDDailyCheckIn.feelingRaw`).
-    @Test("Schema V2 still matches the 1.1 store on disk")
+    /// V2 is what pre-release Lumi builds wrote (V1 plus `SDDailyCheckIn.feelingRaw`).
+    @Test("Schema V2 still matches the pre-release Lumi store on disk")
     func schemaV2IsFrozen() {
         let expected: [String: Set<String>] = [
             "SDCycle": ["id", "startDate", "endDate", "sourceRaw", "createdAt", "updatedAt", "flowEntries"],
@@ -164,7 +164,7 @@ struct PersistenceTests {
         #expect(actual == expected)
     }
 
-    @Test("A 1.1 (V2) store migrates to V3 without losing data, and keeps a name")
+    @Test("A pre-release (V2) store migrates to V3 without losing data, and keeps a name")
     func migratesV2Store() async throws {
         let fixture = try #require(
             Bundle(for: FixtureBundleToken.self).url(forResource: "lune-v2", withExtension: "store")
