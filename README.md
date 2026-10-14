@@ -110,7 +110,7 @@ Then **Xcode → Organizer → Distribute App → App Store Connect**.
 ## Architecture
 
 - **SwiftData** — cycles, flow, check-ins, preferences (local only, no CloudKit sync)
-- **Schema versioning** — `LuneSchemaV1` (1.0) → `LuneSchemaV2` (adds the check-in `feelingRaw`) via `LuneMigrationPlan`
+- **Schema versioning** — `LuneSchemaV1` (1.0) → `LuneSchemaV2` (adds the check-in `feelingRaw`) → `LuneSchemaV3` (adds the optional `SDPreferences.userName`) via `LuneMigrationPlan`
 - **Automatic backups** — timestamped copy of the store before each launch (`Application Support/Cycle/Backups/`)
 - **Stable store path** — `Application Support/Cycle/cycle.store` (never rename after 1.0)
 - **Ask Lumi** — on-device Gemma via LiteRT-LM
@@ -118,7 +118,7 @@ Then **Xcode → Organizer → Distribute App → App Store Connect**.
 
 ### Adding a schema change in a future update
 
-1. Freeze the current version of any model you change as a nested copy inside the current schema enum (see `LuneSchemaV1.SDDailyCheckIn`), then edit the top-level model.
-2. Create `LuneSchemaV3` listing the new models (prefer optional fields + defaults) and point `LuneSchema.current` at it.
-3. Add it to `LuneMigrationPlan.schemas` and add `MigrationStage.lightweight(fromVersion: LuneSchemaV2.self, toVersion: LuneSchemaV3.self)`.
-4. Add a migration test from a real previous-version store, like `CycleTests/Fixtures/lune-v1.store` in `PersistenceTests`.
+1. Freeze the current version of any model you change as a nested copy inside an older schema enum (see `LuneSchemaV1.SDDailyCheckIn` and `LuneSchemaV1.SDPreferences`), point the older schemas at the frozen copy, then edit the top-level model.
+2. Create `LuneSchemaV4` listing the new models (prefer optional fields + defaults) and point `LuneSchema.current` at it.
+3. Add it to `LuneMigrationPlan.schemas` and add `MigrationStage.lightweight(fromVersion: LuneSchemaV3.self, toVersion: LuneSchemaV4.self)`.
+4. Add a migration test from a real previous-version store, like `CycleTests/Fixtures/lune-v2.store` in `PersistenceTests`, and a frozen-schema guard like `schemaV2IsFrozen`.

@@ -10,7 +10,7 @@ enum LuneLegal {
     static let supportURL = URL(string: "https://mohammaddvi.github.io/LumiApp/support.html")!
     /// Marketing URL (App Store Connect) — public GitHub repository.
     static let marketingURL = URL(string: "https://github.com/mohammaddvi/LumiApp")!
-    static let lastUpdated = "August 26, 2026"
+    static let lastUpdated = "October 14, 2026"
 
     static let medicalDisclaimer = """
     Lumi helps you notice patterns in your own cycle. It is not a medical device and does not diagnose, treat, or prevent any condition. Talk to a clinician for medical decisions.
@@ -41,7 +41,7 @@ enum LuneLegal {
             • Period and cycle dates you log
             • Flow intensity, symptoms, mood, energy, sleep, and notes
             • Predictions and insights generated on your phone
-            • App preferences (reminders, appearance, optional app lock)
+            • App preferences (reminders, appearance, optional app lock) and, if you give one, the name Lumi calls you
             • Optional on-device AI chat history and downloaded Gemma model files
 
             This data stays on your iPhone unless you export or delete it.
