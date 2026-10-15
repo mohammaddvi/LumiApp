@@ -27,8 +27,8 @@ struct AskLuneView: View {
             .safeAreaInset(edge: .bottom, spacing: 0) {
                 composer
             }
-            .background(Color.cycleBackground.ignoresSafeArea(edges: .bottom))
-            .navigationTitle("Ask Lumi")
+            .fantasySkyBackground()
+            // No title: the tab already says Ask, and Lumi greets you right below.
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 if !ai.sessionMessages.isEmpty {
@@ -69,12 +69,9 @@ struct AskLuneView: View {
     @ViewBuilder
     private var statusBanner: some View {
         switch ai.status {
-        case .ready:
+        case .ready, .modelMissing:
+            // Missing model: the text box itself says to download it, so no second banner.
             EmptyView()
-        case .modelMissing:
-            bannerRow {
-                Label(LuneVoice.aiDownloadHint, systemImage: "arrow.down.circle.fill")
-            }
         case .checking, .loading:
             bannerRow {
                 HStack(spacing: 8) {
@@ -100,10 +97,12 @@ struct AskLuneView: View {
         content()
             .font(.subheadline.weight(.medium))
             .foregroundStyle(Color.cycleText)
-            .padding(.horizontal, 20)
+            .padding(.horizontal, 16)
             .padding(.vertical, 10)
-            .frame(maxWidth: .infinity, alignment: .leading)
-            .background(Color.cycleSurface)
+            .background(Color.cycleSurface, in: Capsule())
+            .overlay(Capsule().stroke(Color.cycleBorder, lineWidth: 1))
+            .padding(.top, 6)
+            .frame(maxWidth: .infinity)
             .accessibilityElement(children: .combine)
     }
 
@@ -155,58 +154,40 @@ struct AskLuneView: View {
         }
     }
 
-    /// Lumi starts the conversation with ideas for the current phase; tapping one asks the AI.
+    /// Lumi in the middle with a short hello, and one row of topics to start from.
     private var emptyState: some View {
-        VStack(alignment: .leading, spacing: 14) {
-            HStack(alignment: .bottom, spacing: 10) {
-                LumiView(
-                    feeling: env.todayFeeling ?? env.feelingForecast?.feeling,
-                    phase: env.todaysLune?.phase,
-                    size: 64
-                )
-                Text(LuneVoice.askOpener(
-                    cycleDay: env.currentCycleDay,
-                    moment: env.cycleMoment,
-                    experiencesPMS: env.preferences.experiencesPMS,
-                    canPersonalize: !isModelMissing,
-                    name: env.preferences.userName
-                ))
-                .font(.body)
-                .foregroundStyle(Color.cycleText)
-                .padding(.horizontal, 14)
-                .padding(.vertical, 10)
-                .background(Color.cycleSurface)
-                .clipShape(RoundedRectangle(cornerRadius: 18, style: .continuous))
-                .overlay(
-                    RoundedRectangle(cornerRadius: 18, style: .continuous)
-                        .stroke(Color.cycleBorder, lineWidth: 1)
-                )
-            }
-            .accessibilityElement(children: .combine)
-
-            if let moment = env.cycleMoment {
-                ForEach(CycleTipsEngine.tips(for: moment, experiencesPMS: env.preferences.experiencesPMS)) { tip in
-                    CycleTipCard(tip: tip, canAsk: !isModelMissing) {
-                        Task { await ask(tip.prompt) }
-                    }
+        VStack(spacing: 16) {
+            LumiView(
+                feeling: env.todayFeeling ?? env.feelingForecast?.feeling,
+                phase: env.todaysLune?.phase,
+                size: 120
+            )
+            .accessibilityHidden(true)
+            Text(LuneVoice.askOpener(
+                cycleDay: env.currentCycleDay,
+                moment: env.cycleMoment,
+                experiencesPMS: env.preferences.experiencesPMS,
+                name: env.preferences.userName
+            ))
+            .font(.system(.body, design: .rounded).weight(.medium))
+            .foregroundStyle(Color.cycleText)
+            .multilineTextAlignment(.center)
+            .padding(.horizontal, 16)
+            .padding(.vertical, 12)
+            .background(Color.cycleSurface, in: RoundedRectangle(cornerRadius: 20, style: .continuous))
+            .overlay(
+                RoundedRectangle(cornerRadius: 20, style: .continuous)
+                    .stroke(Color.cycleBorder, lineWidth: 1)
+            )
+            ChipFlow(spacing: 8) {
+                ForEach(chips) { chip in
+                    chipButton(chip)
                 }
             }
-
-            Text(LuneVoice.askAnything)
-                .font(.footnote.weight(.semibold))
-                .foregroundStyle(Color.cycleSecondary)
-                .padding(.top, 4)
-            FlowSuggestionRow(suggestions: [
-                "When is my next period?",
-                "Summarize my last few cycles",
-            ]) { suggestion in
-                ai.draft = suggestion
-                promptFocused = true
-            }
-            .disabled(isModelMissing)
-            .opacity(isModelMissing ? 0.5 : 1)
+            .padding(.top, 4)
         }
-        .padding(.top, 8)
+        .frame(maxWidth: .infinity)
+        .padding(.top, 24)
     }
 
     @ViewBuilder
@@ -237,7 +218,7 @@ struct AskLuneView: View {
                     talking: isStreaming
                 )
                 .accessibilityHidden(true)
-                bubbleText(message.text.isEmpty && isStreaming ? "…" : message.text)
+                bubbleText(message.text.isEmpty && isStreaming ? "…" : message.text, styled: true)
                     .background(Color.cycleSurface)
                     .clipShape(RoundedRectangle(cornerRadius: 20, style: .continuous))
                     .overlay(
@@ -264,8 +245,9 @@ struct AskLuneView: View {
         }
     }
 
-    private func bubbleText(_ text: String) -> some View {
-        Text(text)
+    /// `styled` renders the Markdown in Lumi's replies (bold, bullets); your own messages stay as typed.
+    private func bubbleText(_ text: String, styled: Bool = false) -> some View {
+        Text(styled ? LumiMarkdown.attributed(text) : AttributedString(text))
             .font(.body)
             .foregroundStyle(Color.cycleText)
             .padding(.horizontal, 14)
@@ -275,23 +257,11 @@ struct AskLuneView: View {
     /// Topic chips above the text box once a chat has started, so a new idea is one tap away.
     @ViewBuilder
     private var topicChips: some View {
-        if !ai.sessionMessages.isEmpty, !isModelMissing, let moment = env.cycleMoment {
+        if !ai.sessionMessages.isEmpty {
             ScrollView(.horizontal, showsIndicators: false) {
                 HStack(spacing: 8) {
-                    ForEach(CycleTipsEngine.tips(for: moment, experiencesPMS: env.preferences.experiencesPMS)) { tip in
-                        Button {
-                            Task { await ask(tip.prompt) }
-                        } label: {
-                            Text("\(tip.topic.emoji) \(tip.topic.title)")
-                                .font(.subheadline.weight(.semibold))
-                                .foregroundStyle(Color.cycleText)
-                                .padding(.horizontal, 14)
-                                .frame(minHeight: 36)
-                                .background(Capsule().fill(Color.cycleAccentSoft))
-                        }
-                        .buttonStyle(.plain)
-                        .disabled(ai.isGenerating)
-                        .accessibilityLabel("Ask Lumi for \(tip.topic.title.lowercased()) ideas")
+                    ForEach(chips) { chip in
+                        chipButton(chip)
                     }
                 }
                 .padding(.horizontal, 16)
@@ -299,10 +269,57 @@ struct AskLuneView: View {
         }
     }
 
+    /// Something to ask Lumi in one tap: a wellness topic for today's phase, or the next period.
+    private struct Chip: Identifiable {
+        let id: String
+        let label: String
+        /// What the AI is asked.
+        let prompt: String
+        /// Lumi's built-in answer when the AI isn't downloaded.
+        let offlineAnswer: String
+    }
+
+    private var chips: [Chip] {
+        var chips: [Chip] = []
+        if let moment = env.cycleMoment {
+            chips = CycleTipsEngine.tips(for: moment, experiencesPMS: env.preferences.experiencesPMS).map { tip in
+                Chip(id: tip.topic.rawValue, label: "\(tip.topic.emoji) \(tip.topic.title)", prompt: tip.prompt, offlineAnswer: tip.text)
+            }
+        }
+        chips.append(Chip(
+            id: "nextPeriod",
+            label: "🔮 Next period",
+            prompt: "When is my next period?",
+            offlineAnswer: LuneVoice.nextPeriodAnswer(env.prediction?.predictedDate)
+        ))
+        return chips
+    }
+
+    private func chipButton(_ chip: Chip) -> some View {
+        Button {
+            if isModelMissing {
+                ai.addLocalExchange(question: chip.label, answer: chip.offlineAnswer)
+            } else {
+                Task { await ask(chip.prompt) }
+            }
+        } label: {
+            Text(chip.label)
+                .font(.system(.subheadline, design: .rounded).weight(.semibold))
+                .foregroundStyle(Color.cycleText)
+                .padding(.horizontal, 14)
+                .frame(minHeight: 40)
+                .background(Capsule().fill(Color.cycleSurface))
+                .overlay(Capsule().stroke(Color.cycleBorder, lineWidth: 1))
+        }
+        .buttonStyle(.plain)
+        .disabled(ai.isGenerating)
+        .accessibilityHint("Asks Lumi")
+    }
+
     private func accessibilityLabel(for message: LocalChatMessage) -> String {
         switch message.role {
         case .user: "You: \(message.text)"
-        case .assistant: "Lumi: \(message.text)"
+        case .assistant: "Lumi: \(LumiMarkdown.plain(message.text))"
         case .systemNotice: message.text
         }
     }
@@ -333,7 +350,7 @@ struct AskLuneView: View {
                 .accessibilityLabel("Send")
                 .accessibilityHint(canSend ? "Sends your question to Lumi" : "Enter a question to send")
             }
-            Text("Not medical advice. Everything stays on this iPhone.")
+            Text("Not medical advice · stays on this iPhone")
                 .font(.caption2)
                 .foregroundStyle(Color.cycleSecondary)
                 .frame(maxWidth: .infinity, alignment: .leading)
@@ -391,83 +408,51 @@ struct AskLuneView: View {
     }
 }
 
-/// One phase tip: shows the curated idea; tapping asks Lumi for personal ones.
-private struct CycleTipCard: View {
-    let tip: CycleTip
-    /// False until the AI model is installed; the tip still shows, without the "ask more" action.
-    var canAsk = true
-    let action: () -> Void
+/// Chips that wrap onto new lines, centered, like words in a sentence.
+private struct ChipFlow: Layout {
+    var spacing: CGFloat = 8
 
-    var body: some View {
-        Button(action: action) {
-            HStack(alignment: .top, spacing: 12) {
-                Image(systemName: tip.topic.systemImage)
-                    .font(.body.weight(.semibold))
-                    .foregroundStyle(Color.cycleAccentText)
-                    .frame(width: 40, height: 40)
-                    .background(Circle().fill(Color.cycleAccentSoft))
-                    .accessibilityHidden(true)
-                VStack(alignment: .leading, spacing: 4) {
-                    Text(tip.topic.title)
-                        .font(.headline)
-                        .foregroundStyle(Color.cycleText)
-                    Text(tip.text)
-                        .font(.subheadline)
-                        .foregroundStyle(Color.cycleSecondary)
-                        .fixedSize(horizontal: false, vertical: true)
-                    if canAsk {
-                        Label("Ask Lumi for more", systemImage: "sparkles")
-                            .font(.footnote.weight(.semibold))
-                            .foregroundStyle(Color.cycleText)
-                            .padding(.top, 2)
-                    }
-                }
-                Spacer(minLength: 0)
-            }
-            .padding(14)
-            .frame(maxWidth: .infinity, alignment: .leading)
-            .background(Color.cycleSurface)
-            .clipShape(RoundedRectangle(cornerRadius: 20, style: .continuous))
-            .overlay(
-                RoundedRectangle(cornerRadius: 20, style: .continuous)
-                    .stroke(Color.cycleBorder, lineWidth: 1)
-            )
-        }
-        .buttonStyle(.plain)
-        // Not `.disabled`: that would fade the tip, which is still worth reading.
-        .allowsHitTesting(canAsk)
-        .accessibilityElement(children: .combine)
-        .accessibilityHint(canAsk ? "Asks Lumi for personal \(tip.topic.title.lowercased()) ideas" : "")
+    func sizeThatFits(proposal: ProposedViewSize, subviews: Subviews, cache: inout ()) -> CGSize {
+        let rows = rows(for: subviews, width: proposal.width ?? .infinity)
+        let height = rows.map(\.height).reduce(0, +) + spacing * CGFloat(max(0, rows.count - 1))
+        let width = rows.map(\.width).max() ?? 0
+        return CGSize(width: proposal.width ?? width, height: height)
     }
-}
 
-private struct FlowSuggestionRow: View {
-    let suggestions: [String]
-    let onTap: (String) -> Void
-
-    var body: some View {
-        VStack(alignment: .leading, spacing: 8) {
-            ForEach(suggestions, id: \.self) { suggestion in
-                Button {
-                    onTap(suggestion)
-                } label: {
-                    Text(suggestion)
-                        .font(.subheadline)
-                        .foregroundStyle(Color.cycleText)
-                        .padding(.horizontal, 12)
-                        .padding(.vertical, 10)
-                        .frame(maxWidth: .infinity, minHeight: 44, alignment: .leading)
-                        .background(Color.cycleSurface)
-                        .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
-                        .overlay(
-                            RoundedRectangle(cornerRadius: 12, style: .continuous)
-                                .stroke(Color.cycleBorder, lineWidth: 1)
-                        )
-                }
-                .buttonStyle(.plain)
-                .accessibilityLabel("Suggestion, \(suggestion)")
-                .accessibilityHint("Double tap to use this question")
+    func placeSubviews(in bounds: CGRect, proposal: ProposedViewSize, subviews: Subviews, cache: inout ()) {
+        var y = bounds.minY
+        for row in rows(for: subviews, width: bounds.width) {
+            var x = bounds.minX + (bounds.width - row.width) / 2
+            for index in row.indices {
+                let size = subviews[index].sizeThatFits(.unspecified)
+                subviews[index].place(at: CGPoint(x: x, y: y), proposal: ProposedViewSize(size))
+                x += size.width + spacing
             }
+            y += row.height + spacing
         }
+    }
+
+    private struct Row {
+        var indices: [Int] = []
+        var width: CGFloat = 0
+        var height: CGFloat = 0
+    }
+
+    private func rows(for subviews: Subviews, width: CGFloat) -> [Row] {
+        var rows: [Row] = []
+        var current = Row()
+        for index in subviews.indices {
+            let size = subviews[index].sizeThatFits(.unspecified)
+            let needed = current.indices.isEmpty ? size.width : current.width + spacing + size.width
+            if needed > width, !current.indices.isEmpty {
+                rows.append(current)
+                current = Row()
+            }
+            current.width = current.indices.isEmpty ? size.width : current.width + spacing + size.width
+            current.height = max(current.height, size.height)
+            current.indices.append(index)
+        }
+        if !current.indices.isEmpty { rows.append(current) }
+        return rows
     }
 }

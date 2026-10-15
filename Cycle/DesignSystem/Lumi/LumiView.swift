@@ -12,6 +12,16 @@ struct LumiView: View {
     var holding = false
     /// Mouth flaps open and closed while a speech bubble is typing.
     var talking = false
+    /// A playful face from being tapped or petted; shows over the feeling's face.
+    var play: LumiPlay?
+    /// Bump to make Lumi hop.
+    var hops = 0
+    /// Bump to make Lumi wiggle side to side.
+    var wiggles = 0
+    /// What she wears; nil uses the outfit picked in her room.
+    var outfit: LumiOutfit?
+
+    @AppStorage(LumiOutfit.storageKey) private var savedOutfit = LumiOutfit()
 
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
@@ -33,12 +43,14 @@ struct LumiView: View {
         }
         .frame(width: size, height: size)
         .modifier(LumiReaction(trigger: feeling, enabled: isMoving))
+        .modifier(LumiHop(trigger: hops, height: size * 0.08, enabled: isMoving))
+        .modifier(LumiWiggle(trigger: wiggles, enabled: isMoving))
         .accessibilityElement()
         .accessibilityLabel(feeling.map { "Lumi, feeling \($0.displayName.lowercased())" } ?? "Lumi")
     }
 
     private func canvas(pose: LumiPose) -> some View {
-        let renderer = LumiRenderer(feeling: feeling, palette: palette, pose: pose, holding: holding)
+        let renderer = LumiRenderer(feeling: feeling, play: play, outfit: outfit ?? savedOutfit, palette: palette, pose: pose, holding: holding)
         return Canvas { context, canvasSize in
             renderer.draw(in: context, size: canvasSize)
         }
@@ -91,11 +103,89 @@ private struct LumiReaction: ViewModifier {
     }
 }
 
+/// A little hop: crouch, spring up, land with a squish.
+private struct LumiHop: ViewModifier {
+    let trigger: Int
+    let height: CGFloat
+    let enabled: Bool
+
+    private struct Values {
+        var lift: CGFloat = 0
+        var stretch: CGFloat = 1
+    }
+
+    func body(content: Content) -> some View {
+        if enabled {
+            content.keyframeAnimator(initialValue: Values(), trigger: trigger) { view, values in
+                view
+                    .scaleEffect(x: 2 - values.stretch, y: values.stretch, anchor: .bottom)
+                    .offset(y: -values.lift * height)
+            } keyframes: { _ in
+                KeyframeTrack(\.lift) {
+                    CubicKeyframe(0, duration: 0.07)
+                    CubicKeyframe(1, duration: 0.16)
+                    CubicKeyframe(0, duration: 0.16)
+                }
+                KeyframeTrack(\.stretch) {
+                    SpringKeyframe(0.88, duration: 0.07, spring: .snappy)
+                    SpringKeyframe(1.08, duration: 0.16, spring: .snappy)
+                    SpringKeyframe(0.92, duration: 0.16, spring: .snappy)
+                    SpringKeyframe(1.0, duration: 0.3, spring: .bouncy)
+                }
+            }
+        } else {
+            content
+        }
+    }
+}
+
+/// A happy side-to-side lean, like leaning into a hand.
+private struct LumiWiggle: ViewModifier {
+    let trigger: Int
+    let enabled: Bool
+
+    func body(content: Content) -> some View {
+        if enabled {
+            content.keyframeAnimator(initialValue: 0.0, trigger: trigger) { view, angle in
+                view.rotationEffect(.degrees(angle), anchor: .bottom)
+            } keyframes: { _ in
+                SpringKeyframe(-6, duration: 0.1, spring: .snappy)
+                SpringKeyframe(5, duration: 0.14, spring: .snappy)
+                SpringKeyframe(-2.5, duration: 0.14, spring: .snappy)
+                SpringKeyframe(0, duration: 0.25, spring: .smooth)
+            }
+        } else {
+            content
+        }
+    }
+}
+
 // MARK: - Drawing
+
+/// Lumi's outline in her 200×200 design space, shared with the clothes that follow it.
+enum LumiShape {
+    static let body: Path = {
+        var body = Path()
+        body.move(to: CGPoint(x: 100, y: 44))
+        body.addCurve(to: CGPoint(x: 162, y: 120), control1: CGPoint(x: 140, y: 44), control2: CGPoint(x: 162, y: 82))
+        body.addCurve(to: CGPoint(x: 100, y: 182), control1: CGPoint(x: 164, y: 160), control2: CGPoint(x: 140, y: 182))
+        body.addCurve(to: CGPoint(x: 38, y: 120), control1: CGPoint(x: 60, y: 182), control2: CGPoint(x: 36, y: 160))
+        body.addCurve(to: CGPoint(x: 100, y: 44), control1: CGPoint(x: 38, y: 82), control2: CGPoint(x: 60, y: 44))
+        body.closeSubpath()
+        return body
+    }()
+
+    static let feet = [
+        CGRect(x: 56, y: 165, width: 38, height: 22),
+        CGRect(x: 106, y: 165, width: 38, height: 22),
+    ]
+}
 
 /// Draws Lumi in a 200×200 design space, scaled to the canvas.
 private struct LumiRenderer {
     let feeling: Feeling?
+    let play: LumiPlay?
+    let outfit: LumiOutfit
     let palette: LumiPalette
     let pose: LumiPose
     let holding: Bool
@@ -104,12 +194,16 @@ private struct LumiRenderer {
     private let rightEye = CGPoint(x: 124, y: 110)
     private let mouth = CGPoint(x: 100, y: 131)
 
+    /// The feeling whose eyes and mouth to draw: a playful face wins for a moment.
+    private var face: Feeling? { play?.face ?? feeling }
+
     func draw(in canvas: GraphicsContext, size: CGSize) {
         var context = canvas
         context.scaleBy(x: size.width / 200, y: size.height / 200)
 
         drawShadow(context)
         drawFeet(context)
+        wear(.shoes, in: context)
 
         // Everything above the feet breathes, anchored at the bottom of the body.
         var upper = context
@@ -118,15 +212,32 @@ private struct LumiRenderer {
         upper.scaleBy(x: 1 - 0.018 * stretch, y: 1 + 0.035 * stretch)
         upper.translateBy(x: -100, y: -180)
 
+        if let fantasy = outfit.item(in: .fantasy), LumiWearArt.isBehind(fantasy) {
+            LumiWearArt.draw(fantasy, in: upper)
+        }
         if !holding {
             drawArms(upper)
         }
         drawLeaf(upper)
         drawBody(upper)
+        wear(.clothes, in: upper)
         drawCheeks(upper)
         drawEyes(upper)
         drawMouth(upper)
+        wear(.makeup, in: upper)
+        wear(.hair, in: upper)
+        wear(.glasses, in: upper)
+        wear(.hat, in: upper)
+        if let fantasy = outfit.item(in: .fantasy), !LumiWearArt.isBehind(fantasy) {
+            LumiWearArt.draw(fantasy, in: upper)
+        }
         drawAccents(context)
+    }
+
+    private func wear(_ slot: LumiWearSlot, in context: GraphicsContext) {
+        if let item = outfit.item(in: slot) {
+            LumiWearArt.draw(item, in: context)
+        }
     }
 
     // MARK: Body
@@ -143,11 +254,14 @@ private struct LumiRenderer {
             startPoint: CGPoint(x: 100, y: 164),
             endPoint: CGPoint(x: 100, y: 188)
         )
-        context.fill(Path(ellipseIn: CGRect(x: 56, y: 165, width: 38, height: 22)), with: shading)
-        context.fill(Path(ellipseIn: CGRect(x: 106, y: 165, width: 38, height: 22)), with: shading)
+        for foot in LumiShape.feet {
+            context.fill(Path(ellipseIn: foot), with: shading)
+        }
     }
 
     private func drawArms(_ context: GraphicsContext) {
+        // Sleeves, when her clothes have them.
+        let (light, dark) = LumiWearArt.sleeveColors(for: outfit.item(in: .clothes)) ?? (palette.body, palette.bodyDark)
         for (x, angle) in [(CGFloat(42), 18.0), (CGFloat(158), -18.0)] {
             var arm = context
             arm.translateBy(x: x, y: 128)
@@ -155,7 +269,7 @@ private struct LumiRenderer {
             arm.fill(
                 Path(ellipseIn: CGRect(x: -12, y: -20, width: 24, height: 40)),
                 with: .linearGradient(
-                    Gradient(colors: [palette.body, palette.bodyDark]),
+                    Gradient(colors: [light, dark]),
                     startPoint: CGPoint(x: 0, y: -20),
                     endPoint: CGPoint(x: 0, y: 20)
                 )
@@ -193,16 +307,8 @@ private struct LumiRenderer {
     }
 
     private func drawBody(_ context: GraphicsContext) {
-        var body = Path()
-        body.move(to: CGPoint(x: 100, y: 44))
-        body.addCurve(to: CGPoint(x: 162, y: 120), control1: CGPoint(x: 140, y: 44), control2: CGPoint(x: 162, y: 82))
-        body.addCurve(to: CGPoint(x: 100, y: 182), control1: CGPoint(x: 164, y: 160), control2: CGPoint(x: 140, y: 182))
-        body.addCurve(to: CGPoint(x: 38, y: 120), control1: CGPoint(x: 60, y: 182), control2: CGPoint(x: 36, y: 160))
-        body.addCurve(to: CGPoint(x: 100, y: 44), control1: CGPoint(x: 38, y: 82), control2: CGPoint(x: 60, y: 44))
-        body.closeSubpath()
-
         context.fill(
-            body,
+            LumiShape.body,
             with: .radialGradient(
                 Gradient(colors: [palette.bodyLight, palette.body, palette.bodyDark]),
                 center: CGPoint(x: 78, y: 78),
@@ -219,7 +325,7 @@ private struct LumiRenderer {
     private func drawCheeks(_ context: GraphicsContext) {
         var cheeks = context
         cheeks.addFilter(.blur(radius: 2.5))
-        let opacity = feeling == .irritable ? 0.75 : 0.55
+        let opacity = play != nil ? 0.85 : feeling == .irritable ? 0.75 : 0.55
         for x in [CGFloat(46), 130] {
             cheeks.fill(Path(ellipseIn: CGRect(x: x, y: 121, width: 24, height: 13)), with: .color(LumiPalette.blush.opacity(opacity)))
         }
@@ -228,7 +334,7 @@ private struct LumiRenderer {
     // MARK: Face
 
     private func drawEyes(_ context: GraphicsContext) {
-        switch feeling {
+        switch face {
         case nil:
             openEye(context, at: leftEye)
             openEye(context, at: rightEye)
@@ -302,7 +408,7 @@ private struct LumiRenderer {
         let line = StrokeStyle(lineWidth: 3, lineCap: .round)
         var path = Path()
 
-        if pose.talk > 0 {
+        if pose.talk > 0, play == nil {
             let height = 3 + 9 * pose.talk
             context.fill(Path(ellipseIn: CGRect(x: mouth.x - 6, y: mouth.y - 2, width: 12, height: height)), with: ink)
             if height > 7 {
@@ -311,7 +417,7 @@ private struct LumiRenderer {
             return
         }
 
-        switch feeling {
+        switch face {
         case nil:
             path.move(to: mouth.offsetBy(x: -8, y: -1))
             path.addQuadCurve(to: mouth.offsetBy(x: 8, y: -1), control: mouth.offsetBy(y: 7))
@@ -348,10 +454,22 @@ private struct LumiRenderer {
 
     private func drawAccents(_ context: GraphicsContext) {
         let bob = pose.float * 3
+        switch play {
+        case .giggle:
+            let giggle = Text("hehe").font(.system(size: 15, weight: .heavy, design: .rounded)).foregroundStyle(palette.bodyDark)
+            context.draw(giggle, at: CGPoint(x: 160, y: 46 + bob))
+            return
+        case .petted:
+            context.fill(Path.lumiHeart(in: CGRect(x: 150, y: 40 - bob, width: 18, height: 16)), with: .color(LumiPalette.heart))
+            context.fill(Path.lumiHeart(in: CGRect(x: 34, y: 56 + bob, width: 12, height: 11)), with: .color(LumiPalette.heart.opacity(0.8)))
+            return
+        case nil:
+            break
+        }
         switch feeling {
         case .happy:
-            context.fill(Self.heart(in: CGRect(x: 30, y: 46 + bob, width: 18, height: 16)), with: .color(LumiPalette.heart))
-            context.fill(Self.heart(in: CGRect(x: 156, y: 58 - bob, width: 13, height: 12)), with: .color(LumiPalette.heart.opacity(0.8)))
+            context.fill(Path.lumiHeart(in: CGRect(x: 30, y: 46 + bob, width: 18, height: 16)), with: .color(LumiPalette.heart))
+            context.fill(Path.lumiHeart(in: CGRect(x: 156, y: 58 - bob, width: 13, height: 12)), with: .color(LumiPalette.heart.opacity(0.8)))
         case .tired:
             let color = palette.bodyDark
             context.draw(Text("z").font(.system(size: 15, weight: .heavy, design: .rounded)).foregroundStyle(color), at: CGPoint(x: 148, y: 50 + bob))
@@ -381,20 +499,6 @@ private struct LumiRenderer {
     }
 
     // MARK: Shapes
-
-    static func heart(in rect: CGRect) -> Path {
-        func point(_ x: CGFloat, _ y: CGFloat) -> CGPoint {
-            CGPoint(x: rect.minX + rect.width * x, y: rect.minY + rect.height * y)
-        }
-        var path = Path()
-        path.move(to: point(0.5, 0.95))
-        path.addCurve(to: point(0, 0.35), control1: point(0.15, 0.78), control2: point(0, 0.58))
-        path.addCurve(to: point(0.5, 0.22), control1: point(0, 0.05), control2: point(0.42, 0))
-        path.addCurve(to: point(1, 0.35), control1: point(0.58, 0), control2: point(1, 0.05))
-        path.addCurve(to: point(0.5, 0.95), control1: point(1, 0.58), control2: point(0.85, 0.78))
-        path.closeSubpath()
-        return path
-    }
 
     static func teardrop(center: CGPoint, radius: CGFloat) -> Path {
         func point(_ x: CGFloat, _ y: CGFloat) -> CGPoint {

@@ -1,18 +1,29 @@
 import SwiftUI
 
+/// Sizes screens need to leave room for Lumi above the card she holds.
+enum LumiHoldingMetrics {
+    static let defaultSize: CGFloat = 140
+
+    /// How far Lumi rises above the card's top edge: down to just below her mouth.
+    static func rise(size: CGFloat = defaultSize) -> CGFloat { size * 0.68 }
+}
+
 extension View {
     /// Lumi peeks over this card's top-trailing corner with her hands on its edge, as if holding it.
     /// The card needs an opaque background so it hides her lower half. Content above the card
     /// should leave about `size + 24` points free on the trailing side.
+    /// Tapping her makes her giggle and hop, then runs `action`; stroking her sideways pets her;
+    /// a long press runs `longPressAction`.
     func lumiHolding(
         feeling: Feeling?,
         phase: LunePhase?,
         isGuess: Bool,
-        size: CGFloat = 140,
+        size: CGFloat = LumiHoldingMetrics.defaultSize,
         celebration: Int = 0,
         speech: LumiSpeech? = nil,
         accessibilityLabel: String,
         accessibilityHint: String,
+        longPressAction: (() -> Void)? = nil,
         action: @escaping () -> Void
     ) -> some View {
         modifier(LumiHoldingModifier(
@@ -24,6 +35,7 @@ extension View {
             speech: speech,
             accessibilityLabel: accessibilityLabel,
             accessibilityHint: accessibilityHint,
+            longPressAction: longPressAction,
             action: action
         ))
     }
@@ -38,11 +50,11 @@ private struct LumiHoldingModifier: ViewModifier {
     let speech: LumiSpeech?
     let accessibilityLabel: String
     let accessibilityHint: String
+    let longPressAction: (() -> Void)?
     let action: () -> Void
 
     private let trailingInset: CGFloat = 14
-    /// How far Lumi rises above the edge: down to just below her mouth.
-    private var rise: CGFloat { size * 0.68 }
+    private var rise: CGFloat { LumiHoldingMetrics.rise(size: size) }
     private var palette: LumiPalette { .resolve(feeling: feeling, phase: phase) }
 
     func body(content: Content) -> some View {
@@ -52,16 +64,15 @@ private struct LumiHoldingModifier: ViewModifier {
                     MagicBurst(trigger: celebration)
                         .frame(width: size * 1.6, height: size * 1.6)
                         .allowsHitTesting(false)
-                    Button(action: action) {
-                        LumiView(
-                            feeling: feeling,
-                            phase: phase,
-                            size: size,
-                            holding: true,
-                            talking: speech?.isTalking ?? false
-                        )
-                    }
-                    .buttonStyle(.plain)
+                    PlayfulLumi(
+                        feeling: feeling,
+                        phase: phase,
+                        size: size,
+                        holding: true,
+                        talking: speech?.isTalking ?? false,
+                        onTap: action,
+                        onLongPress: longPressAction
+                    )
                     .accessibilityLabel(accessibilityLabel)
                     .accessibilityHint(accessibilityHint)
                 }
@@ -84,10 +95,11 @@ private struct LumiHoldingModifier: ViewModifier {
                         .frame(maxWidth: 300, alignment: .trailing)
                         .frame(maxWidth: .infinity, alignment: .trailing)
                         .padding(.trailing, trailingInset + size * 0.82)
-                        // A zero-height frame at the card's top edge: the bubble grows upward from it,
-                        // so its bottom sits just above the card whatever its line count.
-                        .frame(height: 0, alignment: .bottom)
-                        .offset(y: -8)
+                        // Starts at the top of Lumi (screens keep that below the title) and grows
+                        // downward, so long lines spill over the card instead of up under the
+                        // navigation title, which always draws above the page.
+                        .frame(height: 0, alignment: .top)
+                        .offset(y: -rise + 6)
                 } else if isGuess {
                     guessBubble
                         .offset(x: -(trailingInset + size * 0.86), y: -rise + size * 0.08)

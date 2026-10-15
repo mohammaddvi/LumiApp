@@ -155,6 +155,8 @@ final class LocalAIController {
     private(set) var memory: [LocalChatMessage] = []
     private(set) var isGenerating = false
     private(set) var streamingAssistantID: UUID?
+    /// The model load in progress, so everyone who needs the model waits for the same one.
+    private var loadTask: Task<Void, Never>?
 
     var draft = ""
 
@@ -208,7 +210,11 @@ final class LocalAIController {
         if AppStoreScreenshotMode.isEnabled, case .ready = status { return }
         #endif
         if case .ready = status, await runtime.isReady { return }
-        if case .loading = status { return }
+        // Already loading (opening Ask starts it): wait for that load instead of giving up.
+        if let loadTask {
+            await loadTask.value
+            return
+        }
 
         GemmaModelLocator.ensureDirectories()
         guard let modelURL = GemmaModelLocator.resolveModelURL() else {
@@ -217,13 +223,27 @@ final class LocalAIController {
         }
 
         status = .loading
-        do {
-            let name = try await runtime.prepare(modelURL: modelURL)
-            status = .ready(modelName: name)
-            logger.info("Local Gemma ready: \(name, privacy: .public)")
-        } catch {
-            logger.error("Gemma init failed: \(error.localizedDescription, privacy: .public)")
-            status = .failed(error.localizedDescription)
+        let task = Task {
+            do {
+                let name = try await runtime.prepare(modelURL: modelURL)
+                status = .ready(modelName: name)
+                logger.info("Local Gemma ready: \(name, privacy: .public)")
+            } catch {
+                logger.error("Gemma init failed: \(error.localizedDescription, privacy: .public)")
+                status = .failed(error.localizedDescription)
+            }
+        }
+        loadTask = task
+        await task.value
+        loadTask = nil
+    }
+
+    /// What Lumi says when she can't answer, matching the real reason.
+    private var notReadyNotice: String {
+        switch status {
+        case .modelMissing: "Download Lumi's AI in Settings → AI first, then ask again."
+        case .failed: "Lumi's AI couldn't start this time. Try again in a moment."
+        default: "Lumi's AI is still waking up. Try again in a moment."
         }
     }
 
@@ -238,6 +258,15 @@ final class LocalAIController {
     /// Alias used by delete-all / older call sites.
     func clearChat() {
         forgetConversation()
+    }
+
+    /// Adds a ready-made reply (built-in tips, predicted dates) that needs no model, so Lumi's
+    /// topic chips work before the AI is downloaded too.
+    func addLocalExchange(question: String, answer: String) {
+        guard !isGenerating else { return }
+        sessionMessages.removeAll { $0.role == .systemNotice }
+        sessionMessages.append(LocalChatMessage(role: .user, text: question))
+        sessionMessages.append(LocalChatMessage(role: .assistant, text: answer))
     }
 
     /// Starts a fresh visible chat; Lumi still remembers earlier conversations as private context.
@@ -263,7 +292,7 @@ final class LocalAIController {
             ),
             LocalChatMessage(
                 role: .assistant,
-                text: "Glow days can feel so bright ✨ Your logs show steadier energy after your period, so:\n• keep meals regular and colorful 🍓\n• sip water through the day 💧\n• save harder workouts for your high-energy days 💜"
+                text: "Glow days can feel so bright ✨ Your logs show steadier energy after your period, so:\n* **Meals:** regular and colorful 🍓\n* **Water:** sip through the day 💧\n* **Workouts:** save harder ones for high-energy days 💜"
             ),
         ]
     }
@@ -274,28 +303,29 @@ final class LocalAIController {
         guard !trimmed.isEmpty else { return }
         guard !isGenerating else { return }
 
-        if case .ready = status {
-            // ok
-        } else {
-            await prepare()
-        }
-        guard status.isReady, await runtime.isReady else {
-            // Add the notice; never wipe the conversation.
-            sessionMessages.removeAll { $0.role == .systemNotice }
-            sessionMessages.append(LocalChatMessage(
-                role: .systemNotice,
-                text: "Lumi's AI isn't ready yet. Download it in Settings → AI, then try again."
-            ))
-            return
-        }
-
+        // Show the message and Lumi's typing bubble right away, even if the model is still loading.
         draft = ""
         let userMessage = LocalChatMessage(role: .user, text: trimmed)
         let assistantID = UUID()
+        sessionMessages.removeAll { $0.role == .systemNotice }
         sessionMessages.append(userMessage)
         sessionMessages.append(LocalChatMessage(id: assistantID, role: .assistant, text: ""))
         streamingAssistantID = assistantID
         isGenerating = true
+
+        let isReady = status.isReady ? await runtime.isReady : false
+        if !isReady {
+            await prepare()
+        }
+        let canAnswer = status.isReady ? await runtime.isReady : false
+        guard canAnswer else {
+            // Explain why instead of a reply; never wipe the conversation.
+            sessionMessages.removeAll { $0.id == assistantID }
+            sessionMessages.append(LocalChatMessage(role: .systemNotice, text: notReadyNotice))
+            isGenerating = false
+            streamingAssistantID = nil
+            return
+        }
 
         defer {
             isGenerating = false

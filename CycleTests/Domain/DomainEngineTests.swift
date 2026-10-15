@@ -208,6 +208,33 @@ struct InsightEngineTests {
             calendar: calendar
         )
         #expect(insights.contains { $0.kind == .cycleChange })
+        #expect((insights.first { $0.kind == .cycleChange }?.deltaDays ?? 0) > 0)
+    }
+
+    @Test("Symptom timing carries counts and days for the screen")
+    func symptomTimingDetails() {
+        let starts = (0..<6).map { date(2026, 1, 1).addingDays($0 * 28) }
+        let checkIns = starts.dropFirst().flatMap { start in
+            (2...3).map { before in
+                DailyCheckInRecord(
+                    id: UUID(),
+                    date: start.addingDays(-before),
+                    symptoms: [SymptomOccurrence(symptomType: .cramps, intensity: .moderate)]
+                )
+            }
+        }
+        let insights = engine.generate(
+            completedCycles: [],
+            checkIns: checkIns,
+            cycleStarts: starts,
+            now: starts.last!.addingDays(5),
+            calendar: calendar
+        )
+        let timing = try? #require(insights.first { $0.kind == .symptomTiming && $0.symptom == .cramps })
+        #expect(timing?.hits == 5)
+        #expect(timing?.outOf == 6)
+        #expect(timing?.daysBefore != nil)
+        #expect(timing?.body == "You often log cramps shortly before your period.")
     }
 }
 
