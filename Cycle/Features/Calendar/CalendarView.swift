@@ -1,7 +1,7 @@
 import SwiftUI
 
 /// Month calendar held by Lumi; tap a day to log it. `header` sits above the card;
-/// tapping Lumi calls `onLumiTap`.
+/// tapping Lumi calls `onLumiTap`, long-pressing her calls `onLumiLongPress`.
 struct CalendarView<Header: View>: View {
     @Environment(AppEnvironment.self) private var env
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
@@ -16,6 +16,7 @@ struct CalendarView<Header: View>: View {
     private let lumiCelebration: Int
     private let lumiSpeech: LumiSpeech?
     private let onLumiTap: () -> Void
+    private let onLumiLongPress: (() -> Void)?
     private let header: Header
 
     private var calendar: Calendar { .current }
@@ -27,25 +28,30 @@ struct CalendarView<Header: View>: View {
         lumiCelebration: Int = 0,
         lumiSpeech: LumiSpeech? = nil,
         onLumiTap: @escaping () -> Void,
+        onLumiLongPress: (() -> Void)? = nil,
         @ViewBuilder header: () -> Header
     ) {
         self.title = title
         self.lumiCelebration = lumiCelebration
         self.lumiSpeech = lumiSpeech
         self.onLumiTap = onLumiTap
+        self.onLumiLongPress = onLumiLongPress
         self.header = header()
     }
 
     var body: some View {
         ScrollView {
-            VStack(alignment: .leading, spacing: 28) {
+            VStack(alignment: .leading, spacing: CalendarLayout.stackSpacing) {
                 header
+                    // Lumi rises above the card: leave her (and her speech bubble) room so she
+                    // stays clear of the title, however long the greeting is.
+                    .frame(maxWidth: .infinity, minHeight: CalendarLayout.headerMinHeight, alignment: .topLeading)
                 calendarCard
 
                 footerMeta
             }
             .padding(.horizontal, 22)
-            .padding(.top, 8)
+            .padding(.top, CalendarLayout.topPadding)
             .padding(.bottom, 32)
             .readableContentWidth()
         }
@@ -135,6 +141,7 @@ struct CalendarView<Header: View>: View {
             speech: lumiSpeech,
             accessibilityLabel: lumiAccessibilityLabel(logged: logged, guess: forecast?.feeling),
             accessibilityHint: logged == nil ? "Log how you feel today" : "Change how you feel today",
+            longPressAction: onLumiLongPress,
             action: onLumiTap
         )
     }
@@ -309,9 +316,11 @@ struct CalendarView<Header: View>: View {
         } label: {
             ZStack {
                 // The fertile window: a soft gold wash that runs into the ovulation day.
+                // Ovulation is the deepest step of the same wash: the peak of the window, not a
+                // separate highlight competing with today.
                 if isFertile || isOvulation {
                     Capsule()
-                        .fill(Color.cycleFertile.opacity(0.26))
+                        .fill(Color.cycleFertile.opacity(isOvulation ? 0.5 : 0.26))
                         .padding(.vertical, 4)
                         .padding(.horizontal, 3)
                 }
@@ -342,12 +351,9 @@ struct CalendarView<Header: View>: View {
                         .padding(.horizontal, 3)
                 }
 
-                if isOvulation {
+                if isOvulation && differentiateWithoutColor {
                     Capsule()
-                        .stroke(
-                            Color.cycleOvulation.opacity(differentiateWithoutColor ? 1 : 0.85),
-                            lineWidth: differentiateWithoutColor ? 2.6 : 1.6
-                        )
+                        .stroke(Color.cycleOvulation, lineWidth: 1.6)
                         .padding(.vertical, 4)
                         .padding(.horizontal, 3)
                 }
@@ -451,31 +457,12 @@ struct CalendarView<Header: View>: View {
                 legendOutline(title: "Predicted period")
             }
             HStack(spacing: 16) {
-                legendPill(fill: Color.cycleOvulation, title: "Ovulation")
+                legendPill(fill: Color.cycleFertile.opacity(0.85), title: "Ovulation")
                 legendPill(fill: Color.cycleFertile.opacity(0.5), title: "Fertile days")
             }
             HStack(spacing: 16) {
                 legendPill(fill: Color.cycleSage, title: "Logged")
                 legendPill(fill: Color.cycleCoral.opacity(0.3), title: env.preferences.experiencesPMS ? "PMS days" : "Days before period")
-            }
-
-            if let prediction = env.prediction {
-                if let ovulation = prediction.predictedOvulationDate, let fertile = env.predictedFertileWindow {
-                    let short = Date.FormatStyle.dateTime.month(.abbreviated).day()
-                    let wide = Date.FormatStyle.dateTime.month(.wide).day()
-                    Text("Fertile days \((fertile.lowerBound..<fertile.upperBound).formatted(.interval.month(.abbreviated).day())) · ovulation \(ovulation.formatted(short))")
-                        .font(.footnote.weight(.medium))
-                        .foregroundStyle(Color.cycleSecondary)
-                        .fixedSize(horizontal: false, vertical: true)
-                        .accessibilityLabel("Estimated fertile days \(fertile.lowerBound.formatted(wide)) to \(fertile.upperBound.formatted(wide)), ovulation \(ovulation.formatted(wide))")
-                }
-                if let date = prediction.predictedDate {
-                    Text("Next period likely \(date.formatted(.dateTime.month(.abbreviated).day())) · \(prediction.confidence.displayName.lowercased()) confidence")
-                        .font(.footnote.weight(.medium))
-                        .foregroundStyle(Color.cycleSecondary)
-                        .fixedSize(horizontal: false, vertical: true)
-                        .accessibilityLabel("Next period likely \(date.formatted(.dateTime.month(.wide).day())), \(prediction.confidence.displayName) confidence")
-                }
             }
 
             Text("Fertile days and ovulation are estimates from your cycle length. Not a fertility diagnosis or birth control.")
@@ -842,5 +829,17 @@ struct DateDetailView: View {
             }
         }
         .accessibilityElement(children: .combine)
+    }
+}
+
+/// Today's layout above the calendar card.
+private enum CalendarLayout {
+    static let stackSpacing: CGFloat = 28
+    static let topPadding: CGFloat = 8
+    /// Space between the title and the top of Lumi.
+    static let titleGap: CGFloat = 12
+    /// Lumi rises above the card; this keeps her top `titleGap` below the title.
+    static var headerMinHeight: CGFloat {
+        LumiHoldingMetrics.rise() + titleGap - stackSpacing - topPadding
     }
 }

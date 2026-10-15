@@ -15,9 +15,11 @@
 		0E7B9DA2F0E8F42B568AD4BE /* LuneSplashView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD79B99E3B780CDBA40F2513 /* LuneSplashView.swift */; };
 		19D08051C69BE5F5F38BDBEB /* PeriodSymptomsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D10A1E717C0613168B5FDEF /* PeriodSymptomsView.swift */; };
 		1A41696806C85A3A663F3C57 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4BF8A061F3C9125B74110F81 /* SettingsView.swift */; };
+		1C5125F81CA9739EE21F8327 /* LumiStickers.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B19566627F0578B3A84527 /* LumiStickers.swift */; };
 		1CF2485EA5D7C76375673436 /* CycleTipsEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1FF2E3BD43634E4D69DF3605 /* CycleTipsEngine.swift */; };
 		208EEEFB5D7E08C7CCB6962C /* lune-v2.store-shm in Resources */ = {isa = PBXBuildFile; fileRef = 4F56E8C8D8ACDBBF01AD7592 /* lune-v2.store-shm */; };
 		21994395BF97C2D2E9B73C97 /* lune-v1.store in Resources */ = {isa = PBXBuildFile; fileRef = F6933A452292B3616277648C /* lune-v1.store */; };
+		250DFA67228F84EF9470AD50 /* LumiPetStrokesTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8829737AF5CDC7FE7FA8766 /* LumiPetStrokesTests.swift */; };
 		25A6AA1FE3854FF0199EAEBA /* AppEnvironment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 986339F0EC1A362FF37CDF72 /* AppEnvironment.swift */; };
 		2D63A14A0340E56CE2287313 /* CycleStats.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5B6B28237472EA69705C68E /* CycleStats.swift */; };
 		2F972E6F24F91416DC5DAF5A /* LuneLegal.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96E41B85C90F82BD519F5A31 /* LuneLegal.swift */; };
@@ -42,9 +44,11 @@
 		595B6583469FB16D3082ABF1 /* AppLockService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CFBBBDF000C046E4F3E36AB /* AppLockService.swift */; };
 		5A76A32CAD1CB9E5BBDD5A7C /* LuneSchema.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1C12FDE15E344566F7899EF /* LuneSchema.swift */; };
 		5D8E71B2E5C9D0D4D956E947 /* CycleCalculator.swift in Sources */ = {isa = PBXBuildFile; fileRef = ED06AB51E3AF44C576995C8E /* CycleCalculator.swift */; };
+		5DA851391FFA04927D91C3CE /* MoonPhase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 672D27C9A81AC7A78C2AF90A /* MoonPhase.swift */; };
 		5FE4BB1949EB14D010392A0A /* LumiView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85378E2D5F31B9834778450D /* LumiView.swift */; };
 		63517EF728EC3BA51150DD1C /* FeelingPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93148302EF02627B02EB37E1 /* FeelingPicker.swift */; };
 		67ED729BC3B19626681E3FF9 /* DeleteAllDataTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A570814C974AAA8FAAFD9776 /* DeleteAllDataTests.swift */; };
+		6D6AA7EE7F4A04230E9C5699 /* LumiRoomView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2B7CD0C83CEE9720086F5EAE /* LumiRoomView.swift */; };
 		7A30EF0E5B943440222BD755 /* LumiTone.swift in Sources */ = {isa = PBXBuildFile; fileRef = 479D1DC71430884728C1F053 /* LumiTone.swift */; };
 		7C68DAB5BC871716D0421D65 /* LoggingViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51BCC6B85268D6ADFEF2B289 /* LoggingViews.swift */; };
 		80F10B2C5D499B588574C1F7 /* AppInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2CF923D10870B8F0C6C825B0 /* AppInfo.swift */; };
@@ -55,11 +59,14 @@
 		908CCBC5EF0F07D755868095 /* lune-v2.store in Resources */ = {isa = PBXBuildFile; fileRef = 1D83CBA4EC2876371E1F68D2 /* lune-v2.store */; };
 		92C989B9B96690B0AE29B063 /* ExportService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DDD6FE11123E70E4ABE26F4 /* ExportService.swift */; };
 		95B0737182ABE241118A8E32 /* DataStoreRecoveryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB619AB64B853D743443E7E2 /* DataStoreRecoveryView.swift */; };
+		9C0F5C7B1CB93DCDDE9F7DE6 /* LumiMarkdown.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F582A92548ADB81DCA38AC1 /* LumiMarkdown.swift */; };
+		9FA07CC4889460C35AFDD39F /* LumiRoomTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 187BBA7E93E194CC02F0C58D /* LumiRoomTests.swift */; };
 		A0520374E25C978FA980964A /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 69AA8035D69BDF8B137E9D84 /* PrivacyInfo.xcprivacy */; };
 		A317294AC7EAA726D6E0528A /* TodayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0504A450F1CB7A69BF69429 /* TodayView.swift */; };
 		A384D50E9EB7D59C4F641050 /* LumiHolding.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26595FD879A94D307C609F88 /* LumiHolding.swift */; };
 		A401A17B7B91E083F51D4341 /* CycleDataStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37AF56D84BE191C1E0B1BC5F /* CycleDataStore.swift */; };
 		AC68E906193DC8411115CFF8 /* AskLuneView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7DC9497C0129E3475DC2B08 /* AskLuneView.swift */; };
+		B2E30E977D942B43434F865E /* InsightsDisplay.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D305DF64270311B4C8D1587 /* InsightsDisplay.swift */; };
 		B3646366A5FB9EA97A0E2124 /* LiteRTLM in Frameworks */ = {isa = PBXBuildFile; productRef = 70748EDC01DB3B904EA50F08 /* LiteRTLM */; };
 		B6D1FEAB7EABC093A7998377 /* lune-v2.store-wal in Resources */ = {isa = PBXBuildFile; fileRef = 3008C966A0C8EA4B89E23C65 /* lune-v2.store-wal */; };
 		B8B1D154C4C4283EFFB31DC7 /* RepositoryProtocols.swift in Sources */ = {isa = PBXBuildFile; fileRef = D2DDD0BCB56A1A3DE23E2DA4 /* RepositoryProtocols.swift */; };
@@ -68,23 +75,30 @@
 		BBDAD5FBC82890FF6EE11993 /* lune-v1.store-shm in Resources */ = {isa = PBXBuildFile; fileRef = 35AE615DFA53610703A49456 /* lune-v1.store-shm */; };
 		BE739856D1A8DF76115CAA27 /* DomainEngineTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D066DF21C51404F10D8CB0DC /* DomainEngineTests.swift */; };
 		C06CFEFF1603545E554C2766 /* CycleDayEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = E78BE40B8A7C76CB91F03071 /* CycleDayEngine.swift */; };
+		C0B5D81239FA7BF81843E461 /* LumiWardrobe.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A81D946765AEC729EB38FF2 /* LumiWardrobe.swift */; };
 		C12E18A22447E61497A369DC /* FantasySky.swift in Sources */ = {isa = PBXBuildFile; fileRef = 235D44B864E74500705D21CC /* FantasySky.swift */; };
+		C34F5A4AE2E3E3EC33DE5714 /* LumiMarkdownTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5025F14735B01E365F70B38A /* LumiMarkdownTests.swift */; };
 		C4CC06F9C693FF14E0697412 /* LunePhase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2967ED9502C44700E686B7E7 /* LunePhase.swift */; };
 		C50A630AFE118F5ABC3440A4 /* LunePhaseEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5A329A004ECC0577558A4F77 /* LunePhaseEngine.swift */; };
 		C6F9C1F6900DAAAAB222F5BB /* CollapsibleSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFBB425528933C0CAB5E5D45 /* CollapsibleSection.swift */; };
+		C83D9AE7764E4D5CD6F75E38 /* BreathingPattern.swift in Sources */ = {isa = PBXBuildFile; fileRef = 247CD1D6B392C0ABFDE4D677 /* BreathingPattern.swift */; };
+		D514BCBDBD61B4FDDB8BDB26 /* AppIconRenderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E5AA1E435E99BBFBC6690CD /* AppIconRenderTests.swift */; };
 		DA1A8C667AF44AC3FE070F8E /* LuneEmoji.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB4AA2303F7FB535EB0088B8 /* LuneEmoji.swift */; };
 		DAC95A4AF35B2FDB5101BB44 /* LocalAIController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F04D26CE65D0C761085338D0 /* LocalAIController.swift */; };
+		DD9A64A499FC41DDF64257C9 /* LumiPlay.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74950EB2CBE4AD44D4C4E995 /* LumiPlay.swift */; };
 		DEDBED9B0778769715C33FCB /* LocalAITypes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96C2DD45B36A959EDC29D480 /* LocalAITypes.swift */; };
 		DF0E6C52B44188E6C86C1156 /* PlanTripView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 767E551D9EC257A1F8330147 /* PlanTripView.swift */; };
 		E00F0A93F56F655980BA2DE8 /* LumiPalette.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C80A9DD602BF92F54C05579 /* LumiPalette.swift */; };
 		E4308C988EA2631766C175F5 /* FeelingForecastEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12A20EDA581AAC5D45261EF9 /* FeelingForecastEngine.swift */; };
 		E780E7A9B624EAF63C55C69F /* LocalHealthContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = E501F93A163A8E5B32292595 /* LocalHealthContext.swift */; };
+		E7AB62077A0D2B6A7AA85560 /* LumiIconLook.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9A4CEF6554F79E24E7FC10D /* LumiIconLook.swift */; };
 		EE3ABFACB19A676CBBD5B12D /* ReminderPlannerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F6BECAD6D4C41C86E389A92 /* ReminderPlannerTests.swift */; };
 		EE5BD73888D98C9F51873BE5 /* CycleTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFF231DF004AEC3C5B492AA7 /* CycleTheme.swift */; };
 		F0CF5AF67D2CEECB32B03A09 /* NotificationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = E641A4EDE8E53A0931DA829E /* NotificationService.swift */; };
 		F2C8984CCE8753DA4FC7500F /* SwiftDataModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17B4B22017BAC7E457C99BE7 /* SwiftDataModels.swift */; };
 		F346C6ADB51D82095ECF8EC0 /* SymptomBaselineCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 837007F1020485DE0849FC0A /* SymptomBaselineCard.swift */; };
 		F5869B2920A3032D54DEE57B /* FeelingCheckInSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 865DC3B1BBD2867C33DF3B08 /* FeelingCheckInSheet.swift */; };
+		FCE770F9ECE7288589FE6E84 /* InsightsDisplayTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CBEEF5DCC2EF2EDECA0D8D29 /* InsightsDisplayTests.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -100,18 +114,22 @@
 /* Begin PBXFileReference section */
 		0368D42BAECF52ADFCB3E5D8 /* PersistenceController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersistenceController.swift; sourceTree = "<group>"; };
 		04767AF168CBEB5956252164 /* CycleTests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = CycleTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		0D305DF64270311B4C8D1587 /* InsightsDisplay.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InsightsDisplay.swift; sourceTree = "<group>"; };
 		12A20EDA581AAC5D45261EF9 /* FeelingForecastEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeelingForecastEngine.swift; sourceTree = "<group>"; };
 		1512059432DF8F9336BC5158 /* Cycle.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = Cycle.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		17B4B22017BAC7E457C99BE7 /* SwiftDataModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwiftDataModels.swift; sourceTree = "<group>"; };
+		187BBA7E93E194CC02F0C58D /* LumiRoomTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LumiRoomTests.swift; sourceTree = "<group>"; };
 		1BCBDA430784D2D33170D432 /* DomainTypes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DomainTypes.swift; sourceTree = "<group>"; };
 		1CFBBBDF000C046E4F3E36AB /* AppLockService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppLockService.swift; sourceTree = "<group>"; };
 		1D83CBA4EC2876371E1F68D2 /* lune-v2.store */ = {isa = PBXFileReference; path = "lune-v2.store"; sourceTree = "<group>"; };
 		1FF2E3BD43634E4D69DF3605 /* CycleTipsEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CycleTipsEngine.swift; sourceTree = "<group>"; };
 		209EFD2843C06538E10375A2 /* AppStoreScreenshotMode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppStoreScreenshotMode.swift; sourceTree = "<group>"; };
 		235D44B864E74500705D21CC /* FantasySky.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FantasySky.swift; sourceTree = "<group>"; };
+		247CD1D6B392C0ABFDE4D677 /* BreathingPattern.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BreathingPattern.swift; sourceTree = "<group>"; };
 		26595FD879A94D307C609F88 /* LumiHolding.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LumiHolding.swift; sourceTree = "<group>"; };
 		26BFDF39FF38F8B1569712B2 /* LumiMomentTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LumiMomentTests.swift; sourceTree = "<group>"; };
 		2967ED9502C44700E686B7E7 /* LunePhase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LunePhase.swift; sourceTree = "<group>"; };
+		2B7CD0C83CEE9720086F5EAE /* LumiRoomView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LumiRoomView.swift; sourceTree = "<group>"; };
 		2C80A9DD602BF92F54C05579 /* LumiPalette.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LumiPalette.swift; sourceTree = "<group>"; };
 		2CF923D10870B8F0C6C825B0 /* AppInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppInfo.swift; sourceTree = "<group>"; };
 		3008C966A0C8EA4B89E23C65 /* lune-v2.store-wal */ = {isa = PBXFileReference; path = "lune-v2.store-wal"; sourceTree = "<group>"; };
@@ -121,7 +139,9 @@
 		37AF56D84BE191C1E0B1BC5F /* CycleDataStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CycleDataStore.swift; sourceTree = "<group>"; };
 		3A7E5C32EFEA3FE3F985B48A /* PersistenceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersistenceTests.swift; sourceTree = "<group>"; };
 		3D90F70AE29648DE317B0371 /* PeriodLogView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PeriodLogView.swift; sourceTree = "<group>"; };
+		3E5AA1E435E99BBFBC6690CD /* AppIconRenderTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppIconRenderTests.swift; sourceTree = "<group>"; };
 		3EC3AF0238C45A457F52FA28 /* PrivacyPolicyView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrivacyPolicyView.swift; sourceTree = "<group>"; };
+		3F582A92548ADB81DCA38AC1 /* LumiMarkdown.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LumiMarkdown.swift; sourceTree = "<group>"; };
 		40C4DFEF878D776ECBA3DDBA /* LuneSymbol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LuneSymbol.swift; sourceTree = "<group>"; };
 		420B25C57BF05E7CD83760DD /* Cycle.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Cycle.entitlements; sourceTree = "<group>"; };
 		461730167F6E6E52F863898E /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -129,14 +149,18 @@
 		4B154E88E04F1110D310991A /* CycleOutlookEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CycleOutlookEngine.swift; sourceTree = "<group>"; };
 		4BF8A061F3C9125B74110F81 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 		4F56E8C8D8ACDBBF01AD7592 /* lune-v2.store-shm */ = {isa = PBXFileReference; path = "lune-v2.store-shm"; sourceTree = "<group>"; };
+		5025F14735B01E365F70B38A /* LumiMarkdownTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LumiMarkdownTests.swift; sourceTree = "<group>"; };
 		51BCC6B85268D6ADFEF2B289 /* LoggingViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoggingViews.swift; sourceTree = "<group>"; };
 		56CDCABEDCDB0AF795A36EE5 /* LumiNameSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LumiNameSheet.swift; sourceTree = "<group>"; };
 		581C3F8951603E4BE5910ACD /* StoreBackupService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreBackupService.swift; sourceTree = "<group>"; };
 		5A329A004ECC0577558A4F77 /* LunePhaseEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LunePhaseEngine.swift; sourceTree = "<group>"; };
 		5D10A1E717C0613168B5FDEF /* PeriodSymptomsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PeriodSymptomsView.swift; sourceTree = "<group>"; };
 		5DDD6FE11123E70E4ABE26F4 /* ExportService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExportService.swift; sourceTree = "<group>"; };
+		672D27C9A81AC7A78C2AF90A /* MoonPhase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MoonPhase.swift; sourceTree = "<group>"; };
 		69AA8035D69BDF8B137E9D84 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
+		6A81D946765AEC729EB38FF2 /* LumiWardrobe.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LumiWardrobe.swift; sourceTree = "<group>"; };
 		7092ADB473BBCC5190DEC164 /* InsightEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InsightEngine.swift; sourceTree = "<group>"; };
+		74950EB2CBE4AD44D4C4E995 /* LumiPlay.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LumiPlay.swift; sourceTree = "<group>"; };
 		767E551D9EC257A1F8330147 /* PlanTripView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlanTripView.swift; sourceTree = "<group>"; };
 		7754EEED31CFAC1282FDA8B7 /* LuneMoonSymbol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LuneMoonSymbol.swift; sourceTree = "<group>"; };
 		78554C9C07AB317D3D4B7C73 /* PredictionEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PredictionEngine.swift; sourceTree = "<group>"; };
@@ -151,6 +175,7 @@
 		96E41B85C90F82BD519F5A31 /* LuneLegal.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LuneLegal.swift; sourceTree = "<group>"; };
 		986339F0EC1A362FF37CDF72 /* AppEnvironment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppEnvironment.swift; sourceTree = "<group>"; };
 		9AC990E7828D831C2F4A94EF /* MarkPeriodDayTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarkPeriodDayTests.swift; sourceTree = "<group>"; };
+		A1B19566627F0578B3A84527 /* LumiStickers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LumiStickers.swift; sourceTree = "<group>"; };
 		A1C12FDE15E344566F7899EF /* LuneSchema.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LuneSchema.swift; sourceTree = "<group>"; };
 		A38F450EF1E0328F0A441FD5 /* LuneCheckIn.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LuneCheckIn.swift; sourceTree = "<group>"; };
 		A570814C974AAA8FAAFD9776 /* DeleteAllDataTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeleteAllDataTests.swift; sourceTree = "<group>"; };
@@ -160,6 +185,8 @@
 		B0504A450F1CB7A69BF69429 /* TodayView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodayView.swift; sourceTree = "<group>"; };
 		B7DC9497C0129E3475DC2B08 /* AskLuneView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AskLuneView.swift; sourceTree = "<group>"; };
 		BB619AB64B853D743443E7E2 /* DataStoreRecoveryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataStoreRecoveryView.swift; sourceTree = "<group>"; };
+		C8829737AF5CDC7FE7FA8766 /* LumiPetStrokesTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LumiPetStrokesTests.swift; sourceTree = "<group>"; };
+		CBEEF5DCC2EF2EDECA0D8D29 /* InsightsDisplayTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InsightsDisplayTests.swift; sourceTree = "<group>"; };
 		CFBB425528933C0CAB5E5D45 /* CollapsibleSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollapsibleSection.swift; sourceTree = "<group>"; };
 		D066DF21C51404F10D8CB0DC /* DomainEngineTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DomainEngineTests.swift; sourceTree = "<group>"; };
 		D2DDD0BCB56A1A3DE23E2DA4 /* RepositoryProtocols.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RepositoryProtocols.swift; sourceTree = "<group>"; };
@@ -177,6 +204,7 @@
 		F5B6B28237472EA69705C68E /* CycleStats.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CycleStats.swift; sourceTree = "<group>"; };
 		F6933A452292B3616277648C /* lune-v1.store */ = {isa = PBXFileReference; path = "lune-v1.store"; sourceTree = "<group>"; };
 		F828933BEAE5330A0695585B /* InsightsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InsightsView.swift; sourceTree = "<group>"; };
+		F9A4CEF6554F79E24E7FC10D /* LumiIconLook.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LumiIconLook.swift; sourceTree = "<group>"; };
 		FD34594337EEEFEC8F3B7BE8 /* CalendarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -206,6 +234,17 @@
 				78554C9C07AB317D3D4B7C73 /* PredictionEngine.swift */,
 			);
 			path = Engines;
+			sourceTree = "<group>";
+		};
+		046FE39134CF16E670308BE9 /* LumiRoom */ = {
+			isa = PBXGroup;
+			children = (
+				247CD1D6B392C0ABFDE4D677 /* BreathingPattern.swift */,
+				F9A4CEF6554F79E24E7FC10D /* LumiIconLook.swift */,
+				2B7CD0C83CEE9720086F5EAE /* LumiRoomView.swift */,
+				A1B19566627F0578B3A84527 /* LumiStickers.swift */,
+			);
+			path = LumiRoom;
 			sourceTree = "<group>";
 		};
 		08EA9269E70EB33BDDD10E7F /* Cycle */ = {
@@ -393,10 +432,13 @@
 			children = (
 				93148302EF02627B02EB37E1 /* FeelingPicker.swift */,
 				26595FD879A94D307C609F88 /* LumiHolding.swift */,
+				3F582A92548ADB81DCA38AC1 /* LumiMarkdown.swift */,
 				2C80A9DD602BF92F54C05579 /* LumiPalette.swift */,
+				74950EB2CBE4AD44D4C4E995 /* LumiPlay.swift */,
 				E63C72CDB252A8666D158AA6 /* LumiSpeech.swift */,
 				479D1DC71430884728C1F053 /* LumiTone.swift */,
 				85378E2D5F31B9834778450D /* LumiView.swift */,
+				6A81D946765AEC729EB38FF2 /* LumiWardrobe.swift */,
 			);
 			path = Lumi;
 			sourceTree = "<group>";
@@ -404,6 +446,7 @@
 		C410ED51D018E74A1BD8BF73 /* Insights */ = {
 			isa = PBXGroup;
 			children = (
+				0D305DF64270311B4C8D1587 /* InsightsDisplay.swift */,
 				F828933BEAE5330A0695585B /* InsightsView.swift */,
 			);
 			path = Insights;
@@ -427,6 +470,7 @@
 				7021122505230F0E6C08A5AE /* Calendar */,
 				C410ED51D018E74A1BD8BF73 /* Insights */,
 				670F3BC3C8C656FA8401C8A2 /* Logging */,
+				046FE39134CF16E670308BE9 /* LumiRoom */,
 				EC39AAA230D7616EBE4DCE98 /* Onboarding */,
 				0DD0311B087106697BB4036E /* Settings */,
 				1AD8072516B661E0FC143C93 /* Today */,
@@ -437,10 +481,15 @@
 		D99F980B3ADC0862F01AB762 /* Domain */ = {
 			isa = PBXGroup;
 			children = (
+				3E5AA1E435E99BBFBC6690CD /* AppIconRenderTests.swift */,
 				A570814C974AAA8FAAFD9776 /* DeleteAllDataTests.swift */,
 				D066DF21C51404F10D8CB0DC /* DomainEngineTests.swift */,
+				CBEEF5DCC2EF2EDECA0D8D29 /* InsightsDisplayTests.swift */,
 				F3292370C79748870C9AFADB /* LocalHealthContextTests.swift */,
+				5025F14735B01E365F70B38A /* LumiMarkdownTests.swift */,
 				26BFDF39FF38F8B1569712B2 /* LumiMomentTests.swift */,
+				C8829737AF5CDC7FE7FA8766 /* LumiPetStrokesTests.swift */,
+				187BBA7E93E194CC02F0C58D /* LumiRoomTests.swift */,
 				9AC990E7828D831C2F4A94EF /* MarkPeriodDayTests.swift */,
 			);
 			path = Domain;
@@ -455,6 +504,7 @@
 				A38F450EF1E0328F0A441FD5 /* LuneCheckIn.swift */,
 				AB4AA2303F7FB535EB0088B8 /* LuneEmoji.swift */,
 				2967ED9502C44700E686B7E7 /* LunePhase.swift */,
+				672D27C9A81AC7A78C2AF90A /* MoonPhase.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -625,6 +675,7 @@
 				595B6583469FB16D3082ABF1 /* AppLockService.swift in Sources */,
 				84C5A19949D23237CEF05B8F /* AppStoreScreenshotMode.swift in Sources */,
 				AC68E906193DC8411115CFF8 /* AskLuneView.swift in Sources */,
+				C83D9AE7764E4D5CD6F75E38 /* BreathingPattern.swift in Sources */,
 				328627DE37025A0E938683B1 /* CalendarView.swift in Sources */,
 				C6F9C1F6900DAAAAB222F5BB /* CollapsibleSection.swift in Sources */,
 				3B1F5D0D1BCBEFF13F95C782 /* CycleApp.swift in Sources */,
@@ -645,18 +696,25 @@
 				63517EF728EC3BA51150DD1C /* FeelingPicker.swift in Sources */,
 				012CBD617DEE0848505E14A3 /* GemmaModelDownloader.swift in Sources */,
 				35C80E0709508A604F08A0A1 /* InsightEngine.swift in Sources */,
+				B2E30E977D942B43434F865E /* InsightsDisplay.swift in Sources */,
 				8FD289F02F14A3725A93C9BB /* InsightsView.swift in Sources */,
 				DAC95A4AF35B2FDB5101BB44 /* LocalAIController.swift in Sources */,
 				DEDBED9B0778769715C33FCB /* LocalAITypes.swift in Sources */,
 				E780E7A9B624EAF63C55C69F /* LocalHealthContext.swift in Sources */,
 				7C68DAB5BC871716D0421D65 /* LoggingViews.swift in Sources */,
 				A384D50E9EB7D59C4F641050 /* LumiHolding.swift in Sources */,
+				E7AB62077A0D2B6A7AA85560 /* LumiIconLook.swift in Sources */,
+				9C0F5C7B1CB93DCDDE9F7DE6 /* LumiMarkdown.swift in Sources */,
 				8953E6D2D131F1CEF7869418 /* LumiMomentEngine.swift in Sources */,
 				8366A0C5721BB7491A5122BC /* LumiNameSheet.swift in Sources */,
 				E00F0A93F56F655980BA2DE8 /* LumiPalette.swift in Sources */,
+				DD9A64A499FC41DDF64257C9 /* LumiPlay.swift in Sources */,
+				6D6AA7EE7F4A04230E9C5699 /* LumiRoomView.swift in Sources */,
 				3C1B23491A6A92AB2708AC8F /* LumiSpeech.swift in Sources */,
+				1C5125F81CA9739EE21F8327 /* LumiStickers.swift in Sources */,
 				7A30EF0E5B943440222BD755 /* LumiTone.swift in Sources */,
 				5FE4BB1949EB14D010392A0A /* LumiView.swift in Sources */,
+				C0B5D81239FA7BF81843E461 /* LumiWardrobe.swift in Sources */,
 				4FED3A99A539DF01796F877D /* LuneCheckIn.swift in Sources */,
 				DA1A8C667AF44AC3FE070F8E /* LuneEmoji.swift in Sources */,
 				2F972E6F24F91416DC5DAF5A /* LuneLegal.swift in Sources */,
@@ -667,6 +725,7 @@
 				0E7B9DA2F0E8F42B568AD4BE /* LuneSplashView.swift in Sources */,
 				31DF9F7EC45A66B2B453B92A /* LuneSymbol.swift in Sources */,
 				54D00EF60509245DAD6A613A /* LuneVoice.swift in Sources */,
+				5DA851391FFA04927D91C3CE /* MoonPhase.swift in Sources */,
 				F0CF5AF67D2CEECB32B03A09 /* NotificationService.swift in Sources */,
 				2FC1CEB5F6D65D6DB9536A94 /* OnboardingFlowView.swift in Sources */,
 				4C0F670760D64FED5AD78140 /* PeriodLogView.swift in Sources */,
@@ -689,10 +748,15 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D514BCBDBD61B4FDDB8BDB26 /* AppIconRenderTests.swift in Sources */,
 				67ED729BC3B19626681E3FF9 /* DeleteAllDataTests.swift in Sources */,
 				BE739856D1A8DF76115CAA27 /* DomainEngineTests.swift in Sources */,
+				FCE770F9ECE7288589FE6E84 /* InsightsDisplayTests.swift in Sources */,
 				37C143433A12CFF02886A36B /* LocalHealthContextTests.swift in Sources */,
+				C34F5A4AE2E3E3EC33DE5714 /* LumiMarkdownTests.swift in Sources */,
 				2FEC734D9A51291ADC42CD9C /* LumiMomentTests.swift in Sources */,
+				250DFA67228F84EF9470AD50 /* LumiPetStrokesTests.swift in Sources */,
+				9FA07CC4889460C35AFDD39F /* LumiRoomTests.swift in Sources */,
 				4B9061AA9E1362BB1ED5DE2B /* MarkPeriodDayTests.swift in Sources */,
 				419E79BC79D3EC6485FB2BF4 /* PersistenceTests.swift in Sources */,
 				EE3ABFACB19A676CBBD5B12D /* ReminderPlannerTests.swift in Sources */,
@@ -875,6 +939,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
 				CODE_SIGN_ENTITLEMENTS = Cycle/Cycle.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
@@ -912,6 +977,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
 				CODE_SIGN_ENTITLEMENTS = Cycle/Cycle.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;

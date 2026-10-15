@@ -259,6 +259,15 @@ struct InsightResult: Identifiable, Hashable, Sendable {
     let body: String
     let evidence: String
     let copyVersion: String
+    /// Structured details so screens can draw them (dots, ranges) instead of sentences.
+    var symptom: SymptomType? = nil
+    /// Cycles where it showed up, out of `outOf` recent cycles.
+    var hits: Int? = nil
+    var outOf: Int? = nil
+    /// Days before the period it usually shows up.
+    var daysBefore: ClosedRange<Int>? = nil
+    /// Signed change in cycle length (cycle change insights).
+    var deltaDays: Int? = nil
 }
 
 enum AppearanceMode: String, Codable, CaseIterable, Sendable, Identifiable {

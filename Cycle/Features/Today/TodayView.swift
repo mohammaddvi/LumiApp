@@ -1,7 +1,7 @@
 import SwiftUI
 
 /// Home: Lumi holds this month's calendar and shows today's feeling, logged or guessed.
-/// Tapping Lumi opens the feeling check-in.
+/// Tapping Lumi opens the feeling check-in; long-pressing her opens her room.
 struct TodayView: View {
     @Environment(AppEnvironment.self) private var env
     @Environment(\.isSplashFinished) private var isSplashFinished
@@ -10,6 +10,7 @@ struct TodayView: View {
     @State private var logCount = 0
     @State private var speech = LumiSpeech()
     @State private var showNameSheet = false
+    @State private var showRoom = false
     /// Last day Lumi greeted you (yyyy-MM-dd): she greets at most once a day, and the gap since
     /// tells her whether you've been away.
     @AppStorage("lumi.lastQuestionDay") private var lastQuestionDay = ""
@@ -32,6 +33,10 @@ struct TodayView: View {
                 } else {
                     showFeelingSheet = true
                 }
+            },
+            onLumiLongPress: {
+                speech.dismiss()
+                showRoom = true
             }
         ) {
             header
@@ -49,6 +54,9 @@ struct TodayView: View {
                 }
             }
             .presentationDetents([.medium, .large])
+        }
+        .fullScreenCover(isPresented: $showRoom) {
+            LumiRoomView()
         }
         .sheet(isPresented: $showFeelingSheet) {
             NavigationStack {

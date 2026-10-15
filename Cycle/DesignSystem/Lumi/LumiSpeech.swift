@@ -92,7 +92,8 @@ struct SpeechBubbleShape: Shape {
         let tail = Self.tailSize
         let body = CGRect(x: rect.minX, y: rect.minY, width: rect.width - tail, height: rect.height)
         var path = Path(roundedRect: body, cornerRadius: 18, style: .continuous)
-        let tipY = body.maxY - 18
+        // Near the top, beside Lumi's face, however many lines the bubble has.
+        let tipY = min(body.minY + 30, body.maxY - 16)
         path.move(to: CGPoint(x: body.maxX - 1, y: tipY - 9))
         path.addQuadCurve(to: CGPoint(x: rect.maxX, y: tipY + 6), control: CGPoint(x: body.maxX + 3, y: tipY + 2))
         path.addQuadCurve(to: CGPoint(x: body.maxX - 1, y: tipY + 7), control: CGPoint(x: body.maxX + 2, y: tipY + 8))

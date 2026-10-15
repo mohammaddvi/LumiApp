@@ -2,7 +2,7 @@ import Foundation
 
 /// Deterministic, evidence-based personal insights. Never diagnoses.
 struct InsightEngine: Sendable {
-    static let copyVersion = "1.0.0"
+    static let copyVersion = "1.1.0"
 
     func generate(
         completedCycles: [CompletedCycle],
@@ -66,7 +66,8 @@ struct InsightEngine: Sendable {
             title: "Cycle length shift",
             body: "Your recent cycles have been about \(days) day\(days == 1 ? "" : "s") \(direction) than your earlier average.",
             evidence: "Comparing your last 3 cycles to the 3 before that.",
-            copyVersion: Self.copyVersion
+            copyVersion: Self.copyVersion,
+            deltaDays: Int(delta.rounded())
         )
     }
 
@@ -129,9 +130,13 @@ struct InsightEngine: Sendable {
                     kind: .symptomTiming,
                     generatedAt: now,
                     title: "\(symptom.displayName) timing",
-                    body: "\(symptom.displayName) tend to show up shortly before your period.",
-                    evidence: "\(symptom.displayName) were reported in \(cycleHits) of your last \(recentStarts.count) cycles, usually \(low)–\(high) day\(high == 1 ? "" : "s") before your period.",
-                    copyVersion: Self.copyVersion
+                    body: "You often log \(symptom.displayName.lowercased()) shortly before your period.",
+                    evidence: "Logged in \(cycleHits) of your last \(recentStarts.count) cycles, usually \(low)–\(high) day\(high == 1 ? "" : "s") before your period.",
+                    copyVersion: Self.copyVersion,
+                    symptom: symptom,
+                    hits: cycleHits,
+                    outOf: recentStarts.count,
+                    daysBefore: low...high
                 )
             )
         }
@@ -170,8 +175,11 @@ struct InsightEngine: Sendable {
                     generatedAt: now,
                     title: "\(symptom.displayName) often present",
                     body: "\(symptom.displayName) showed up in most of your recent cycles.",
-                    evidence: "\(symptom.displayName) was logged on \(hits) of your last \(recentStarts.count) cycles.",
-                    copyVersion: Self.copyVersion
+                    evidence: "Logged in \(hits) of your last \(recentStarts.count) cycles.",
+                    copyVersion: Self.copyVersion,
+                    symptom: symptom,
+                    hits: hits,
+                    outOf: recentStarts.count
                 )
             )
         }
@@ -220,9 +228,10 @@ struct InsightEngine: Sendable {
                     kind: .symptomIntensityChange,
                     generatedAt: now,
                     title: "Stronger \(symptom.displayName.lowercased())",
-                    body: "\(symptom.displayName) were stronger than your recent average this cycle.",
+                    body: "\(symptom.displayName) felt stronger than usual this cycle.",
                     evidence: "Compared \(currentIntensities.count) log\(currentIntensities.count == 1 ? "" : "s") this cycle to \(historical.count) earlier records.",
-                    copyVersion: Self.copyVersion
+                    copyVersion: Self.copyVersion,
+                    symptom: symptom
                 )
             )
         }

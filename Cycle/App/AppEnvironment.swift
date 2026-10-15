@@ -721,6 +721,18 @@ final class AppEnvironment {
 
             if !isCurrent, index + 1 < startsDaysAgo.count {
                 let nextStart = now.addingDays(-startsDaysAgo[index + 1])
+                // A few feelings per cycle, so Lumi's guesses and the calendar look lived-in.
+                for (offset, feeling) in [(1, Feeling.tired), (2, .calm), (8, .happy), (13, .happy), (16, .calm)] {
+                    do {
+                        try await store.upsertCheckIn(
+                            DailyCheckInRecord(id: UUID(), date: start.addingDays(offset), symptoms: [])
+                                .applying(feeling)
+                        )
+                    } catch {
+                        lastErrorMessage = "Couldn’t seed screenshot feelings."
+                        return
+                    }
+                }
                 for before in 1...3 {
                     let day = nextStart.addingDays(-before)
                     do {
@@ -738,7 +750,8 @@ final class AppEnvironment {
                                         intensity: before == 1 ? .strong : .mild
                                     ),
                                 ],
-                                note: before == 1 ? "soft day — need a rest" : nil
+                                note: before == 1 ? "soft day — need a rest" : nil,
+                                feeling: before == 1 ? .tired : .irritable
                             )
                         )
                     } catch {
