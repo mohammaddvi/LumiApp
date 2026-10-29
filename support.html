@@ -35,7 +35,10 @@
         <h2>Email us</h2>
         <p>We usually reply within 2 business days.</p>
       </div>
-      <a class="btn btn-primary" href="mailto:hello.lumi.support@gmail.com?subject=Lumi%20support">hello.lumi.support@gmail.com</a>
+      <div class="cta-row">
+        <a class="btn btn-primary" href="mailto:hello.lumi.support@gmail.com?subject=Lumi%20support">hello.lumi.support@gmail.com</a>
+        <button class="btn btn-ghost" type="button" id="copy-email" data-email="hello.lumi.support@gmail.com">Copy address</button>
+      </div>
     </div>
 
     <section>
@@ -118,5 +121,19 @@
       </nav>
     </div>
   </footer>
+
+  <script>
+    // The mailto button does nothing without a mail app, so offer the address to paste anywhere.
+    const copyButton = document.getElementById("copy-email");
+    copyButton.addEventListener("click", async () => {
+      try {
+        await navigator.clipboard.writeText(copyButton.dataset.email);
+        copyButton.textContent = "Copied!";
+      } catch {
+        copyButton.textContent = copyButton.dataset.email;
+      }
+      setTimeout(() => { copyButton.textContent = "Copy address"; }, 2000);
+    });
+  </script>
 </body>
 </html>
