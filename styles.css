@@ -229,6 +229,7 @@ a:hover {
   text-decoration: none;
   border-radius: 999px;
   border: 1.5px solid transparent;
+  overflow-wrap: anywhere;
   transition: transform 0.2s var(--ease), background 0.2s var(--ease);
 }
 

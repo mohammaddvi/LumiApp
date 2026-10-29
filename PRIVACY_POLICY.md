@@ -1,7 +1,7 @@
 # Lumi Privacy Policy
 
 **Last updated:** October 29, 2026
-**Contact:** support@mylune.app
+**Contact:** hello.lumi.support@gmail.com
 
 **In short:** Lumi is local-first. Period logs, symptoms, notes and predictions stay on your iPhone. We do not run ads, sell data, use analytics, or operate a health cloud for this app.
 
@@ -62,4 +62,4 @@ Lumi is intended for users old enough to track menstruation. Parents or guardian
 
 We may update this policy when the app changes, and will update the date above. Continued use after an update means you accept the revised policy.
 
-Questions about privacy: support@mylune.app
+Questions about privacy: hello.lumi.support@gmail.com
