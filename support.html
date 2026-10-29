@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Lumi Support</title>
+  <meta name="description" content="Get help with Lumi: contact support, export and import your data, on-device AI, reminders and app lock." />
+  <meta name="theme-color" content="#f6f0fb" media="(prefers-color-scheme: light)" />
+  <meta name="theme-color" content="#1b1730" media="(prefers-color-scheme: dark)" />
+  <link rel="icon" type="image/png" href="assets/favicon.png" />
+  <link rel="apple-touch-icon" href="assets/apple-touch-icon.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="site-header">
+    <div class="wrap">
+      <a class="brand" href="index.html"><img src="assets/icon-512.png" alt="" width="36" height="36" />Lumi</a>
+      <nav class="nav" aria-label="Primary">
+        <a href="index.html#features">Features</a>
+        <a href="support.html" aria-current="page">Support</a>
+        <a href="privacy.html">Privacy</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="wrap narrow page">
+    <h1>Support</h1>
+    <p class="lede">Questions, bugs or ideas? We’d love to hear from you.</p>
+
+    <div class="contact-card">
+      <div>
+        <h2>Email us</h2>
+        <p>We usually reply within 2 business days.</p>
+      </div>
+      <a class="btn btn-primary" href="mailto:support@mylune.app?subject=Lumi%20support">support@mylune.app</a>
+    </div>
+
+    <section>
+      <h2>What to include</h2>
+      <ul>
+        <li>What happened, and what you expected instead</li>
+        <li>Your Lumi version (<strong>Settings → About</strong>) and iOS version</li>
+        <li>A screenshot, if it helps (hide anything personal first)</li>
+      </ul>
+      <p>Lumi has no servers and we can’t see your data, so please don’t send your cycle logs unless you choose to.</p>
+    </section>
+
+    <section class="faq" aria-labelledby="faq-title">
+      <h2 id="faq-title">Frequently asked questions</h2>
+
+      <details>
+        <summary>Is Lumi free?</summary>
+        <p>Yes. Every feature is free, including Ask Lumi and Insights. There are no ads, purchases or subscriptions.</p>
+      </details>
+
+      <details>
+        <summary>Where is my data stored?</summary>
+        <p>Only on your iPhone. Lumi has no account and no cloud. Your logs are included in your normal iPhone backup (iCloud or computer), like other app data.</p>
+      </details>
+
+      <details>
+        <summary>How do I move my data to a new iPhone?</summary>
+        <p>Restoring your new iPhone from a backup brings Lumi’s data with it. You can also open <strong>Settings → Your data → Export JSON</strong> on the old phone, send the file to yourself, and use <strong>Import JSON</strong> on the new one. Importing replaces what’s on the new phone.</p>
+      </details>
+
+      <details>
+        <summary>How do I export or delete my data?</summary>
+        <p>Open <strong>Settings → Your data</strong>. Use <strong>Export JSON</strong> or <strong>Export CSV</strong> to save a copy, or <strong>Delete all data</strong> to erase everything on this iPhone. Deleting can’t be undone, so export first if you want to keep a copy.</p>
+      </details>
+
+      <details>
+        <summary>How does the AI chat work?</summary>
+        <p>Open the <strong>Ask</strong> tab and tap <strong>Download</strong>. Lumi downloads Google’s Gemma model (about 2.6 GB, Wi-Fi recommended) directly from Hugging Face, once. After that, every answer is generated on your iPhone, even offline. Nothing you ask is sent anywhere. You can remove the model in <strong>Settings → AI</strong> without losing your cycle data.</p>
+      </details>
+
+      <details>
+        <summary>The AI download fails. What can I do?</summary>
+        <p>Make sure you’re on Wi-Fi and have about 3 GB of free space. If Hugging Face asks you to accept the Gemma license, open the model page in Safari, accept it, and try again. The download keeps going in the background, so you can leave the app while it runs.</p>
+      </details>
+
+      <details>
+        <summary>How accurate are the predictions?</summary>
+        <p>Predictions start from the cycle length you enter and get better as you log more periods. They’re estimates, not guarantees. Ovulation estimates are <strong>not</strong> a form of birth control.</p>
+      </details>
+
+      <details>
+        <summary>I’m not getting reminders.</summary>
+        <p>Check that reminders are on in <strong>Settings → Communication</strong>, and that notifications for Lumi are allowed in the iPhone <strong>Settings → Notifications → Lumi</strong>. Focus modes can also hide them.</p>
+      </details>
+
+      <details>
+        <summary>How does Face ID / Touch ID lock work?</summary>
+        <p>Turn it on in <strong>Settings → Privacy</strong>. It uses Apple’s Face ID or Touch ID on your device; Lumi never sees or stores your biometrics. If Face ID fails, you can use your iPhone passcode.</p>
+      </details>
+
+      <details>
+        <summary>Is Lumi medical advice?</summary>
+        <p>No. Lumi helps you notice patterns in your own cycle. It isn’t a medical device and doesn’t diagnose, treat or prevent any condition. Talk to a clinician for medical decisions.</p>
+      </details>
+    </section>
+
+    <section>
+      <h2>Privacy</h2>
+      <p>Read exactly what Lumi stores and what it never collects in our <a href="privacy.html">Privacy Policy</a>.</p>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="wrap">
+      <span>© 2026 Lumi</span>
+      <nav aria-label="Footer">
+        <a href="index.html">Home</a>
+        <a href="privacy.html">Privacy Policy</a>
+        <a href="mailto:support@mylune.app">support@mylune.app</a>
+      </nav>
+    </div>
+  </footer>
+</body>
+</html>
