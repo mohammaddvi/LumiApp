@@ -25,7 +25,7 @@ In-app constants live in `Cycle/App/LuneLegal.swift` and should match.
 | `styles.css` | Shared styles (light + dark, colors from `CycleTheme.swift`) |
 | `assets/` | Icon, favicon, screenshots, social image |
 
-When the App Store page is live, set the `href` on the App Store button in `index.html` and remove `aria-disabled`.
+The App Store button in `index.html` links to https://apps.apple.com/app/hello-lumi-period-mood/id6805330937, and the `apple-itunes-app` meta tag shows Safari's Smart App Banner for the same app ID.
 
 ## Publish
 
