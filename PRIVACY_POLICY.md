@@ -1,6 +1,6 @@
 # Lumi Privacy Policy
 
-**Last updated:** October 29, 2026
+**Last updated:** October 30, 2026
 **Contact:** hello.lumi.support@gmail.com
 
 **In short:** Lumi is local-first. Period logs, symptoms, notes and predictions stay on your iPhone. We do not run ads, sell data, use analytics, or operate a health cloud for this app.
@@ -30,7 +30,10 @@ Because we never receive your data, we cannot view, recover or hand it over to a
 
 ## Network use
 
-Lumi works offline for tracking. The only optional network feature is downloading the Gemma AI model from **Hugging Face** (litert-community) when you tap **Download** in the **Ask** tab. That request goes directly to Hugging Face; we do not proxy it, and no health data is sent. Hugging Face may log standard connection metadata under [their own policy](https://huggingface.co/privacy). The model is provided by Google under the [Gemma Terms of Use](https://ai.google.dev/gemma/terms).
+Lumi works offline for tracking. It goes online only for these optional features:
+
+- Downloading the Gemma AI model from **Hugging Face** (litert-community) when you tap **Download** in the **Ask** tab. That request goes directly to Hugging Face; we do not proxy it, and no health data is sent. Hugging Face may log standard connection metadata under [their own policy](https://huggingface.co/privacy). The model is provided by Google under the [Gemma Terms of Use](https://ai.google.dev/gemma/terms).
+- **Lumi+**, an optional one-time purchase of cosmetic extras. Buying it, restoring it, and checking whether your Apple Account owns it are handled entirely by **Apple** through the App Store, under [Apple's privacy policy](https://www.apple.com/legal/privacy/). We never see your name, Apple Account or payment details, and no health data is sent.
 
 Once downloaded, the AI runs entirely on your device. Your questions and its answers are not sent anywhere.
 
