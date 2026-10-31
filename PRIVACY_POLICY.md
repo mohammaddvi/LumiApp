@@ -1,9 +1,9 @@
 # Lumi Privacy Policy
 
-**Last updated:** October 30, 2026
+**Last updated:** October 31, 2026
 **Contact:** hello.lumi.support@gmail.com
 
-**In short:** Lumi is local-first. Period logs, symptoms, notes and predictions stay on your iPhone. We do not run ads, sell data, use analytics, or operate a health cloud for this app.
+**In short:** Lumi is local-first. Period logs, symptoms, notes and predictions stay on your iPhone. Apple Health is optional and read-only. We do not run ads, sell data, use analytics, or operate a health cloud for this app.
 
 ## Overview
 
@@ -16,8 +16,20 @@ Lumi (“we”, “the app”) is a period and cycle tracker for iPhone and iPad
 - Predictions and insights generated on your device
 - App preferences (cycle and period length, reminders, appearance, optional app lock) and the name Lumi calls you
 - Optional on-device AI chat history and downloaded Gemma model files
+- Periods you choose to import from Apple Health
 
 This data stays on your device unless you export or delete it. Like other app data, it is included in your own iPhone backups (iCloud Backup or your computer), which are controlled by you and Apple, not by us.
+
+## Apple Health
+
+Connecting Apple Health is optional. Lumi asks only when you tap **Connect Apple Health** or turn on **Sleep and heart rate** in Settings, and iOS shows you exactly what it can read.
+
+- **What Lumi reads:** periods (menstrual flow), sleep, and resting heart rate. Lumi only reads; it never writes to Apple Health.
+- **Periods** you import are saved in Lumi on your device, like periods you log. A period you logged in Lumi always takes priority over an imported one.
+- **Sleep and resting heart rate** are read fresh when you use Lumi and kept in memory only. Lumi never saves them. They are compared only with your own usual, to shape Lumi's notes on Today, the Insights card, the on-device AI's answers, and the wording of reminders.
+- Apple Health data never leaves your device. It is never used for advertising, marketing or data mining, and never shared with or sold to anyone.
+
+You can turn off Sleep and heart rate or remove imported periods in **Settings → Apple Health**, and change or revoke Lumi's access at any time in the Health app (**Sharing → Apps → Lumi**).
 
 ## What we do not collect
 
@@ -39,7 +51,7 @@ Once downloaded, the AI runs entirely on your device. Your questions and its ans
 
 ## Reminders
 
-Reminders are local notifications scheduled on your device. They do not use a push server.
+Reminders are local notifications scheduled on your device. They do not use a push server. If you use Sleep and heart rate, reminders before a period may mention that you often sleep less around then; heart rate is never shown in a notification.
 
 ## Security
 
@@ -51,6 +63,7 @@ Cycle data is stored with SwiftData in the app’s private sandbox, protected at
 - Delete all data on the device in Settings
 - Remove the downloaded AI model without deleting cycle data
 - Turn reminders off at any time
+- Turn off Sleep and heart rate, remove imported periods, or revoke Apple Health access
 - Delete the app to remove all of its data from the device
 
 ## Medical disclaimer
