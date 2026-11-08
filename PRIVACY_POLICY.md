@@ -31,6 +31,10 @@ Connecting Apple Health is optional. Lumi asks only when you tap **Connect Apple
 
 You can turn off Sleep and heart rate or remove imported periods in **Settings → Apple Health**, and change or revoke Lumi's access at any time in the Health app (**Sharing → Apps → Lumi**).
 
+## Widgets
+
+Lumi's Home Screen and Lock Screen widgets are optional. To draw them, Lumi saves a small summary in storage shared only between the app and its widget on your iPhone: today's phase and cycle day, the next predicted date, the feeling and outfit Lumi shows. It never includes flow, symptoms, notes, or Apple Health data. With app lock on, the widget shows only a lock. Delete all data clears it.
+
 ## What we do not collect
 
 - No Lumi account and no server that receives your health logs
